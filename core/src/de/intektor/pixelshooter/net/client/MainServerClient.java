@@ -27,7 +27,7 @@ public class MainServerClient {
     }
 
     public Socket run() throws IOException {
-        connection = (SSLSocket) getSSLContext().getSocketFactory().createSocket("pixelshooter.tk", 22198);
+        connection = (SSLSocket) getSSLContext().getSocketFactory().createSocket("mc.momland.tk", 22198);
         connection.setSoTimeout(0);
         PacketHelper.sendPacket(new ClientVersionPacketToServer(PixelShooter.VERSION), connection);
         new Thread() {
@@ -67,9 +67,16 @@ public class MainServerClient {
             };
             SSLContext sslContext;
             sslContext = SSLContext.getInstance("TLS");
-            KeyStore ks = KeyStore.getInstance("jks");
-            ks.load(Gdx.files.local("assets/serversidestore.jks").read(), "HartesPasswort123$$".toCharArray());
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            String defaultType = KeyStore.getDefaultType();
+            KeyStore ks = null;
+            if (defaultType.equalsIgnoreCase("bks")) {
+                ks = KeyStore.getInstance("bks");
+                ks.load(Gdx.files.local("assets/keystore/serversidekeystore.bks").read(), "HartesPasswort123$$".toCharArray());
+            } else if (defaultType.equalsIgnoreCase("jks")) {
+                ks = KeyStore.getInstance("jks");
+                ks.load(Gdx.files.local("assets/keystore/serversidestore.jks").read(), "HartesPasswort123$$".toCharArray());
+            }
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(ks, "HartesPasswort123$$".toCharArray());
             sslContext.init(kmf.getKeyManagers(), trustAllCerts, null);
             return sslContext;

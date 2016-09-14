@@ -2,20 +2,17 @@ package de.intektor.pixelshooter.ai.enemy_ais;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.math.collision.Ray;
-
-import java.util.List;
-
 import de.intektor.pixelshooter.ai.AIEnemyTank;
 import de.intektor.pixelshooter.ai.BasicNode;
 import de.intektor.pixelshooter.collision.RayTraceHelper;
 import de.intektor.pixelshooter.collision.WorldBorder;
-import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.entity.EntityBullet;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
 import de.intektor.pixelshooter.path.PathHelper;
+import de.intektor.pixelshooter.util.TickTimerHandler;
 
 import javax.vecmath.Point3f;
+import java.util.List;
 
 /**
  * @author Intektor
@@ -70,7 +67,7 @@ public abstract class AggressiveAi<T extends EntityEnemyTank> extends AIEnemyTan
         if (path != null && path.getCount() > 1) {
             BasicNode basicNode = path.get(currentStep);
             PathHelper.setMotionToStep(basicNode, entity, movementSpeed);
-            if (entity.getMid().distance(new Point3f(basicNode.x * MovableCollision.collisionSize, entity.posY + entity.getHeight() / 2, basicNode.y * MovableCollision.collisionSize)) < 1) {
+            if (entity.getMid().distance(new Point3f(basicNode.x, entity.posY + entity.getHeight() / 2, basicNode.y)) < 1) {
                 currentStep++;
             }
         }

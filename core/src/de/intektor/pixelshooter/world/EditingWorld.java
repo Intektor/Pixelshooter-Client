@@ -339,8 +339,8 @@ public class EditingWorld {
 
     public enum BackGroundType {
         WOODEN(ImageStorage.world_type_wooden, ImageStorage.background_wooden, ImageStorage.border_texture_wooden, ImageStorage.border_breakable_wooden),
-        GRASS(ImageStorage.world_type_grass, ImageStorage.background_grass, ImageStorage.border_texture_grass, ImageStorage.border_breakable_grass);
-
+        GRASS(ImageStorage.world_type_grass, ImageStorage.background_grass, ImageStorage.border_texture_grass, ImageStorage.border_breakable_grass),
+        DESERT(ImageStorage.tiny_picture_desert, ImageStorage.background_desert, ImageStorage.border_desert_unbreakable, ImageStorage.border_desert_breakable);
         final Texture tinyTexture, backgroundTexture, unbreakableCollision, breakableCollision;
 
         BackGroundType(Texture tinyTexture, Texture backgroundTexture, Texture unbreakableCollision, Texture breakableCollision) {

@@ -84,7 +84,9 @@ public class WorldBorder {
                 if (maxHitTimes > 0) {
                     maxHitTimes--;
                 } else {
-                    PixelShooter.PIXEL_SHOOTER_STATE.getWorld().borders.getBorders().remove(this);
+                    World world = PixelShooter.PIXEL_SHOOTER_STATE.getWorld();
+                    world.borders.getBorders().remove(this);
+                    world.worldChanged();
                 }
                 if (((EntityBullet) collided).diesAtCollisionBreakable()) {
                     collided.kill(new KillReason.Collision_Destroyed(this));

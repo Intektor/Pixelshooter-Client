@@ -1,16 +1,10 @@
 package de.intektor.pixelshooter.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
-import com.badlogic.gdx.ai.pfa.DefaultConnection;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
-import de.intektor.pixelshooter.path.WorldIndexedGraph;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point2i;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Intektor
@@ -21,6 +15,7 @@ public class BasicNode {
 
     public int x, y, index;
 
+    public boolean disabled;
 
     public BasicNode(int x, int y) {
         this.x = x;
@@ -41,6 +36,11 @@ public class BasicNode {
 
     public Point2f getPosF() {
         return new Point2f(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%s, %s)", x, y);
     }
 }
 

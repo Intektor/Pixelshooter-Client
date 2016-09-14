@@ -13,9 +13,9 @@ import de.intektor.pixelshooter.ai.BasicNode;
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.Collisions;
 import de.intektor.pixelshooter.collision.WorldBorder;
+import de.intektor.pixelshooter.level.editor.LevelEditor;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.enums.EnumSide;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
 import de.intektor.pixelshooter.path.PathHelper;
 import de.intektor.pixelshooter.path.PathTraveller;
 import de.intektor.pixelshooter.path.WorldIndexedGraph;
@@ -383,7 +383,7 @@ public abstract class EntityBullet extends Entity {
             if (path != null && path.getCount() > currentStep) {
                 BasicNode basicNode = path.get(currentStep);
                 PathHelper.setMotionToStep(basicNode, this, 1.5f);
-                if (getMid().distance(new Point3f(basicNode.x * MovableCollision.collisionSize, posY + getHeight() / 2, basicNode.y * MovableCollision.collisionSize)) < 1) {
+                if (getMid().distance(new Point3f(basicNode.x * LevelEditor.COLLISION_SIZE, posY + getHeight() / 2, basicNode.y * LevelEditor.COLLISION_SIZE)) < 1) {
                     currentStep++;
                 }
             } else {

@@ -1,45 +1,24 @@
 package de.intektor.pixelshooter.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.pfa.Connection;
-import com.badlogic.gdx.ai.pfa.DefaultConnection;
-import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
-import com.badlogic.gdx.ai.pfa.GraphPath;
-import com.badlogic.gdx.ai.pfa.Heuristic;
-import com.badlogic.gdx.ai.pfa.PathFinderRequest;
+import com.badlogic.gdx.ai.pfa.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.*;
-
-import javax.vecmath.Point2f;
-import javax.vecmath.Point2i;
-import javax.vecmath.Point3f;
-
+import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.intektor.pixelshooter.PixelShooter;
-import de.intektor.pixelshooter.abstrct.AbstractHelper;
-import de.intektor.pixelshooter.abstrct.PositionHelper;
 import de.intektor.pixelshooter.ai.BasicNode;
-import de.intektor.pixelshooter.ai.enemy_ais.AfraidAi;
-import de.intektor.pixelshooter.collision.Collision2D;
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.Collisions;
 import de.intektor.pixelshooter.collision.WorldBorder;
@@ -48,11 +27,21 @@ import de.intektor.pixelshooter.entity.EntityBullet;
 import de.intektor.pixelshooter.entity.EntityPlayer;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.level.editor.MouseInfo;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
 import de.intektor.pixelshooter.path.PathTraveller;
 import de.intektor.pixelshooter.path.WorldIndexedGraph;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.IScoreObject;
+
+import javax.vecmath.Point2i;
+import javax.vecmath.Point3f;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author Intektor
@@ -60,6 +49,10 @@ import de.intektor.pixelshooter.score.object.IScoreObject;
 public class World {
 
     public Collisions borders;
+    /**
+     * The standard borders on the edges of the map
+     */
+    public List<WorldBorder> worldBorders;
 
     public List<Entity> entityList = new ArrayList<Entity>();
     public List<Entity> nextUpdate = new ArrayList<Entity>();
@@ -134,7 +127,7 @@ public class World {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         camera.position.set(thePlayer.getMid().x, 150, thePlayer.getMid().z + 75);
-        camera.lookAt(thePlayer.posX, thePlayer.posY, thePlayer.posZ);
+        camera.lookAt(thePlayer.getMid().x, thePlayer.posY, thePlayer.getMid().z);
         camera.update();
 
         batch.begin(camera);
@@ -152,6 +145,13 @@ public class World {
         if (isUpdating) {
             decalBatch.flush();
         }
+
+        for (BasicNode basicNode : worldPathFinderGraphDistance_5u.nodeTable.values()) {
+            int x = basicNode.x;
+            int z = basicNode.y;
+            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
+        }
+
     }
 
     public void addEntity(Entity entity) {
@@ -315,15 +315,25 @@ public class World {
 
     public void worldChanged() {
         updateCollisionList();
-        worldPathFinderGraphDistance_1u = calculatePossibleNodes(1);
-        worldPathFinderGraphDistance_5u = calculatePossibleNodes(5);
+//        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(1);
+        Future<WorldIndexedGraph> future5 = calculatePossibleNodes(5);
+//        while (!(future1.isDone() && future5.isDone())) {
+//
+//        }
+        while (!future5.isDone()) {
+        }
+
+        try {
+//                worldPathFinderGraphDistance_1u = future1.get();
+            worldPathFinderGraphDistance_5u = future5.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public PathFinderRequest<BasicNode> calculatePathFindingRequestForPathTraveller(PathTraveller traveller, BasicNode endNode) {
         BasicNode startNode = getNextNodeForEntityMid((Entity) traveller, traveller.getGraphPath().nodeTable, traveller.getGraphPath().distance);
-
         GraphPath<BasicNode> path = new DefaultGraphPath<BasicNode>();
-
         return new PathFinderRequest<BasicNode>(startNode, endNode, new Heuristic<BasicNode>() {
             @Override
             public float estimate(BasicNode node, BasicNode endNode1) {
@@ -332,95 +342,75 @@ public class World {
         }, path);
     }
 
-    public BasicNode getNextNodeForEntityMid(Entity entity, Table<Integer, Integer, BasicNode> nodes, int minDistance) {
-        return getNextNodeForPosition((int) entity.getMid().x, (int) entity.getMid().z, nodes, minDistance);
+    public BasicNode getNextNodeForEntityMid(Entity entity, Table<Integer, Integer, BasicNode> nodes, int distance) {
+        return getNextNodeForPosition((int) entity.getMid().x, (int) entity.getMid().z, nodes, distance);
     }
 
-
-    public BasicNode getNextNodeForPosition(int targetX, int targetY, Table<Integer, Integer, BasicNode> nodes, int minDistance) {
-        int x = MathHelper.getNextDivider(targetX, MovableCollision.collisionSize);
-        int y = MathHelper.getNextDivider(targetY, MovableCollision.collisionSize);
-        List<Point2f> allPointsInRadius = PositionHelper.getAllPointsInRadius(new Point2f(x, y), MovableCollision.collisionSize * minDistance, MovableCollision.collisionSize);
-        for (Point2f point2f : allPointsInRadius) {
-            BasicNode nodeAt = nodes.get((int) (point2f.x / MovableCollision.collisionSize), (int) (point2f.y / MovableCollision.collisionSize));
-            if (nodeAt != null) {
-                return nodeAt;
-            }
-        }
-        return null;
+    public BasicNode getNextNodeForPosition(int targetX, int targetY, Table<Integer, Integer, BasicNode> nodes, int distance) {
+        return nodes.get(MathHelper.getNextDivider(targetX, distance), MathHelper.getNextDivider(targetY, distance));
     }
 
     /**
      * Calculates all the possible nodes for this world, watching borders.
      *
-     * @return a graph with all nodes while those which are in borders are already removed.
+     * @return a future graph with all nodes while those which are in borders are already removed.
      */
-    public WorldIndexedGraph calculatePossibleNodes(int minDistance) {
-        Table<Integer, Integer, BasicNode> nodes = HashBasedTable.create();
-        WorldIndexedGraph graph = new WorldIndexedGraph(nodes, minDistance);
-        for (int x = 0; x < width / MovableCollision.collisionSize; x++) {
-            for (int y = 0; y < height / MovableCollision.collisionSize; y++) {
-                BasicNode e = new BasicNode(x, y);
-                nodes.put(x, y, e);
-            }
-        }
-        List<Collision3D> collisionList = createCollisionList();
-        List<Point2i> removal = new ArrayList<Point2i>();
-        for (BasicNode node : nodes.values()) {
-            for (Collision3D border : collisionList) {
-                int x = node.x * MovableCollision.collisionSize;
-                int y = node.y * MovableCollision.collisionSize;
-                if (border.getBoundingBox().contains(new Vector3(x, 1, y)) || Collisions.getDistanceToWorldBorder(x, y, borders.getClosestBorder(x, y)) < minDistance) {
-                    removal.add(new Point2i(node.x, node.y));
+    public Future<WorldIndexedGraph> calculatePossibleNodes(final int minDistance) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        return executor.submit(new Callable<WorldIndexedGraph>() {
+            @Override
+            public WorldIndexedGraph call() {
+                long startTime = System.nanoTime();
+                Table<Integer, Integer, BasicNode> nodes = HashBasedTable.create();
+                WorldIndexedGraph graph = new WorldIndexedGraph(nodes, minDistance);
+                List<Collision3D> collisionList = createCollisionList();
+                List<Point2i> pointsInAllCollisions = new ArrayList<Point2i>();
+                for (Collision3D c : collisionList) {
+                    pointsInAllCollisions.addAll(getNodePointsInCollision(c, minDistance, 4));
                 }
-            }
-        }
-        for (Point2i point2i : removal) {
-            nodes.remove(point2i.x, point2i.y);
-        }
-
-        removal.clear();
-
-        for (BasicNode node : nodes.values()) {
-            int nextNodes = 0;
-            EnumDirection missing1 = null;
-            EnumDirection missing2 = null;
-            for (EnumDirection direction : EnumDirection.values()) {
-                if (getNodeForSide(node, direction, nodes) != null) {
-                    nextNodes++;
-                } else {
-                    if (missing1 == null) {
-                        missing1 = direction;
-                    } else {
-                        missing2 = direction;
+                for (int x = 0; x < World.this.width; x += minDistance) {
+                    for (int y = 0; y < World.this.height; y += minDistance) {
+                        BasicNode e = new BasicNode(x, y);
+                        nodes.put(x, y, e);
                     }
                 }
-            }
-            if (nextNodes == 2 && missing1 != null && !missing1.isCounterPart(missing2)) {
-                removal.add(new Point2i(node.x, node.y));
-            }
-        }
 
-        for (Point2i point2i : removal) {
-            nodes.remove(point2i.x, point2i.y);
-        }
-
-        int index = 0;
-        //Give the remaining nodes their connections and their index
-
-        for (BasicNode node : nodes.values()) {
-            node.index = index++;
-            Array<Connection<BasicNode>> connections = new Array<Connection<BasicNode>>();
-            for (EnumDirection direction : EnumDirection.values()) {
-                BasicNode nodeForSide = getNodeForSide(node, direction, nodes);
-                if (nodeForSide != null) {
-                    connections.add(new DefaultConnection<BasicNode>(node, nodeForSide));
+                for (Point2i ps : pointsInAllCollisions) {
+                    nodes.remove(ps.x, ps.y);
                 }
+
+                int index = 0;
+                //Give the remaining nodes their connections and their index
+
+                for (BasicNode node : nodes.values()) {
+                    node.index = index++;
+                    Array<Connection<BasicNode>> connections = new Array<Connection<BasicNode>>();
+                    for (EnumDirection direction : EnumDirection.values()) {
+                        BasicNode nodeForSide = getNodeForSide(node, direction, nodes, minDistance);
+                        if (nodeForSide != null) {
+                            connections.add(new DefaultConnection<BasicNode>(node, nodeForSide));
+                        }
+                    }
+                    node.setCurrentConnections(connections);
+                }
+
+                long timeTook = System.nanoTime() - startTime;
+                Gdx.app.log("DEBUG", "Calculating the world took " + TimeUtils.nanosToMillis(timeTook) + "milli sec");
+                return graph;
             }
-            node.setCurrentConnections(connections);
-        }
-        return graph;
+        });
     }
+
+    public List<Point2i> getNodePointsInCollision(Collision3D c, int distance, int cGrowAmount) {
+        List<Point2i> list = new ArrayList<Point2i>();
+        for (int x = MathHelper.getNextDivider((int) c.x - cGrowAmount, distance); x < c.x + c.width + cGrowAmount * 2; x += distance) {
+            for (int z = MathHelper.getNextDivider((int) c.z - cGrowAmount, distance); z < c.z + c.depth + cGrowAmount * 2; z += distance) {
+                list.add(new Point2i(x, z));
+            }
+        }
+        return list;
+    }
+
 
     public enum EnumDirection {
         UP,
@@ -448,39 +438,28 @@ public class World {
             case UP:
                 return node.y > 0;
             case RIGHT:
-                return node.x < width / MovableCollision.collisionSize;
+                return node.x < width;
             case DOWN:
-                return node.y < height / MovableCollision.collisionSize;
+                return node.y < height;
             case LEFT:
                 return node.x > 0;
         }
         throw new IllegalArgumentException("There is no such enum or we have a null pointer!");
     }
 
-    public BasicNode getNodeForSide(BasicNode node, EnumDirection direction, Table<Integer, Integer, BasicNode> table) {
+    public BasicNode getNodeForSide(BasicNode node, EnumDirection direction, Table<Integer, Integer, BasicNode> table, int distance) {
         if (!nodeAvailable(node, direction)) return null;
         switch (direction) {
             case UP:
-                return table.get(node.x, node.y - 1);
+                return table.get(node.x, node.y - distance);
             case RIGHT:
-                return table.get(node.x + 1, node.y);
+                return table.get(node.x + distance, node.y);
             case DOWN:
-                return table.get(node.x, node.y + 1);
+                return table.get(node.x, node.y + distance);
             case LEFT:
-                return table.get(node.x - 1, node.y);
+                return table.get(node.x - distance, node.y);
         }
         throw new IllegalArgumentException("There is no such enum or we have a null pointer!");
-    }
-
-    public static List<BasicNode> getNodesInRegion(Collision3D collision, Table<Integer, Integer, BasicNode> nodes) {
-        List<BasicNode> list = new ArrayList<BasicNode>();
-        for (int x = (int) collision.x; x < collision.x + collision.width; x++) {
-            for (int y = (int) collision.y; y < collision.y + collision.height; y++) {
-                BasicNode e = nodes.get(MathHelper.getNextDivider(x / MovableCollision.collisionSize, MovableCollision.collisionSize), MathHelper.getNextDivider(y / MovableCollision.collisionSize, MovableCollision.collisionSize));
-                if (e != null && !list.contains(e)) list.add(e);
-            }
-        }
-        return list;
     }
 
 

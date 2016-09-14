@@ -2,20 +2,16 @@ package de.intektor.pixelshooter.path;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.PathFinderRequest;
-import com.badlogic.gdx.ai.pfa.SmoothableGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
-
-import java.util.List;
+import de.intektor.pixelshooter.abstrct.PositionHelper;
+import de.intektor.pixelshooter.ai.BasicNode;
+import de.intektor.pixelshooter.entity.Entity;
+import de.intektor.pixelshooter.world.World;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point2i;
 import javax.vecmath.Point3f;
-
-import de.intektor.pixelshooter.abstrct.PositionHelper;
-import de.intektor.pixelshooter.ai.BasicNode;
-import de.intektor.pixelshooter.entity.Entity;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
-import de.intektor.pixelshooter.world.World;
+import java.util.List;
 
 /**
  * @author Intektor
@@ -51,12 +47,13 @@ public class PathHelper {
     public static GraphPath<BasicNode> findAStarPath(PathTraveller traveller, BasicNode endNode) {
         IndexedAStarPathFinder<BasicNode> pathFinder = new IndexedAStarPathFinder<BasicNode>(traveller.getGraphPath());
         PathFinderRequest<BasicNode> request = traveller.getTravellerWorld().calculatePathFindingRequestForPathTraveller(traveller, endNode);
+        if (request.startNode == null) return null;
         pathFinder.searchNodePath(request.startNode, request.endNode, request.heuristic, request.resultPath);
         return request.resultPath;
     }
 
     public static void setMotionToStep(BasicNode node, Entity entity, float speed) {
-        float atan = (float) Math.atan2(node.y * MovableCollision.collisionSize - entity.getMid().z, node.x * MovableCollision.collisionSize - entity.getMid().x);
+        float atan = (float) Math.atan2(node.y - entity.getMid().z, node.x - entity.getMid().x);
         entity.motionX = (float) Math.cos(atan) * speed;
         entity.motionZ = (float) Math.sin(atan) * speed;
     }

@@ -15,8 +15,6 @@ import de.intektor.pixelshooter.world.EditingWorld;
  */
 public class MovableCollision extends MovableObject {
 
-    public static final int collisionSize = 4;
-
     private boolean canBeSelected = true;
 
     protected WorldBorder.BorderType borderType = WorldBorder.BorderType.UNBREAKABLE;

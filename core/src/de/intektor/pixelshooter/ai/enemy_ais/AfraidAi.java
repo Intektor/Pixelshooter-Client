@@ -8,11 +8,11 @@ import de.intektor.pixelshooter.ai.*;
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.RayTraceHelper;
 import de.intektor.pixelshooter.collision.WorldBorder;
+import de.intektor.pixelshooter.level.editor.LevelEditor;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
 import de.intektor.pixelshooter.entity.EntityLiving;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
 import de.intektor.pixelshooter.path.PathHelper;
 
 import javax.vecmath.Point2f;
@@ -72,7 +72,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
                     List<Point3f> placeToHideFromPlayer = findPlaceToHideFromPlayer(entity, trackedPlayer, 75);
                     posDebugCache = placeToHideFromPlayer;
                     for (Point3f point : placeToHideFromPlayer) {
-                        BasicNode endNode = entity.worldObj.getNextNodeForPosition((int) point.x, (int) point.z, entity.getGraphPath().nodeTable, 5);
+                        BasicNode endNode = entity.worldObj.getNextNodeForPosition((int) point.x, (int) point.z, entity.getGraphPath().nodeTable, entity.getGraphPath().distance);
                         path = PathHelper.findAStarPathEntity(entity, endNode);
                         if (path != null) {
                             currentStep = 1;
@@ -85,7 +85,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
             if (path != null && path.getCount() > currentStep) {
                 BasicNode basicNode = path.get(currentStep);
                 PathHelper.setMotionToStep(basicNode, entity, movementSpeed);
-                if (entity.getMid().distance(new Point3f(basicNode.x * MovableCollision.collisionSize, entity.posY + entity.getHeight() / 2, basicNode.y * MovableCollision.collisionSize)) < 1) {
+                if (entity.getMid().distance(new Point3f(basicNode.x * LevelEditor.COLLISION_SIZE, entity.posY + entity.getHeight() / 2, basicNode.y * LevelEditor.COLLISION_SIZE)) < 1) {
                     currentStep++;
                 }
             } else {
@@ -124,8 +124,8 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
     }
 
     public static List<Point3f> findPlaceToHideFromPlayer(final EntityLiving hunted, final Entity hunter, float distance) {
-        BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath().nodeTable, (int) distance);
-        List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * MovableCollision.collisionSize, node.y * MovableCollision.collisionSize), distance, MovableCollision.collisionSize);
+        BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath().nodeTable, hunted.getGraphPath().distance);
+        List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * LevelEditor.COLLISION_SIZE, node.y * LevelEditor.COLLISION_SIZE), distance, LevelEditor.COLLISION_SIZE);
         Collections.sort(positions, new Comparator<Point2f>() {
             @Override
             public int compare(Point2f o1, Point2f o2) {

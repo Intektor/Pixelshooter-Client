@@ -23,7 +23,6 @@ import de.intektor.pixelshooter.collision.Collision2D;
 import de.intektor.pixelshooter.collision.WorldBorder;
 import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.Tank;
-import de.intektor.pixelshooter.level.editor.MovableCollision;
 import de.intektor.pixelshooter.util.FontHelper;
 import de.intektor.pixelshooter.world.EditingWorld;
 
@@ -198,8 +197,8 @@ public class RenderHelper {
         for (int i = 0; i < path.getCount() - 1; i++) {
             BasicNode step = path.get(i);
             BasicNode step2 = path.get(i + 1);
-            Point3f point1 = new Point3f(step.x * MovableCollision.collisionSize, 0, step.y * MovableCollision.collisionSize);
-            Point3f point2 = new Point3f(step2.x * MovableCollision.collisionSize, 0, step2.y * MovableCollision.collisionSize);
+            Point3f point1 = new Point3f(step.x, 0, step.y);
+            Point3f point2 = new Point3f(step2.x, 0, step2.y);
             renderLine3D(camera, point1, point2, color);
         }
     }

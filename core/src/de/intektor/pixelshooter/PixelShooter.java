@@ -180,7 +180,7 @@ public class PixelShooter extends ApplicationAdapter {
 
         System.out.println("Initializing unscaled fonts");
 
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/PerfectPixel.ttf"));
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/font/PerfectPixel.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 10;
         unScaledPerfectPixel10 = fontGenerator.generateFont(parameter);
@@ -338,7 +338,7 @@ public class PixelShooter extends ApplicationAdapter {
 
     public static void changeGuiScaleAmt(float amt) {
         guiScaleAmt = amt;
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/PerfectPixel.ttf"));
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/font/PerfectPixel.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = (int) (10 * amt);
         scaledPerfectPixel10 = fontGenerator.generateFont(parameter);

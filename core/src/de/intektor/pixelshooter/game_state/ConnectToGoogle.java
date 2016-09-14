@@ -188,7 +188,7 @@ public class ConnectToGoogle extends Gui {
                                 PSTagCompound tag = new PSTagCompound();
                                 PixelShooter.googleAccount.writeToTag(tag);
                                 try {
-                                    tag.writeToStream(new DataOutputStream(new FileOutputStream("login")));
+                                    tag.writeToStream(new DataOutputStream(new FileOutputStream(Gdx.files.local("login").file())));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

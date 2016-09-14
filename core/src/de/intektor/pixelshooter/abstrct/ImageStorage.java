@@ -1,8 +1,9 @@
 package de.intektor.pixelshooter.abstrct;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+
+import static com.badlogic.gdx.Application.ApplicationType.Desktop;
 
 /**
  * @author Intektor
@@ -28,47 +29,54 @@ public class ImageStorage {
             mine_bullet,
             world_type_wooden,
             world_type_grass,
-            triangleImage,
             bronze_medal,
             silver_medal,
             gold_medal,
             dark_heart,
             copy_image,
             empty_stars,
-            full_stars;
+            full_stars,
+
+            background_desert,
+            border_desert_breakable,
+            border_desert_unbreakable,
+            tiny_picture_desert;
 
     public static void init() {
-        String domain = Gdx.app.getType() == Application.ApplicationType.Desktop ? "assets/" : "";
+        String domain = Gdx.app.getType() == Desktop ? "assets/" : "";
 
         try {
-            tankExplosion = new Texture(domain + "TankExplosion.png");
-            pointer = new Texture(domain + "Select.png");
-            collisionImage = new Texture(domain + "Collision.png");
-            trashCan = new Texture(domain + "TrashCan.png");
-            standard_ammo = new Texture(domain + "Standard_Ammo.png");
-            heart = new Texture(domain + "heart.png");
-            mag_glass = new Texture(domain + "Magnifying glass.png");
-            triple_ammo = new Texture(domain + "Triple_Ammo.png");
-            chasing_ammo = new Texture(domain + "Chasing_Ammo.png");
-            grab_cursor = new Texture(domain + "Grab.png");
-            background_wooden = new Texture(domain + "Background_wooden.png");
-            background_grass = new Texture(domain + "Background_grass.png");
-            border_texture_wooden = new Texture(domain + "Border_Wooden.png");
-            border_texture_grass = new Texture(domain + "Border_Grass.png");
-            border_breakable_wooden = new Texture(domain + "Border_Breakable_Wooden.png");
-            border_breakable_grass = new Texture(domain + "Border_Breakable_Grass.png");
-            mine_bullet = new Texture(domain + "Mine_Bullet.png");
-            triangleImage = new Texture(domain + "Triangle.png");
-            heavy_ammo = new Texture(domain + "Heavy_Ammo.png");
-            world_type_wooden = new Texture(domain + "world_type_wooden.png");
-            world_type_grass = new Texture(domain + "world_type_grass.png");
-            dark_heart = new Texture(domain + "dark_heart.png");
-            bronze_medal = new Texture(domain + "bronze_medal.png");
-            silver_medal = new Texture(domain + "silver_medal.png");
-            gold_medal = new Texture(domain + "gold_medal.png");
-            copy_image = new Texture(domain + "copy_tool.png");
-            empty_stars = new Texture(domain + "empty_stars.png");
-            full_stars = new Texture(domain + "full_stars.png");
+            tankExplosion = new Texture(domain + "level_editor/bullet_type/TankExplosion.png");
+            pointer = new Texture(domain + "level_editor/tools/Select.png");
+            collisionImage = new Texture(domain + "level_editor/tools/Collision.png");
+            trashCan = new Texture(domain + "level_editor/tools/TrashCan.png");
+            standard_ammo = new Texture(domain + "level_editor/bullet_type/Standard_Ammo.png");
+            heart = new Texture(domain + "play_state/heart.png");
+            mag_glass = new Texture(domain + "level_editor/tools/Magnifying glass.png");
+            triple_ammo = new Texture(domain + "level_editor/bullet_type/Triple_Ammo.png");
+            chasing_ammo = new Texture(domain + "level_editor/bullet_type/Chasing_Ammo.png");
+            grab_cursor = new Texture(domain + "level_editor/tools/Grab.png");
+            background_wooden = new Texture(domain + "world/wooden/Background_wooden.png");
+            background_grass = new Texture(domain + "world/grass/Background_grass.png");
+            border_texture_wooden = new Texture(domain + "world/wooden/Border_Wooden.png");
+            border_texture_grass = new Texture(domain + "world/grass/Border_Grass.png");
+            border_breakable_wooden = new Texture(domain + "world/wooden/Border_Breakable_Wooden.png");
+            border_breakable_grass = new Texture(domain + "world/grass/Border_Breakable_Grass.png");
+            mine_bullet = new Texture(domain + "level_editor/bullet_type/Mine_Bullet.png");
+            heavy_ammo = new Texture(domain + "level_editor/bullet_type/Heavy_Ammo.png");
+            world_type_wooden = new Texture(domain + "world/wooden/world_type_wooden.png");
+            world_type_grass = new Texture(domain + "world/grass/world_type_grass.png");
+            dark_heart = new Texture(domain + "play_state/dark_heart.png");
+            bronze_medal = new Texture(domain + "play_state/bronze_medal.png");
+            silver_medal = new Texture(domain + "play_state/silver_medal.png");
+            gold_medal = new Texture(domain + "play_state/gold_medal.png");
+            copy_image = new Texture(domain + "level_editor/tools/copy_tool.png");
+            empty_stars = new Texture(domain + "play_state/empty_stars.png");
+            full_stars = new Texture(domain + "play_state/full_stars.png");
+            background_desert = new Texture(domain + "world/desert/background_desert.png");
+            border_desert_breakable = new Texture(domain + "world/desert/border_desert_breakable.png");
+            border_desert_unbreakable = new Texture(domain + "world/desert/border_desert_unbreakable.png");
+            tiny_picture_desert = new Texture(domain + "world/desert/desert_tiny_picture.png");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -89,7 +97,6 @@ public class ImageStorage {
         background_wooden.dispose();
         border_texture_wooden.dispose();
         mine_bullet.dispose();
-        triangleImage.dispose();
         heavy_ammo.dispose();
         copy_image.dispose();
     }

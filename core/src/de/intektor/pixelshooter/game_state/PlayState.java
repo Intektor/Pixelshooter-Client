@@ -29,7 +29,6 @@ import de.intektor.pixelshooter.levels.WorldPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.ScoreCounter;
 import de.intektor.pixelshooter.score.object.BulletShotScore;
-import de.intektor.pixelshooter.util.FontHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.world.EditingWorld;
 import de.intektor.pixelshooter.world.World;
@@ -259,7 +258,7 @@ public class PlayState extends Gui implements DPadHandler {
     }
 
     public void restartGame() {
-        theWorld.finishWorld();
+        if (theWorld != null) theWorld.finishWorld();
         theWorld = backup.convertToWorld();
         prevPlayerDeathState = false;
         prevAllEnemiesDeadState = false;
@@ -507,7 +506,6 @@ public class PlayState extends Gui implements DPadHandler {
     }
 
     public void setTheWorld(EditingWorld theWorld) {
-        this.theWorld = theWorld.convertToWorld();
         backup = theWorld;
     }
 

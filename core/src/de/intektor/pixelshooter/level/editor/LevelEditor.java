@@ -44,6 +44,7 @@ import static de.intektor.pixelshooter.enums.EnumSide.*;
  */
 public class LevelEditor extends Gui {
 
+    public static final int COLLISION_SIZE = 4;
     public static volatile EditingWorld edit;
 
     protected LevelEditorTool tool = LevelEditorTool.TOOL_SELECT;
@@ -168,8 +169,8 @@ public class LevelEditor extends Gui {
                 RenderHelper.renderSquare(renderer2, color, info.getMouseX() - 5, info.getMouseY() - 5, 10, 10);
             } else if (tool == LevelEditorTool.TOOL_COPY) {
                 Collision2D coll = copiedObject.collision.copy();
-                int x = MathHelper.getNextDividerDown((int) info.getMouseX(), MovableCollision.collisionSize);
-                int y = MathHelper.getNextDividerDown((int) info.getMouseY(), MovableCollision.collisionSize);
+                int x = MathHelper.getNextDividerDown((int) info.getMouseX(), COLLISION_SIZE);
+                int y = MathHelper.getNextDividerDown((int) info.getMouseY(), COLLISION_SIZE);
                 coll.setPosition(x, y - coll.getHeight());
                 Color color = edit.allowMovement(coll, null) ? Color.GREEN : Color.RED;
                 RenderHelper.renderSquare(renderer2, color, coll.getX(), coll.getY(), coll.getWidth(), coll.getHeight());
@@ -368,14 +369,14 @@ public class LevelEditor extends Gui {
 
     public void moveMovableObject(MovableObject object, float dX, float dY, boolean hasToFitCollisionSize) {
         if (hasToFitCollisionSize) {
-            int rmdX = MathHelper.getNextDivider((int) Math.floor(D_MOVE_X), MovableCollision.collisionSize);
-            int rmdY = MathHelper.getNextDivider((int) Math.floor(D_MOVE_Y), MovableCollision.collisionSize);
+            int rmdX = MathHelper.getNextDivider((int) Math.floor(D_MOVE_X), COLLISION_SIZE);
+            int rmdY = MathHelper.getNextDivider((int) Math.floor(D_MOVE_Y), COLLISION_SIZE);
 
             Collision2D c = object.getCollision2D().copy();
             c.translate(rmdX, rmdY);
             if (edit.allowMovement(c, Collections.singletonList(object))) {
-                int ccX = D_MOVE_X >= MovableCollision.collisionSize || D_MOVE_X <= -MovableCollision.collisionSize ? rmdX : 0;
-                int ccY = D_MOVE_Y >= MovableCollision.collisionSize || D_MOVE_Y <= -MovableCollision.collisionSize ? rmdY : 0;
+                int ccX = D_MOVE_X >= COLLISION_SIZE || D_MOVE_X <= -COLLISION_SIZE ? rmdX : 0;
+                int ccY = D_MOVE_Y >= COLLISION_SIZE || D_MOVE_Y <= -COLLISION_SIZE ? rmdY : 0;
                 object.translate(ccX, ccY);
             }
         } else {
@@ -388,15 +389,15 @@ public class LevelEditor extends Gui {
     }
 
     public void finishObjectMovement() {
-        if (D_MOVE_X >= MovableCollision.collisionSize) {
-            D_MOVE_X -= MovableCollision.collisionSize;
-        } else if (D_MOVE_X <= -MovableCollision.collisionSize) {
-            D_MOVE_X += MovableCollision.collisionSize;
+        if (D_MOVE_X >= COLLISION_SIZE) {
+            D_MOVE_X -= COLLISION_SIZE;
+        } else if (D_MOVE_X <= -COLLISION_SIZE) {
+            D_MOVE_X += COLLISION_SIZE;
         }
-        if (D_MOVE_Y >= MovableCollision.collisionSize) {
-            D_MOVE_Y -= MovableCollision.collisionSize;
-        } else if (D_MOVE_Y <= -MovableCollision.collisionSize) {
-            D_MOVE_Y += MovableCollision.collisionSize;
+        if (D_MOVE_Y >= COLLISION_SIZE) {
+            D_MOVE_Y -= COLLISION_SIZE;
+        } else if (D_MOVE_Y <= -COLLISION_SIZE) {
+            D_MOVE_Y += COLLISION_SIZE;
         }
     }
 
@@ -430,8 +431,8 @@ public class LevelEditor extends Gui {
                     }
                 } else if (tool == LevelEditorTool.TOOL_COPY) {
                     Collision2D coll = copiedObject.collision.copy();
-                    int f = MathHelper.getNextDividerDown((int) info.getMouseX(), MovableCollision.collisionSize);
-                    int g = MathHelper.getNextDividerDown((int) info.getMouseY(), MovableCollision.collisionSize);
+                    int f = MathHelper.getNextDividerDown((int) info.getMouseX(), COLLISION_SIZE);
+                    int g = MathHelper.getNextDividerDown((int) info.getMouseY(), COLLISION_SIZE);
                     coll.setPosition(f, g - coll.getHeight());
                     if (edit.allowMovement(coll, null)) {
                         MovableObject copy = copiedObject.copy();
@@ -713,7 +714,7 @@ public class LevelEditor extends Gui {
     //CONTEXT MENU SELECT - ENEMY TANK SELECTED
     final int TEXT_FIELD_TANK_HEALTH = 0, TEXT_FIELD_TANK_TRACKING_RANGE = 1, TEXT_FIELD_SHOOTING_COOLDOWN = 2, TEXT_FIELD_DAMAGE = 7, TEXT_FIELD_BULLET_BOUNCES = 8, TEXT_FIELD_TANK_SPEED = 9;
     //PLAYER
-    final int TEXT_FIELD_PLAYER_ALLOWED_BULLETS = 5, TEXT_FIELD_PLAYER_COOLDOWN = 6;
+    final int TEXT_FIELD_PLAYER_ALLOWED_BULLETS = 5, TEXT_FIELD_PLAYER_COOL_DOWN = 6;
     //TRIPLE_SHOOTER
     final int TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS = 3, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS = 4;
     //LASER SHOOTER
@@ -779,7 +780,7 @@ public class LevelEditor extends Gui {
         componentList.add(new GuiNumberField(width - 300, height - 60 * 5, 300, 60, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS, false, 3, "Radius", this, "", false));
 
         componentList.add(new GuiNumberField(width - 300, height - 60 * 6, 300, 60, TEXT_FIELD_PLAYER_ALLOWED_BULLETS, false, 3, "Shots before Cooldown", this, "", false));
-        componentList.add(new GuiNumberField(width - 300, height - 60 * 7, 300, 60, TEXT_FIELD_PLAYER_COOLDOWN, false, 5, "Cooldown in ticks", this, "", false));
+        componentList.add(new GuiNumberField(width - 300, height - 60 * 7, 300, 60, TEXT_FIELD_PLAYER_COOL_DOWN, false, 5, "Cooldown in ticks", this, "", false));
 
         componentList.add(new GuiNumberField(width - 300, height - 60 * 8, 300, 60, TEXT_FIELD_DAMAGE, false, 5, "Damage per hit", this, "", true));
         componentList.add(new GuiNumberField(width - 300, height - 60 * 9, 300, 60, TEXT_FIELD_BULLET_BOUNCES, false, 5, "Bullet Bounces", this, "", false));
@@ -848,8 +849,8 @@ public class LevelEditor extends Gui {
         getArrowByID(arrowID).setShown(true);
         MouseInfo cInfo = getMInfo();
         MouseInfo prevInfo = getMInfo(calcScaledCoordX(arrowX), calcScaledCoordY(arrowY));
-        int dX = MathHelper.getNextDividerDown((int) (cInfo.getMouseX() - prevInfo.getMouseX()), MovableCollision.collisionSize);
-        int dY = MathHelper.getNextDividerDown((int) (cInfo.getMouseY() - prevInfo.getMouseY()), MovableCollision.collisionSize);
+        int dX = MathHelper.getNextDividerDown((int) (cInfo.getMouseX() - prevInfo.getMouseX()), COLLISION_SIZE);
+        int dY = MathHelper.getNextDividerDown((int) (cInfo.getMouseY() - prevInfo.getMouseY()), COLLISION_SIZE);
         List<MovableObject> l = edit.getSelectedObjects();
         if (l.size() == 0) return;
         MovableObject selected = l.get(0);
@@ -858,25 +859,25 @@ public class LevelEditor extends Gui {
             Collision2D collision = selected.collision.copy();
             switch (arrowID) {
                 case ARROW_TOP:
-                    if (dY >= MovableCollision.collisionSize || dY <= -MovableCollision.collisionSize) {
+                    if (dY >= COLLISION_SIZE || dY <= -COLLISION_SIZE) {
                         arrowY = input.getY();
                         collision.stretchInDirection(UP, dY);
                     }
                     break;
                 case ARROW_RIGHT:
-                    if (dX >= MovableCollision.collisionSize || dX <= -MovableCollision.collisionSize) {
+                    if (dX >= COLLISION_SIZE || dX <= -COLLISION_SIZE) {
                         arrowX = input.getX();
                         collision.stretchInDirection(RIGHT, dX);
                     }
                     break;
                 case ARROW_BOTTOM:
-                    if (dY >= MovableCollision.collisionSize || dY <= -MovableCollision.collisionSize) {
+                    if (dY >= COLLISION_SIZE || dY <= -COLLISION_SIZE) {
                         arrowY = input.getY();
                         collision.stretchInDirection(DOWN, -dY);
                     }
                     break;
                 case ARROW_LEFT:
-                    if (dX >= MovableCollision.collisionSize || dX <= -MovableCollision.collisionSize) {
+                    if (dX >= COLLISION_SIZE || dX <= -COLLISION_SIZE) {
                         arrowX = input.getX();
                         collision.stretchInDirection(LEFT, -dX);
                     }
@@ -942,7 +943,7 @@ public class LevelEditor extends Gui {
                     GuiTextField triple_attacker_amtOfBullets = getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS);
                     GuiTextField triple_attacker_shootingRadius = getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS);
                     GuiTextField player_allowedShotsBeforeCooldown = getTextFieldByID(TEXT_FIELD_PLAYER_ALLOWED_BULLETS);
-                    GuiTextField player_cooldownTicks = getTextFieldByID(TEXT_FIELD_PLAYER_COOLDOWN);
+                    GuiTextField player_cooldownTicks = getTextFieldByID(TEXT_FIELD_PLAYER_COOL_DOWN);
                     GuiTextField damageField = getTextFieldByID(TEXT_FIELD_DAMAGE);
                     GuiTextField bulletBounces = getTextFieldByID(TEXT_FIELD_BULLET_BOUNCES);
                     GuiTextField tankSpeed = getTextFieldByID(TEXT_FIELD_TANK_SPEED);
@@ -1055,7 +1056,7 @@ public class LevelEditor extends Gui {
                     if (field == getTextFieldByID(TEXT_FIELD_PLAYER_ALLOWED_BULLETS)) {
                         tank.player_shotsBeforeCooldown = Integer.parseInt(field.convertText());
                     }
-                    if (field == getTextFieldByID(TEXT_FIELD_PLAYER_COOLDOWN)) {
+                    if (field == getTextFieldByID(TEXT_FIELD_PLAYER_COOL_DOWN)) {
                         tank.player_cooldownInTicks = Integer.parseInt(field.convertText());
                     }
                     if (field == getTextFieldByID(TEXT_FIELD_DAMAGE)) {

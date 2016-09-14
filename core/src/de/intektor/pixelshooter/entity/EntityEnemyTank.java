@@ -15,11 +15,11 @@ import de.intektor.pixelshooter.collision.Collisions;
 import de.intektor.pixelshooter.collision.RayTrace;
 import de.intektor.pixelshooter.collision.RayTraceHelper;
 import de.intektor.pixelshooter.collision.WorldBorder;
-import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.helper.ColorHelper;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.KillTankScore;
+import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.world.World;
 
 import javax.vecmath.Point3f;
@@ -53,7 +53,7 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
     @Override
     public void renderEntity(ModelBatch batch, Camera camera, Environment environment) {
         RenderHelper.renderTank3D(batch, camera, this, environment, this);
-//        RenderHelper.renderPath(rawWorldCamera, PathHelper.findAStarPathEntityToOtherEntityOrAround(this, worldObj.thePlayer, 5), Color.ORANGE);
+//        RenderHelper.renderPath(camera, PathHelper.findAStarPathEntityToOtherEntityOrAround(this, worldObj.thePlayer, 5), Color.ORANGE);
     }
 
     @Override
