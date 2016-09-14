@@ -2,7 +2,6 @@ package de.intektor.pixelshooter.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -29,7 +28,6 @@ import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.level.editor.MouseInfo;
 import de.intektor.pixelshooter.path.PathTraveller;
 import de.intektor.pixelshooter.path.WorldIndexedGraph;
-import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.IScoreObject;
 
 import javax.vecmath.Point2i;
@@ -146,11 +144,11 @@ public class World {
             decalBatch.flush();
         }
 
-        for (BasicNode basicNode : worldPathFinderGraphDistance_5u.nodeTable.values()) {
-            int x = basicNode.x;
-            int z = basicNode.y;
-            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
-        }
+//        for (BasicNode basicNode : worldPathFinderGraphDistance_5u.nodeTable.values()) {
+//            int x = basicNode.x;
+//            int z = basicNode.y;
+//            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
+//        }
 
     }
 
@@ -315,16 +313,11 @@ public class World {
 
     public void worldChanged() {
         updateCollisionList();
-//        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(1);
+        worldBorders = borders.getBorders().subList(0, 4);
+        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(1);
         Future<WorldIndexedGraph> future5 = calculatePossibleNodes(5);
-//        while (!(future1.isDone() && future5.isDone())) {
-//
-//        }
-        while (!future5.isDone()) {
-        }
-
         try {
-//                worldPathFinderGraphDistance_1u = future1.get();
+            worldPathFinderGraphDistance_1u = future1.get();
             worldPathFinderGraphDistance_5u = future5.get();
         } catch (Exception e) {
             e.printStackTrace();

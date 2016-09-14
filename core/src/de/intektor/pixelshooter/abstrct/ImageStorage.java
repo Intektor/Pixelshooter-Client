@@ -1,9 +1,8 @@
 package de.intektor.pixelshooter.abstrct;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-
-import static com.badlogic.gdx.Application.ApplicationType.Desktop;
 
 /**
  * @author Intektor
@@ -43,8 +42,7 @@ public class ImageStorage {
             tiny_picture_desert;
 
     public static void init() {
-        String domain = Gdx.app.getType() == Desktop ? "assets/" : "";
-
+        String domain = Gdx.app.getType() == Application.ApplicationType.Desktop ? "assets/" : "";
         try {
             tankExplosion = new Texture(domain + "level_editor/bullet_type/TankExplosion.png");
             pointer = new Texture(domain + "level_editor/tools/Select.png");

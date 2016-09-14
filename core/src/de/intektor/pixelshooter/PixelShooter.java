@@ -49,6 +49,7 @@ import de.intektor.pixelshooter_common.net.packet.*;
 import de.intektor.pixelshooter_common.packet.PacketRegistry;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Queue;
 import java.util.UUID;
@@ -179,6 +180,8 @@ public class PixelShooter extends ApplicationAdapter {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
         System.out.println("Initializing unscaled fonts");
+
+        System.out.println(Arrays.toString(Gdx.files.internal("assets/").list()));
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/font/PerfectPixel.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
