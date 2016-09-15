@@ -5,16 +5,15 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-
-import javax.vecmath.Point2f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.Collisions;
 import de.intektor.pixelshooter.collision.WorldBorder;
 import de.intektor.pixelshooter.enums.EnumSide;
 import de.intektor.pixelshooter.world.World;
+
+import javax.vecmath.Point2f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 /**
  * @author Intektor
@@ -104,6 +103,14 @@ public abstract class Entity {
         motionY = isUp ? 1 : isDown ? -1 : motionY;
         motionX = isLeft ? -1 : isRight ? 1 : motionX;
         motionZ = isForward ? -1 : isBackward ? 1 : motionZ;
+
+        boolean movementHorizontal = isLeft || isRight;
+        boolean movementVertical = isForward || isBackward;
+
+        if (movementHorizontal && movementVertical) {
+            motionX /= 2;
+            motionZ /= 2;
+        }
 
         setBaseRotation((float) Math.atan2(motionZ, motionX));
 

@@ -54,7 +54,6 @@ public class EntityPlayer extends Entity implements Tank {
     @Override
     public void updateEntity(World world) {
         super.updateEntity(world);
-
         if (!keepMotion) motionX = motionY = motionZ = 0;
     }
 

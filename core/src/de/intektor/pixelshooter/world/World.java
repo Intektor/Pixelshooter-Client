@@ -144,7 +144,7 @@ public class World {
             decalBatch.flush();
         }
 
-//        for (BasicNode basicNode : worldPathFinderGraphDistance_5u.nodeTable.values()) {
+//        for (BasicNode basicNode : worldPathFinderGraphDistance_1u.nodeTable.values()) {
 //            int x = basicNode.x;
 //            int z = basicNode.y;
 //            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
@@ -313,9 +313,8 @@ public class World {
 
     public void worldChanged() {
         updateCollisionList();
-        worldBorders = borders.getBorders().subList(0, 4);
-        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(1);
-        Future<WorldIndexedGraph> future5 = calculatePossibleNodes(5);
+        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(2, 1);
+        Future<WorldIndexedGraph> future5 = calculatePossibleNodes(4, 4);
         try {
             worldPathFinderGraphDistance_1u = future1.get();
             worldPathFinderGraphDistance_5u = future5.get();
@@ -348,7 +347,7 @@ public class World {
      *
      * @return a future graph with all nodes while those which are in borders are already removed.
      */
-    public Future<WorldIndexedGraph> calculatePossibleNodes(final int minDistance) {
+    public Future<WorldIndexedGraph> calculatePossibleNodes(final int minDistance, final int collsionDistance) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(new Callable<WorldIndexedGraph>() {
             @Override
@@ -359,7 +358,7 @@ public class World {
                 List<Collision3D> collisionList = createCollisionList();
                 List<Point2i> pointsInAllCollisions = new ArrayList<Point2i>();
                 for (Collision3D c : collisionList) {
-                    pointsInAllCollisions.addAll(getNodePointsInCollision(c, minDistance, 4));
+                    pointsInAllCollisions.addAll(getNodePointsInCollision(c, minDistance, collsionDistance));
                 }
                 for (int x = 0; x < World.this.width; x += minDistance) {
                     for (int y = 0; y < World.this.height; y += minDistance) {
