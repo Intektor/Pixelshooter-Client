@@ -156,6 +156,16 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
     }
 
     @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        pointerMoved(calcScaledCoordX(screenX), calcScaledCoordY(screenY));
+        return false;
+    }
+
+    public void pointerMoved(int x, int y) {
+
+    }
+
+    @Override
     public final boolean touchUp(int screenX, int screenY, int pointer, int button) {
         pointerUp(calcScaledCoordX(screenX), calcScaledCoordY(screenY), pointer, button);
         return false;

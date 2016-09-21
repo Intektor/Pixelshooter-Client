@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.render.RenderHelper;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 /**
  * @author Intektor
  */
-public class SureDeleteLevel extends Gui {
+public class GuiSureDeleteLevel extends Gui {
 
     final int BUTTON_DONT_DELETE = 0, BUTTON_DELETE = 1;
 
@@ -34,7 +34,7 @@ public class SureDeleteLevel extends Gui {
         RenderHelper.drawString(width / 2, height - 100 - font.getLineHeight() * 2, "from " + format.format(file.world.timeSaved) + "?", font, b, true);
         b.end();
 
-        LevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
+        GuiLevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SureDeleteLevel extends Gui {
                 folder.files.get(idToRemove).file.delete();
                 folder.files.remove(idToRemove);
                 PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
-                ((UserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER)).reInitNextUpdate = true;
+                ((GuiUserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER)).reInitNextUpdate = true;
                 break;
         }
     }

@@ -115,7 +115,7 @@ public abstract class MovableObject {
     }
 
     public static Collision2D calculateValidSize(float x1, float y1, float x2, float y2) {
-        int min = LevelEditor.COLLISION_SIZE;
+        int min = GuiLevelEditor.COLLISION_SIZE;
         int rx1 = MathHelper.getNextDivider(Math.round(x1), min);
         int ry1 = MathHelper.getNextDivider(Math.round(y1), min);
         int rx2 = MathHelper.getNextDivider(Math.round(x2), min);

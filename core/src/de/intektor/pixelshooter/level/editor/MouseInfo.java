@@ -36,6 +36,6 @@ public class MouseInfo {
 
     @Override
     public String toString() {
-        return "( " + getMouseX() + " | " + getMouseY() +  " | " + getMouseZ() + " )";
+        return String.format("(%s | %s | %s)", getMouseX(), getMouseY(), getMouseZ());
     }
 }

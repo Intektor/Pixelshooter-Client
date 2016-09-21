@@ -7,7 +7,7 @@ import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.GuiTextBox;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 import de.intektor.pixelshooter_common.net.packet.PublishLevelPacketToServer;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 /**
  * @author Intektor
  */
-public class PublishLevelToMainServer extends Gui {
+public class GuiPublishLevelToMainServer extends Gui {
 
     final int BUTTON_DONT_PUBLISH = 0, BUTTON_PUBLISH = 1, BUTTON_PRIVACY = 2, BUTTON_SHOW_NAME = 3;
 
@@ -34,8 +34,8 @@ public class PublishLevelToMainServer extends Gui {
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
         super.render(renderer, batch);
-//        LevelEditor.renderRawWorld(file.world, camera, ownRenderer, this.batch, width - 250, height / 2 - 125, 250, 250);
-        LevelEditor.renderRawWorld(file.world,  width - 250, height / 2 - 125, 250, 250);
+//        GuiLevelEditor.renderRawWorld(file.world, camera, ownRenderer, this.batch, width - 250, height / 2 - 125, 250, 250);
+        GuiLevelEditor.renderRawWorld(file.world,  width - 250, height / 2 - 125, 250, 250);
         SpriteBatch b = PixelShooter.spriteBatch;
         b.begin();
         RenderHelper.drawString(0, height - 100, "Privacy:", PixelShooter.unScaledPerfectPixel22, b, false);

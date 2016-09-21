@@ -2,6 +2,7 @@ package de.intektor.pixelshooter.abstrct;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import de.intektor.pixelshooter.util.StringUtils;
 
 /**
  * @author Intektor
@@ -18,16 +19,7 @@ public class AbstractHelper {
     }
 
     public static String format(Object... objects) {
-        String s = "";
-        boolean first = true;
-        for (Object o : objects) {
-            if (!first) {
-                s += " | ";
-            }
-            s += o;
-            first = false;
-        }
-        return s;
+        return String.format("%s " + StringUtils.repeat("| %s ", objects.length - 1), objects);
     }
 
     public static boolean isTouchDevice() {

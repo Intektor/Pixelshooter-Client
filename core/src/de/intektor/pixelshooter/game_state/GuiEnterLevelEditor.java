@@ -1,12 +1,15 @@
 package de.intektor.pixelshooter.game_state;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.text_field.GuiNumberField;
 import de.intektor.pixelshooter.gui.text_field.GuiTextField;
 import de.intektor.pixelshooter.helper.MathHelper;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.world.EditingWorld;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
 /**
  * @author Intektor
  */
-public class EnterLevelEditor extends Gui {
+public class GuiEnterLevelEditor extends Gui {
 
     @Override
     public void onButtonTouched(int id) {
@@ -23,8 +26,8 @@ public class EnterLevelEditor extends Gui {
                 List<GuiTextField> textFields = getTextFields();
                 try {
                     String name = textFields.get(0).convertText();
-                    int width = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(1).convertText()), LevelEditor.COLLISION_SIZE);
-                    int height = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(2).convertText()), LevelEditor.COLLISION_SIZE);
+                    int width = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(1).convertText()), GuiLevelEditor.COLLISION_SIZE);
+                    int height = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(2).convertText()), GuiLevelEditor.COLLISION_SIZE);
                     if (width > 0 && height > 0 && !name.equals("")) {
                         PixelShooter.LEVEL_EDITOR_STATE.setEdit(new EditingWorld(name, width, height));
                         PixelShooter.enterGui(PixelShooter.LEVEL_EDITOR);
@@ -37,6 +40,14 @@ public class EnterLevelEditor extends Gui {
                 PixelShooter.enterGui(PixelShooter.BASIC_LEVEL_OVERVIEW);
                 break;
         }
+    }
+
+    @Override
+    public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
+        super.render(renderer, batch);
     }
 
     @Override

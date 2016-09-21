@@ -12,14 +12,14 @@ import de.intektor.pixelshooter.util.TickTimerHandler;
 /**
  * @author Intektor
  */
-public class WaitForLevelPublishServerResponse extends Gui {
+public class GuiWaitForLevelPublishServerResponse extends Gui {
 
     final String TICK_TIMER_TICK_CONNECTION = "PUBLISH_LEVEL_GUI_TICK_CONNECTION_GUI";
     final String TICK_TIMER_JOIN_FOLLOWING_GUI = "JOIN_FOLLOWING_GUI_TICK_WAIT_FOR_RESPONSE_GUI";
 
     private Response response;
 
-    public WaitForLevelPublishServerResponse() {
+    public GuiWaitForLevelPublishServerResponse() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_TICK_CONNECTION);
         TickTimerHandler.registerTickTimer(120, TICK_TIMER_JOIN_FOLLOWING_GUI);
     }

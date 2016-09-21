@@ -7,7 +7,7 @@ import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.levels.BasicPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 
@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 /**
  * @author Intektor
  */
-public class FinishLevelToPublishLevel extends Gui {
+public class GuiFinishLevelToPublishLevel extends Gui {
 
     final int BUTTON_DONT_PUBLISH = 0, BUTTON_PUBLISH = 1;
 
@@ -38,7 +38,7 @@ public class FinishLevelToPublishLevel extends Gui {
         RenderHelper.drawString(width / 2, height - i - font.getLineHeight() * 3, "You have to finish the level first, before you can publish it!", font, b, true);
         b.end();
 
-        LevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
+        GuiLevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
     }
 
     @Override

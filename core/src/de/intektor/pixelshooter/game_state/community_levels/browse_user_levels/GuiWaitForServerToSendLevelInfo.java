@@ -11,7 +11,7 @@ import de.intektor.pixelshooter.util.TickTimerHandler;
 /**
  * @author Intektor
  */
-public class WaitForServerToSendLevelInfo extends Gui {
+public class GuiWaitForServerToSendLevelInfo extends Gui {
 
     final String TICK_TIMER_UPDATE_STRING = "WAIT_FOR_SERVER_TO_SEND_LEVEL_INFO_TICK_TIMER_UPDATE_STRING";
     final String TICK_TIMER_SHOW_ERROR_MESSAGE = "WAIT_FOR_SERVER_TO_SEND_LEVEL_INFO_TICK_TIMER_SHOW_ERROR_MESSAGE";
@@ -20,7 +20,7 @@ public class WaitForServerToSendLevelInfo extends Gui {
 
     boolean error;
 
-    public WaitForServerToSendLevelInfo() {
+    public GuiWaitForServerToSendLevelInfo() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_UPDATE_STRING);
         TickTimerHandler.registerTickTimer(60, TICK_TIMER_SHOW_ERROR_MESSAGE);
     }

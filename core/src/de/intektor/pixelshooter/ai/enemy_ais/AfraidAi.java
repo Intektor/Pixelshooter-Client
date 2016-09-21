@@ -8,7 +8,7 @@ import de.intektor.pixelshooter.ai.*;
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.RayTraceHelper;
 import de.intektor.pixelshooter.collision.WorldBorder;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
@@ -85,7 +85,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
             if (path != null && path.getCount() > currentStep) {
                 BasicNode basicNode = path.get(currentStep);
                 PathHelper.setMotionToStep(basicNode, entity, movementSpeed);
-                if (entity.getMid().distance(new Point3f(basicNode.x * LevelEditor.COLLISION_SIZE, entity.posY + entity.getHeight() / 2, basicNode.y * LevelEditor.COLLISION_SIZE)) < 1) {
+                if (entity.getMid().distance(new Point3f(basicNode.x * GuiLevelEditor.COLLISION_SIZE, entity.posY + entity.getHeight() / 2, basicNode.y * GuiLevelEditor.COLLISION_SIZE)) < 1) {
                     currentStep++;
                 }
             } else {
@@ -125,7 +125,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
 
     public static List<Point3f> findPlaceToHideFromPlayer(final EntityLiving hunted, final Entity hunter, float distance) {
         BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath());
-        List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * LevelEditor.COLLISION_SIZE, node.y * LevelEditor.COLLISION_SIZE), distance, LevelEditor.COLLISION_SIZE);
+        List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * GuiLevelEditor.COLLISION_SIZE, node.y * GuiLevelEditor.COLLISION_SIZE), distance, GuiLevelEditor.COLLISION_SIZE);
         Collections.sort(positions, new Comparator<Point2f>() {
             @Override
             public int compare(Point2f o1, Point2f o2) {

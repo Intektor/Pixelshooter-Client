@@ -18,9 +18,9 @@ import de.intektor.pixelshooter.entity.EntityBullet;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
 import de.intektor.pixelshooter.entity.EntityPlayer;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
-import de.intektor.pixelshooter.game_state.community_levels.PublishLevelToMainServer;
-import de.intektor.pixelshooter.game_state.user_level.FinishLevelToPublishLevel;
-import de.intektor.pixelshooter.game_state.worlds.World1;
+import de.intektor.pixelshooter.game_state.community_levels.GuiPublishLevelToMainServer;
+import de.intektor.pixelshooter.game_state.user_level.GuiFinishLevelToPublishLevel;
+import de.intektor.pixelshooter.game_state.worlds.GuiWorld1;
 import de.intektor.pixelshooter.gui.*;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.levels.CommunityPlayInformation;
@@ -299,8 +299,8 @@ public class PlayState extends Gui implements DPadHandler {
                         break;
                     case PUBLISH_LEVEL:
                         if (missionSuccess) {
-                            FinishLevelToPublishLevel finishGui = (FinishLevelToPublishLevel) PixelShooter.getGuiByID(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL);
-                            ((PublishLevelToMainServer) PixelShooter.getGuiByID(PixelShooter.PUBLISH_LEVEL_TO_MAIN_SERVER)).setFile(finishGui.getFolder(), finishGui.getIdToPublish());
+                            GuiFinishLevelToPublishLevel finishGui = (GuiFinishLevelToPublishLevel) PixelShooter.getGuiByID(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL);
+                            ((GuiPublishLevelToMainServer) PixelShooter.getGuiByID(PixelShooter.PUBLISH_LEVEL_TO_MAIN_SERVER)).setFile(finishGui.getFolder(), finishGui.getIdToPublish());
                             PixelShooter.enterGui(PixelShooter.PUBLISH_LEVEL_TO_MAIN_SERVER);
                         } else {
                             PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
@@ -323,7 +323,7 @@ public class PlayState extends Gui implements DPadHandler {
                 WorldPlayInformation worldInfo = (WorldPlayInformation) info;
                 if (worldInfo.worldID == 1) {
                     if (worldInfo.levelID < 40) {
-                        World1.loadLevel(worldInfo.levelID + 1);
+                        GuiWorld1.loadLevel(worldInfo.levelID + 1);
                     }
                 }
                 break;

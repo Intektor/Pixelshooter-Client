@@ -1,7 +1,7 @@
 package de.intektor.pixelshooter.net.packet.handler;
 
 import de.intektor.pixelshooter.PixelShooter;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.WaitForServerToSendLevelInfo;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiWaitForServerToSendLevelInfo;
 import de.intektor.pixelshooter_common.common.Side;
 import de.intektor.pixelshooter_common.net.packet.InternalServerErrorWhileGettingLevelDataPacketToClient;
 import de.intektor.pixelshooter_common.packet.PacketHandler;
@@ -18,7 +18,7 @@ public class InternalServerErrorWhileGettingLevelDataPacketToClientHandler imple
         PixelShooter.addScheduledTask(new Runnable() {
             @Override
             public void run() {
-                ((WaitForServerToSendLevelInfo) PixelShooter.getGuiByID(PixelShooter.WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA)).setError();
+                ((GuiWaitForServerToSendLevelInfo) PixelShooter.getGuiByID(PixelShooter.WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA)).setError();
             }
         });
     }

@@ -1,14 +1,17 @@
 package de.intektor.pixelshooter.game_state;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
-import de.intektor.pixelshooter.game_state.community_levels.ConnectToMainServerGui;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
+import de.intektor.pixelshooter.game_state.community_levels.GuiConnectToMainServer;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 
 /**
  * @author Intektor
  */
-public class BasicLevelOverview extends Gui {
+public class GuiBasicLevelOverview extends Gui {
 
     final int BUTTON_WORLDS = 0, BUTTON_USER_LEVELS = 1, BUTTON_COMMUNITY_LEVELS = 2, BUTTON_CREATE_LEVEL = 3, BUTTON_BACK = 4;
 
@@ -28,7 +31,7 @@ public class BasicLevelOverview extends Gui {
                 PixelShooter.enterGui(PixelShooter.MAIN_MENU);
                 break;
             case BUTTON_COMMUNITY_LEVELS:
-                ((ConnectToMainServerGui)PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.BROWSE_COMMUNITY_LEVELS_FROM_MAIN_SERVER, getID());
+                ((GuiConnectToMainServer)PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.BROWSE_COMMUNITY_LEVELS_FROM_MAIN_SERVER, getID());
                 PixelShooter.enterGui(PixelShooter.CONNECT_TO_MAIN_SERVER);
                 break;
         }
@@ -37,6 +40,14 @@ public class BasicLevelOverview extends Gui {
     @Override
     public int getID() {
         return PixelShooter.BASIC_LEVEL_OVERVIEW;
+    }
+
+    @Override
+    public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
+        super.render(renderer, batch);
     }
 
     @Override

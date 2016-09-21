@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * @author Intektor
  */
-public class ConnectToGoogle extends Gui {
+public class GuiConnectToGoogle extends Gui {
 
     final int BUTTON_BACK = 0, BUTTON_LOGIN = 1;
 
@@ -41,7 +41,7 @@ public class ConnectToGoogle extends Gui {
 
     long timeReceivedResponseFromGoogle;
 
-    public ConnectToGoogle() {
+    public GuiConnectToGoogle() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_TICK_CONNECTION);
     }
 

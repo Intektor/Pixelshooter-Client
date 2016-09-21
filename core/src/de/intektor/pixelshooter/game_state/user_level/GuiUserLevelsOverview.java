@@ -1,7 +1,10 @@
 package de.intektor.pixelshooter.game_state.user_level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
@@ -13,7 +16,7 @@ import java.util.*;
 /**
  * @author Intektor
  */
-public class UserLevelsOverview extends Gui {
+public class GuiUserLevelsOverview extends Gui {
 
     public int scrollAmount;
 
@@ -32,7 +35,7 @@ public class UserLevelsOverview extends Gui {
                 reInitNextUpdate = true;
                 return;
         }
-        ((UserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER)).setLevelFolder(folders.get(id - 2));
+        ((GuiUserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER)).setLevelFolder(folders.get(id - 2));
         PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
     }
 
@@ -55,6 +58,14 @@ public class UserLevelsOverview extends Gui {
     @Override
     public int getID() {
         return PixelShooter.USER_LEVEL_OVERVIEW;
+    }
+
+    @Override
+    public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
+        super.render(renderer, batch);
     }
 
     @Override

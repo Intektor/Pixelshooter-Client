@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * @author Intektor
  */
-public class BrowseCommunityLevelsFromMainServer extends Gui {
+public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
     final int BUTTON_BACK = 0, BUTTON_FILTER_TIME = 1, BUTTON_SEARCH = 2,
             BUTTON_FILTER_TYPE = 3, BUTTON_REFRESH = 4, BUTTON_CANCEL_SEARCH = 5,
@@ -73,7 +73,7 @@ public class BrowseCommunityLevelsFromMainServer extends Gui {
 
     boolean userLevels;
 
-    public BrowseCommunityLevelsFromMainServer() {
+    public GuiBrowseCommunityLevelsFromMainServer() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_BROWSE_COMMUNITY_LEVELS_REQUEST_MORE_STRING);
     }
 

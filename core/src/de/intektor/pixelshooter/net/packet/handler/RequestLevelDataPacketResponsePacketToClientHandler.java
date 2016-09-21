@@ -1,8 +1,8 @@
 package de.intektor.pixelshooter.net.packet.handler;
 
 import de.intektor.pixelshooter.PixelShooter;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.ViewCommunityLevel;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.WaitForServerToSendLevelInfo;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiViewCommunityLevel;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiWaitForServerToSendLevelInfo;
 import de.intektor.pixelshooter.world.EditingWorld;
 import de.intektor.pixelshooter_common.common.Side;
 import de.intektor.pixelshooter_common.net.packet.RequestLevelDataPacketResponsePacketToClient;
@@ -22,11 +22,11 @@ public class RequestLevelDataPacketResponsePacketToClientHandler implements Pack
             public void run() {
                 try {
                     EditingWorld world = EditingWorld.readFromTag(packet.worldTag);
-                    ((ViewCommunityLevel) PixelShooter.getGuiByID(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL)).setInfo(world, packet.info, packet.writtenInfo, packet.prevRated, packet.ratedStars);
+                    ((GuiViewCommunityLevel) PixelShooter.getGuiByID(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL)).setInfo(world, packet.info, packet.writtenInfo, packet.prevRated, packet.ratedStars);
                     PixelShooter.enterGui(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ((WaitForServerToSendLevelInfo) PixelShooter.getGuiByID(PixelShooter.WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA)).setError();
+                    ((GuiWaitForServerToSendLevelInfo) PixelShooter.getGuiByID(PixelShooter.WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA)).setError();
                 }
             }
         });

@@ -14,7 +14,7 @@ import de.intektor.pixelshooter.world.EditingWorld;
 /**
  * @author Intektor
  */
-public class World1 extends Gui {
+public class GuiWorld1 extends Gui {
 
     final int BUTTON_BACK = 0;
 

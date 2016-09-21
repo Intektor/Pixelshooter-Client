@@ -42,7 +42,7 @@ import static de.intektor.pixelshooter.enums.EnumSide.*;
 /**
  * @author Intektor
  */
-public class LevelEditor extends Gui {
+public class GuiLevelEditor extends Gui {
 
     public static final int COLLISION_SIZE = 4;
     public static volatile EditingWorld edit;
@@ -52,12 +52,12 @@ public class LevelEditor extends Gui {
 
     List<MovableObject> removeNextLoop = new ArrayList<MovableObject>();
 
-    public LevelEditor() {
+    public GuiLevelEditor() {
 
     }
 
     public void setEdit(EditingWorld edit) {
-        LevelEditor.edit = edit;
+        GuiLevelEditor.edit = edit;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class LevelEditor extends Gui {
 
         renderer.end();
 
-        if ((tool == LevelEditorTool.TOOL_SELECT || tool == LevelEditorTool.TOOL_TRASH_CAN || tool == LevelEditorTool.TOOL_SQUARE_COLLISION) && AbstractHelper.isTouchDevice()) {
+        if ((tool == LevelEditorTool.TOOL_SELECT || tool == LevelEditorTool.TOOL_TRASH_CAN || tool == LevelEditorTool.TOOL_SQUARE_COLLISION || tool == LevelEditorTool.TOOL_COPY) && AbstractHelper.isTouchDevice()) {
             if (input.isTouched() && height - mouseY > 30 * 2) {
                 TextureRegion texture = ScreenUtils.getFrameBufferTexture(input.getX() - 60 * 2, Gdx.graphics.getHeight() - input.getY() - 60 * 2, 120 * 2, 120 * 2);
                 int zoomRenderX = mouseX + 60;
@@ -188,20 +188,17 @@ public class LevelEditor extends Gui {
                 if (input.isTouched(0) && !input.isKeyPressed(Input.Keys.SPACE) && getNumberOfTouches() == 1) {
                     Collision2D rect = MovableObject.calculateValidSize(CLICK_X, CLICK_Y, CURRENT_X, CURRENT_Y);
                     if (rect != null) {
-                        RenderHelper.renderSquare(renderer2, edit.allowMovement(rect, null) ? Color.GREEN : Color.RED, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+                        RenderHelper.renderSquare(renderer2, edit.spaceClear(rect, null) ? Color.GREEN : Color.RED, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
                     }
                 }
             } else if (isTankPlaceTool(tool) && Gdx.app.getType() == Application.ApplicationType.Desktop) {
                 RenderHelper.renderTank2D(renderer2, info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, 90 / 180 * Math.PI, tool.getTankType().getTank(), 0);
-                Color color = edit.allowMovement(new Collision2D(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10), null) ? Color.GREEN : Color.RED;
+                Color color = edit.spaceClear(new Collision2D(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10), null) ? Color.GREEN : Color.RED;
                 RenderHelper.renderSquare(renderer2, color, info.getMouseX() - 5, info.getMouseY() - 5, 10, 10);
             } else if (tool == LevelEditorTool.TOOL_COPY) {
-                Collision2D coll = copiedObject.collision.copy();
-                int x = MathHelper.getNextDividerDown((int) info.getMouseX(), COLLISION_SIZE);
-                int y = MathHelper.getNextDividerDown((int) info.getMouseY(), COLLISION_SIZE);
-                coll.setPosition(x, y - coll.getHeight());
-                Color color = edit.allowMovement(coll, null) ? Color.GREEN : Color.RED;
-                RenderHelper.renderSquare(renderer2, color, coll.getX(), coll.getY(), coll.getWidth(), coll.getHeight());
+                Collision2D c = copiedObject.collision;
+                Color color = edit.spaceClear(c, null) ? Color.GREEN : Color.RED;
+                RenderHelper.renderSquare(renderer2, color, c.getX(), c.getY(), c.getWidth(), c.getHeight());
             }
         }
 
@@ -375,7 +372,7 @@ public class LevelEditor extends Gui {
                             for (MovableObject o : l) {
                                 modCollision2D = o.getCollision2D().copy();
                                 modCollision2D.translate(dX, dY);
-                                if (!edit.allowMovement(modCollision2D, l)) {
+                                if (!edit.spaceClear(modCollision2D, l)) {
                                     super.pointerDragged(x, y, prevX, prevY, pointer);
                                     return;
                                 }
@@ -390,10 +387,18 @@ public class LevelEditor extends Gui {
                     case TOOL_SQUARE_COLLISION:
 
                         break;
+                    case TOOL_COPY:
+                        moveCopyObject(rrInfo.getMouseX(), rrInfo.getMouseY());
+                        break;
                 }
             }
         }
         super.pointerDragged(x, y, prevX, prevY, pointer);
+    }
+
+    @Override
+    public void pointerMoved(int x, int y) {
+
     }
 
     public void prepareObjectMovement(float dX, float dY) {
@@ -408,7 +413,7 @@ public class LevelEditor extends Gui {
 
             Collision2D c = object.getCollision2D().copy();
             c.translate(rmdX, rmdY);
-            if (edit.allowMovement(c, Collections.singletonList(object))) {
+            if (edit.spaceClear(c, Collections.singletonList(object))) {
                 int ccX = D_MOVE_X >= COLLISION_SIZE || D_MOVE_X <= -COLLISION_SIZE ? rmdX : 0;
                 int ccY = D_MOVE_Y >= COLLISION_SIZE || D_MOVE_Y <= -COLLISION_SIZE ? rmdY : 0;
                 object.translate(ccX, ccY);
@@ -416,7 +421,7 @@ public class LevelEditor extends Gui {
         } else {
             Collision2D c = object.getCollision2D().copy();
             c.translate(dX, dY);
-            if (edit.allowMovement(c, Collections.singletonList(object))) {
+            if (edit.spaceClear(c, Collections.singletonList(object))) {
                 object.translate(dX, dY);
             }
         }
@@ -464,15 +469,7 @@ public class LevelEditor extends Gui {
 
                     }
                 } else if (tool == LevelEditorTool.TOOL_COPY) {
-                    Collision2D coll = copiedObject.collision.copy();
-                    int f = MathHelper.getNextDividerDown((int) info.getMouseX(), COLLISION_SIZE);
-                    int g = MathHelper.getNextDividerDown((int) info.getMouseY(), COLLISION_SIZE);
-                    coll.setPosition(f, g - coll.getHeight());
-                    if (edit.allowMovement(coll, null)) {
-                        MovableObject copy = copiedObject.copy();
-                        copy.setPosition(f, g - coll.getHeight());
-                        edit.addMoveableObject(copy);
-                    }
+                    moveCopyObject(info.getMouseX(), info.getMouseY());
                 } else if (tool == LevelEditorTool.TOOL_SQUARE_COLLISION) {
 
                 } else if (tool == LevelEditorTool.TOOL_GRAB) {
@@ -496,37 +493,9 @@ public class LevelEditor extends Gui {
                         }
                         edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_PLAYER));
                     }
-                } else if (tool == LevelEditorTool.TOOL_SET_STANDARD_SHOOTER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_STANDARD_ATTACKER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_QUICK_ATTACKER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_QUICK_SHOOTER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_ARTILLERY_TANK) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_ARTILLERY));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_TRIPLE_ATTACKER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_TRIPLE_ATTACKER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_TANK_CHASE_SHOOTER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_CHASE_SHOOTER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_TANK_LASER_SHOOTER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_LASER_SHOOTER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_TANK_MINE_SHOOTER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_MINE_SHOOTER));
-                    }
-                } else if (tool == LevelEditorTool.TOOL_SET_HEAVY_SHOOTER) {
-                    if (isAllInsideWorld() && edit.allowMovement(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
-                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, TankType.TANK_HEAVY_SHOOTER));
+                } else if (tool.getTankType() != null) {
+                    if (isAllInsideWorld() && edit.spaceClear(Collision2D.createX2Y2(info.getMouseX() - 5, info.getMouseY() - 5, info.getMouseX() + 5, info.getMouseY() + 5), null)) {
+                        edit.addMoveableObject(new MovableTank(info.getMouseX() - 5, info.getMouseY() - 5, 10, 10, tool.getTankType()));
                     }
                 }
             }
@@ -561,7 +530,7 @@ public class LevelEditor extends Gui {
             } else if (tool == LevelEditorTool.TOOL_SQUARE_COLLISION) {
                 Collision2D rect = MovableObject.calculateValidSize(CLICK_X, CLICK_Y, CURRENT_X, CURRENT_Y);
                 if (rect != null) {
-                    if (edit.allowMovement(rect, null)) {
+                    if (edit.spaceClear(rect, null)) {
                         edit.addMoveableObject(new MovableCollision(rect, true));
                     }
                 }
@@ -703,10 +672,22 @@ public class LevelEditor extends Gui {
                 PixelShooter.enterGui(PixelShooter.LE_SET_WORLD_ATTRIBUTES);
                 break;
             case BUTTON_COPY:
-                List<MovableObject> selectedObjects = edit.getSelectedObjects();
+                final List<MovableObject> selectedObjects = edit.getSelectedObjects();
                 if (selectedObjects.size() == 1) {
                     changeTool(LevelEditorTool.TOOL_COPY);
                     copiedObject = selectedObjects.get(0).copy();
+                }
+                getButtonByID(BUTTON_ACCEPT_COPY).setShown(true);
+                PixelShooter.addScheduledTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        copiedObject.collision = selectedObjects.get(0).collision.copy();
+                    }
+                });
+                break;
+            case BUTTON_ACCEPT_COPY:
+                if (edit.spaceClear(copiedObject.collision, null)) {
+                    edit.addMoveableObject(copiedObject.copy());
                 }
                 break;
         }
@@ -717,7 +698,7 @@ public class LevelEditor extends Gui {
     @Override
     public void zoomed(float originalDistance, float currentDistance, float prevDistance) {
         if (tool == LevelEditorTool.TOOL_GRAB) {
-            rawWorldCamera.zoom += (prevDistance - currentDistance) / 200;
+            rawWorldCamera.zoom += (prevDistance - currentDistance) / 400;
             if (rawWorldCamera.zoom < 0.1f) {
                 rawWorldCamera.zoom = 0.1f;
             }
@@ -745,7 +726,7 @@ public class LevelEditor extends Gui {
     final int BUTTON_SET_QUICK_ATTACKER = 11, BUTTON_SET_ARTILLERY = 12, BUTTON_SELECT_AMMO = 13, BUTTON_MAG_GLASS = 14, BUTTON_SET_TRIPLE_ATTACKER = 15, BUTTON_SET_CHASE_SHOOTER = 16, BUTTON_MENU = 17, BUTTON_SET_LASER_SHOOTER = 19, BUTTON_SET_MINE_SHOOTER = 23, BUTTON_SET_HEAVY_SHOOTER = 24;
     final int BUTTON_CALL_WORLD_ATTRIBUTES = 25;
     //CONTEXT MENU SELECT - Collision selected
-    final int BUTTON_TOGGLE_TRANSLATION_DRAGGING = 18, BUTTON_TOGGLE_COLLISION_TYPE = 22, BUTTON_COPY = 26;
+    final int BUTTON_TOGGLE_TRANSLATION_DRAGGING = 18, BUTTON_TOGGLE_COLLISION_TYPE = 22, BUTTON_COPY = 26, BUTTON_ACCEPT_COPY = 27;
     //CONTEXT MENU SELECT - ENEMY TANK SELECTED
     final int TEXT_FIELD_TANK_HEALTH = 0, TEXT_FIELD_TANK_TRACKING_RANGE = 1, TEXT_FIELD_SHOOTING_COOLDOWN = 2, TEXT_FIELD_DAMAGE = 7, TEXT_FIELD_BULLET_BOUNCES = 8, TEXT_FIELD_TANK_SPEED = 9;
     //PLAYER
@@ -798,7 +779,7 @@ public class LevelEditor extends Gui {
         componentList.add(new GuiButton.GuiButtonSwitchONOFF(width - 100 * 2, height - 40 * 2, 100 * 2, 40 * 2, "Dragg-Trans:", BUTTON_TOGGLE_TRANSLATION_DRAGGING, false, false));
         componentList.add(new GuiButton.GuiButtonSwitch(width - 100 * 2, height - 40 * 2 * 2, 100 * 2, 40 * 2, BUTTON_TOGGLE_COLLISION_TYPE, false, Arrays.asList("Unbreakable", "Breakable"), 0));
         componentList.add(new GuiButton(width - 100 * 2, height - 40 * 3 * 2, 100 * 2, 40 * 2, "Copy", BUTTON_COPY, false));
-
+        componentList.add(new GuiButton(width - 60, height - 60, 60, 60, BUTTON_ACCEPT_COPY, false, ImageStorage.green_check_mark));
 
         int arrowWidth = 10, arrowHeight = 30;
 
@@ -919,7 +900,7 @@ public class LevelEditor extends Gui {
                     break;
 
             }
-            if (edit.allowMovement(collision, Collections.singletonList(selected))) {
+            if (edit.spaceClear(collision, Collections.singletonList(selected))) {
                 selected.collision = collision;
             }
         }
@@ -937,31 +918,37 @@ public class LevelEditor extends Gui {
     }
 
     public void contextMenu(LevelEditorTool tool, boolean activate, MovableObject object) {
-        if (tool == LevelEditorTool.TOOL_SELECT) {
-            GuiButton.GuiButtonSwitchONOFF transDragging = (GuiButton.GuiButtonSwitchONOFF) getButtonByID(BUTTON_TOGGLE_TRANSLATION_DRAGGING);
-            GuiButton.GuiButtonSwitch collisionType = (GuiButton.GuiButtonSwitch) getButtonByID(BUTTON_TOGGLE_COLLISION_TYPE);
-            GuiButton copy = getButtonByID(BUTTON_COPY);
-            if (activate) {
-                if (object instanceof MovableCollision) {
-                    MovableCollision collision = (MovableCollision) object;
-                    transDragging.setOn(false).setShown(true);
-                    collisionType.setCurrentState(collision.borderType == WorldBorder.BorderType.UNBREAKABLE ? 0 : 1).setShown(true);
-                    copy.setShown(true);
+        switch (tool) {
+            case TOOL_SELECT:
+                GuiButton.GuiButtonSwitchONOFF transDragging = (GuiButton.GuiButtonSwitchONOFF) getButtonByID(BUTTON_TOGGLE_TRANSLATION_DRAGGING);
+                GuiButton.GuiButtonSwitch collisionType = (GuiButton.GuiButtonSwitch) getButtonByID(BUTTON_TOGGLE_COLLISION_TYPE);
+                GuiButton copy = getButtonByID(BUTTON_COPY);
+                if (activate) {
+                    if (object instanceof MovableCollision) {
+                        MovableCollision collision = (MovableCollision) object;
+                        transDragging.setOn(false).setShown(true);
+                        collisionType.setCurrentState(collision.borderType == WorldBorder.BorderType.UNBREAKABLE ? 0 : 1).setShown(true);
+                        copy.setShown(true);
+                        showArrows(false);
+                    }
+                } else {
+                    transDragging.setShown(false);
+                    collisionType.setShown(false);
                     showArrows(false);
-                }
-            } else {
-                transDragging.setShown(false);
-                collisionType.setShown(false);
-                showArrows(false);
-                copy.setShown(false);
-                List<MovableObject> selectedObjects = edit.getSelectedObjects();
-                for (MovableObject selectedObject : selectedObjects) {
-                    if (selectedObject != object) {
-                        selectToolObjectInteraction(false, selectedObject, selectedObjects.size() == 1);
+                    copy.setShown(false);
+                    List<MovableObject> selectedObjects = edit.getSelectedObjects();
+                    for (MovableObject selectedObject : selectedObjects) {
+                        if (selectedObject != object) {
+                            selectToolObjectInteraction(false, selectedObject, selectedObjects.size() == 1);
+                        }
                     }
                 }
-            }
+                break;
+            case TOOL_COPY:
+                getButtonByID(BUTTON_ACCEPT_COPY).setShown(activate);
+                break;
         }
+
     }
 
     boolean editingObjectSettings;
@@ -1112,5 +1099,12 @@ public class LevelEditor extends Gui {
                 }
             }
         }
+    }
+
+    public void moveCopyObject(float x, float y) {
+        Collision2D coll = copiedObject.collision.copy();
+        int f = MathHelper.getNextDividerDown((int) (x - coll.getWidth() / 2), COLLISION_SIZE);
+        int g = MathHelper.getNextDividerDown((int) (y - coll.getHeight() / 2), COLLISION_SIZE);
+        copiedObject.setPosition(f, g);
     }
 }

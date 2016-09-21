@@ -10,13 +10,13 @@ import de.intektor.pixelshooter.util.TickTimerHandler;
 /**
  * @author Intektor
  */
-public class ServerErrorGui extends Gui {
+public class GuiServerError extends Gui {
 
     final String TICK_TIMER_WAIT_TILL_EXIT_GUI = "TICK_TIMER_WAIT_TILL_EXIT_GUI_SERVER_ERROR_GUI";
 
     String errorMessage = "";
 
-    public ServerErrorGui() {
+    public GuiServerError() {
         TickTimerHandler.registerTickTimer(120, TICK_TIMER_WAIT_TILL_EXIT_GUI);
     }
 

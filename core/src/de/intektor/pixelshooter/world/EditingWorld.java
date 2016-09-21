@@ -292,7 +292,7 @@ public class EditingWorld {
      * @param ignore a object to ignore
      * @return whether it allows the requested movement or not
      */
-    public boolean allowMovement(Collision2D coll, List<MovableObject> ignore) {
+    public boolean spaceClear(Collision2D coll, List<MovableObject> ignore) {
         for (MovableObject ob : getMovableObjects()) {
             if (Collision2D.isRegionInRegion(ob.getCollision2D(), coll) && (ignore == null || !ignore.contains(ob))) {
                 return false;

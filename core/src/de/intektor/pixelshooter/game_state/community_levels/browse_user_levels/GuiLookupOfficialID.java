@@ -13,7 +13,7 @@ import de.intektor.pixelshooter_common.packet.PacketHelper;
 /**
  * @author Intektor
  */
-public class LookupOfficialID extends Gui {
+public class GuiLookupOfficialID extends Gui {
 
     final int BUTTON_BACK = 0, BUTTON_LOOKUP = 1;
 
@@ -39,7 +39,7 @@ public class LookupOfficialID extends Gui {
                 PixelShooter.enterGui(PixelShooter.BROWSE_COMMUNITY_LEVELS_FROM_MAIN_SERVER);
                 break;
             case BUTTON_LOOKUP:
-                RequestLevelDataPacketToServer request = new RequestLevelDataPacketToServer(getTextFieldByID(TEXT_FIELD_LOOKUP_OFFICIAL_ID).convertText(), BrowseCommunityLevelsFromMainServer.getUserData());
+                RequestLevelDataPacketToServer request = new RequestLevelDataPacketToServer(getTextFieldByID(TEXT_FIELD_LOOKUP_OFFICIAL_ID).convertText(), GuiBrowseCommunityLevelsFromMainServer.getUserData());
                 PacketHelper.sendPacket(request, PixelShooter.mainServerClient.connection);
                 PixelShooter.enterGui(PixelShooter.WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA);
                 break;

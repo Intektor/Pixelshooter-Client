@@ -12,7 +12,7 @@ import de.intektor.pixelshooter.render.RenderHelper;
 /**
  * @author Intektor
  */
-public class MainMenu extends Gui {
+public class GuiMainMenu extends Gui {
 
     final int START_GAME = 0, OPTIONS = 1, EXIT_GAME = 2, LOGIN_WITH_GOOGLE = 3;
 

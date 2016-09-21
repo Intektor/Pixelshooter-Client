@@ -9,10 +9,10 @@ import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.game_state.PlayState;
 import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
-import de.intektor.pixelshooter.game_state.user_level.UserLevelsFolder;
+import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsFolder;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.levels.CommunityPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.world.EditingWorld;
@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * @author Intektor
  */
-public class ViewCommunityLevel extends Gui {
+public class GuiViewCommunityLevel extends Gui {
 
     EditingWorld world;
     BasicLevelInformation info;
@@ -58,8 +58,8 @@ public class ViewCommunityLevel extends Gui {
                 LevelActionPacketToServer packet2 = new LevelActionPacketToServer(info.officialID, PixelShooter.playerUUID, Action.DOWNLOAD);
                 PacketHelper.sendPacket(packet2, PixelShooter.mainServerClient.connection);
                 EditingWorld.writeToTag(world, world.getName(), world.timeSaved);
-                UserLevelsFolder userLevelsFolder = (UserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER);
-                userLevelsFolder.setLevelFolder(LevelFolder.createFolderByLevelName(world.getName()));
+                GuiUserLevelsFolder guiUserLevelsFolder = (GuiUserLevelsFolder) PixelShooter.getGuiByID(PixelShooter.USER_LEVELS_FOLDER);
+                guiUserLevelsFolder.setLevelFolder(LevelFolder.createFolderByLevelName(world.getName()));
                 PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
                 try {
                     PixelShooter.mainServerClient.connection.close();
@@ -128,7 +128,7 @@ public class ViewCommunityLevel extends Gui {
         batch.end();
 
         if (showWorld) {
-            LevelEditor.renderRawWorld(world, width - 100 - squareWidth / 2, height - 100 - squareWidth / 2, squareWidth / 2, squareWidth / 2);
+            GuiLevelEditor.renderRawWorld(world, width - 100 - squareWidth / 2, height - 100 - squareWidth / 2, squareWidth / 2, squareWidth / 2);
         } else {
             batch.begin();
             PixelShooter.unScaledPerfectPixel128.setColor(Color.RED);

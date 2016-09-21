@@ -3,8 +3,9 @@ package de.intektor.pixelshooter.game_state.user_level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
-import de.intektor.pixelshooter.game_state.community_levels.ConnectToMainServerGui;
+import de.intektor.pixelshooter.game_state.community_levels.GuiConnectToMainServer;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.GuiScrollBar;
@@ -19,7 +20,7 @@ import java.util.Comparator;
 /**
  * @author Intektor
  */
-public class UserLevelsFolder extends Gui {
+public class GuiUserLevelsFolder extends Gui {
 
     int scrollAmount;
     GuiScrollBar bar;
@@ -35,6 +36,9 @@ public class UserLevelsFolder extends Gui {
 
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
         super.render(renderer, batch);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         for (int i = 0; i < folder.files.size(); i++) {
@@ -105,12 +109,12 @@ public class UserLevelsFolder extends Gui {
                     break;
                 case 2:
                     PixelShooter.enterGui(PixelShooter.CONNECT_TO_MAIN_SERVER);
-                    ((ConnectToMainServerGui) PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL, getID());
-                    ((FinishLevelToPublishLevel) PixelShooter.getGuiByID(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL)).setFile(folder, playID);
+                    ((GuiConnectToMainServer) PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL, getID());
+                    ((GuiFinishLevelToPublishLevel) PixelShooter.getGuiByID(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL)).setFile(folder, playID);
                     break;
                 case 3:
                     PixelShooter.enterGui(PixelShooter.SURE_DELETE_FOLDER_FILE);
-                    ((SureDeleteLevel) PixelShooter.getGuiByID(PixelShooter.SURE_DELETE_FOLDER_FILE)).setFile(folder, playID);
+                    ((GuiSureDeleteLevel) PixelShooter.getGuiByID(PixelShooter.SURE_DELETE_FOLDER_FILE)).setFile(folder, playID);
                     break;
 
             }

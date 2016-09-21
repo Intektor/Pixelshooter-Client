@@ -19,23 +19,23 @@ import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.abstrct.WindowsExplorerComperator;
 import de.intektor.pixelshooter.auth.GoogleAccount;
 import de.intektor.pixelshooter.game_state.*;
-import de.intektor.pixelshooter.game_state.community_levels.ConnectToMainServerGui;
-import de.intektor.pixelshooter.game_state.community_levels.PublishLevelToMainServer;
-import de.intektor.pixelshooter.game_state.community_levels.ServerErrorGui;
-import de.intektor.pixelshooter.game_state.community_levels.WaitForLevelPublishServerResponse;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.BrowseCommunityLevelsFromMainServer;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.LookupOfficialID;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.ViewCommunityLevel;
-import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.WaitForServerToSendLevelInfo;
-import de.intektor.pixelshooter.game_state.user_level.FinishLevelToPublishLevel;
-import de.intektor.pixelshooter.game_state.user_level.SureDeleteLevel;
-import de.intektor.pixelshooter.game_state.user_level.UserLevelsFolder;
-import de.intektor.pixelshooter.game_state.user_level.UserLevelsOverview;
-import de.intektor.pixelshooter.game_state.worlds.World1;
-import de.intektor.pixelshooter.game_state.worlds.WorldSelection;
+import de.intektor.pixelshooter.game_state.community_levels.GuiConnectToMainServer;
+import de.intektor.pixelshooter.game_state.community_levels.GuiPublishLevelToMainServer;
+import de.intektor.pixelshooter.game_state.community_levels.GuiServerError;
+import de.intektor.pixelshooter.game_state.community_levels.GuiWaitForLevelPublishServerResponse;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiBrowseCommunityLevelsFromMainServer;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiLookupOfficialID;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiViewCommunityLevel;
+import de.intektor.pixelshooter.game_state.community_levels.browse_user_levels.GuiWaitForServerToSendLevelInfo;
+import de.intektor.pixelshooter.game_state.user_level.GuiFinishLevelToPublishLevel;
+import de.intektor.pixelshooter.game_state.user_level.GuiSureDeleteLevel;
+import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsFolder;
+import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsOverview;
+import de.intektor.pixelshooter.game_state.worlds.GuiWorld1;
+import de.intektor.pixelshooter.game_state.worlds.GuiWorldSelection;
 import de.intektor.pixelshooter.gui.Gui;
-import de.intektor.pixelshooter.level.editor.LevelEditor;
-import de.intektor.pixelshooter.level.editor.SetWorldAttributes;
+import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
+import de.intektor.pixelshooter.level.editor.GuiSetWorldAttributes;
 import de.intektor.pixelshooter.levels.CampaignInformation;
 import de.intektor.pixelshooter.net.client.MainServerClient;
 import de.intektor.pixelshooter.net.packet.handler.*;
@@ -102,7 +102,7 @@ public class PixelShooter extends ApplicationAdapter {
     public static final int SERVER_CONNECTION_SHUTDOWN_MESSAGE = 21;
 
     public static final PlayState PIXEL_SHOOTER_STATE = new PlayState();
-    public static LevelEditor LEVEL_EDITOR_STATE;
+    public static GuiLevelEditor LEVEL_EDITOR_STATE;
 
     public static GoogleAccount googleAccount;
 
@@ -141,27 +141,27 @@ public class PixelShooter extends ApplicationAdapter {
         ImageStorage.init();
 
         System.out.println("Registering Guis");
-        registerGui(new MainMenu());
-        registerGui(new BasicLevelOverview());
-        registerGui(new World1());
-        registerGui(new LevelEditor());
-        registerGui(new UserLevelsOverview());
-        registerGui(new UserLevelsFolder());
-        registerGui(new Options());
-        registerGui(new EnterLevelEditor());
-        registerGui(new WorldSelection());
-        registerGui(new SetWorldAttributes());
-        registerGui(new ConnectToMainServerGui());
-        registerGui(new SureDeleteLevel());
-        registerGui(new FinishLevelToPublishLevel());
-        registerGui(new PublishLevelToMainServer());
-        registerGui(new ConnectToGoogle());
-        registerGui(new WaitForLevelPublishServerResponse());
-        registerGui(new BrowseCommunityLevelsFromMainServer());
-        registerGui(new WaitForServerToSendLevelInfo());
-        registerGui(new ViewCommunityLevel());
-        registerGui(new LookupOfficialID());
-        registerGui(new ServerErrorGui());
+        registerGui(new GuiMainMenu());
+        registerGui(new GuiBasicLevelOverview());
+        registerGui(new GuiWorld1());
+        registerGui(new GuiLevelEditor());
+        registerGui(new GuiUserLevelsOverview());
+        registerGui(new GuiUserLevelsFolder());
+        registerGui(new GuiOptions());
+        registerGui(new GuiEnterLevelEditor());
+        registerGui(new GuiWorldSelection());
+        registerGui(new GuiSetWorldAttributes());
+        registerGui(new GuiConnectToMainServer());
+        registerGui(new GuiSureDeleteLevel());
+        registerGui(new GuiFinishLevelToPublishLevel());
+        registerGui(new GuiPublishLevelToMainServer());
+        registerGui(new GuiConnectToGoogle());
+        registerGui(new GuiWaitForLevelPublishServerResponse());
+        registerGui(new GuiBrowseCommunityLevelsFromMainServer());
+        registerGui(new GuiWaitForServerToSendLevelInfo());
+        registerGui(new GuiViewCommunityLevel());
+        registerGui(new GuiLookupOfficialID());
+        registerGui(new GuiServerError());
 
         System.out.println("Initializing Camera");
         camera = new OrthographicCamera();
@@ -195,7 +195,7 @@ public class PixelShooter extends ApplicationAdapter {
         unScaledPerfectPixel128 = fontGenerator.generateFont(parameter);
         fontGenerator.dispose();
 
-        LEVEL_EDITOR_STATE = new LevelEditor();
+        LEVEL_EDITOR_STATE = new GuiLevelEditor();
         registerGui(LEVEL_EDITOR_STATE);
         registerGui(PIXEL_SHOOTER_STATE);
 

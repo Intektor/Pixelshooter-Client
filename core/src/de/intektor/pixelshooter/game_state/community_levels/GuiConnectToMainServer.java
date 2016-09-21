@@ -13,14 +13,14 @@ import de.intektor.pixelshooter.util.TickTimerHandler;
 /**
  * @author Intektor
  */
-public class ConnectToMainServerGui extends Gui {
+public class GuiConnectToMainServer extends Gui {
 
     public int nextState, prevState;
 
     final String TICK_TIMER_TICK_CONNECTION = "CONNECT_TO_MAIN_SERVER_GUI_TICK_CONNECTION_GUI";
     final String TICK_TIMER_JOIN_FOLLOWING_GUI = "JOIN_FOLLOWING_GUI_TICK_MAIN_SERVER_CONNECTION_GUI";
 
-    public ConnectToMainServerGui() {
+    public GuiConnectToMainServer() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_TICK_CONNECTION);
         TickTimerHandler.registerTickTimer(60, TICK_TIMER_JOIN_FOLLOWING_GUI);
     }
