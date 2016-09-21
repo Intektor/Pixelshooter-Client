@@ -72,7 +72,7 @@ public class PlayState extends Gui implements DPadHandler {
         int y = height / 3 * 2 - scoreBoardHeight / 2;
         switch (info.getStatus()) {
             case LEVEL_EDITOR:
-                componentList.add(new GuiButton(0, height - 50 * scale, 50 * scale, 50 * scale, "Exit", 3, true));
+                componentList.add(new GuiButton(0, height - 100, 100, 100, "Exit", 3, true));
                 componentList.add(new GuiButton(x, y - 80, scoreBoardWidth / 2, 80, "Back to Level Editor", 4, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 2, y - 80, scoreBoardWidth / 2, 80, "Restart Level", 5, false));
                 break;

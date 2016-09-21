@@ -3,7 +3,6 @@ package de.intektor.pixelshooter.game_state;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.gui.text_field.GuiNumberField;
 import de.intektor.pixelshooter.gui.text_field.GuiTextField;
 
 /**
@@ -30,14 +29,12 @@ public class Options extends Gui {
     @Override
     public void addGuiComponents() {
         componentList.add(new GuiButton(0, height / 5 * 4, width, height / 5, "Back", BUTTON_BACK, true));
-        componentList.add(new GuiNumberField(0, height / 5 * 3, width, height / 5, TEXT_FIELD_SCALE_AMT, true, 5, "Gui Scale", this, scale + "", true));
     }
 
     @Override
     public void textFieldDeactivated(GuiTextField field) {
         switch (field.getId()) {
             case TEXT_FIELD_SCALE_AMT:
-                PixelShooter.changeGuiScaleAmt(Float.parseFloat(field.convertText()));
                 break;
         }
     }

@@ -66,13 +66,6 @@ public class PixelShooter extends ApplicationAdapter {
     public static ModelBatch modelBatch;
     public static GlyphLayout layout;
     public static final ModelBuilder modelBuilder = new ModelBuilder();
-    public static BitmapFont scaledPerfectPixel10;
-    public static BitmapFont scaledPerfectPixel12;
-    public static BitmapFont scaledPerfectPixel16;
-    public static BitmapFont scaledPerfectPixel22;
-    public static BitmapFont scaledPerfectPixel32;
-    public static BitmapFont scaledPerfectPixel64;
-    public static BitmapFont scaledPerfectPixel72;
 
     public static BitmapFont unScaledPerfectPixel10;
     public static BitmapFont unScaledPerfectPixel12;
@@ -144,7 +137,6 @@ public class PixelShooter extends ApplicationAdapter {
         TickTimerHandler.clearTickTimers();
 
         System.out.println("Initializing scaled fonts");
-        changeGuiScaleAmt(guiScaleAmt);
 
         ImageStorage.init();
 
@@ -307,7 +299,7 @@ public class PixelShooter extends ApplicationAdapter {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
         int fps = Gdx.graphics.getFramesPerSecond();
-        RenderHelper.drawString(1280 - FontHelper.stringWidth(fps + "", scaledPerfectPixel12), 720 - FontHelper.stringHeight(fps + "", scaledPerfectPixel12), fps + "", scaledPerfectPixel12, spriteBatch);
+        RenderHelper.drawString(1280 - FontHelper.stringWidth(fps + "", unScaledPerfectPixel16), 720 - FontHelper.stringHeight(fps + "", unScaledPerfectPixel16), fps + "", unScaledPerfectPixel16, spriteBatch);
         spriteBatch.end();
     }
 
@@ -337,27 +329,6 @@ public class PixelShooter extends ApplicationAdapter {
 
     public static Gui getGuiByID(int id) {
         return guiMap.get(id);
-    }
-
-    public static void changeGuiScaleAmt(float amt) {
-        guiScaleAmt = amt;
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/font/PerfectPixel.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int) (10 * amt);
-        scaledPerfectPixel10 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (12 * amt);
-        scaledPerfectPixel12 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (16 * amt);
-        scaledPerfectPixel16 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (22 * amt);
-        scaledPerfectPixel22 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (32 * amt);
-        scaledPerfectPixel32 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (64 * amt);
-        scaledPerfectPixel64 = fontGenerator.generateFont(parameter);
-        parameter.size = (int) (72 * amt);
-        scaledPerfectPixel72 = fontGenerator.generateFont(parameter);
-        fontGenerator.dispose();
     }
 
     @Override

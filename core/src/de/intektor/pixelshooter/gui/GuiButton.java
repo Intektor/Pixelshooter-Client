@@ -79,7 +79,7 @@ public class GuiButton extends GuiComponent {
                 renderer.rect(x + 1, y + 1, width - 1, height - 1);
                 renderer.end();
                 Gdx.gl.glDisable(GL20.GL_BLEND);
-                BitmapFont font = PixelShooter.scaledPerfectPixel10;
+                BitmapFont font = PixelShooter.unScaledPerfectPixel22;
                 font.setColor(Color.WHITE);
                 PixelShooter.layout.setText(font, getDescription());
                 PixelShooter.spriteBatch.begin();

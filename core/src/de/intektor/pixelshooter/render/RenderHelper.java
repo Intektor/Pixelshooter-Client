@@ -194,6 +194,7 @@ public class RenderHelper {
     }
 
     public static void renderPath(Camera camera, GraphPath<BasicNode> path, Color color) {
+        if (path == null) return;
         for (int i = 0; i < path.getCount() - 1; i++) {
             BasicNode step = path.get(i);
             BasicNode step2 = path.get(i + 1);

@@ -41,7 +41,7 @@ public class UserLevelsFolder extends Gui {
             EditingWorld edit = folder.files.get(i).world;
             if (edit.timeSaved != null) {
                 batch.begin();
-                RenderHelper.drawString(615, scrollAmount + height - (i * 40 * scale + 15), format.format(edit.timeSaved), PixelShooter.scaledPerfectPixel12, batch, false);
+                RenderHelper.drawString(615, scrollAmount + height - (i * 40 * 2 + 15), format.format(edit.timeSaved), PixelShooter.unScaledPerfectPixel12, batch, false);
                 batch.end();
             }
         }
@@ -49,7 +49,7 @@ public class UserLevelsFolder extends Gui {
 
     @Override
     public void update() {
-        scrollAmount = (int) (bar.getScrollPercent() * (folder.files.size() * 40 * scale - 40 * scale * (720 / (40 * scale))));
+        scrollAmount = (int) (bar.getScrollPercent() * (folder.files.size() * 40 * 2 - 40 * 2 * (720 / (40 * 2))));
         if (reInitNextUpdate) {
             scrollAmount = 0;
             reInitButtons();
@@ -63,17 +63,17 @@ public class UserLevelsFolder extends Gui {
             GuiButton button4 = getButtonByID(buttonID + 3);
 
             button1.setX(0);
-            button1.setY((int) (scrollAmount + height - (i + 1) * 40 * scale));
+            button1.setY((int) (scrollAmount + height - (i + 1) * 40 * 2));
 
             button2.setX(button1.getWidth());
-            button2.setY((int) (scrollAmount + height - ((i + 1) * 40 * scale)));
+            button2.setY((int) (scrollAmount + height - ((i + 1) * 40 * 2)));
 
             button3.setX(width - button3.getWidth() - button4.getWidth() - 50);
-            button3.setY((int) (scrollAmount + height - ((i + 1) * 40 * scale)));
+            button3.setY((int) (scrollAmount + height - ((i + 1) * 40 * 2)));
             button3.enabled = PixelShooter.googleAccount != null;
 
             button4.setX(width - button4.getWidth() - 50);
-            button4.setY((int) (scrollAmount + height - ((i + 1) * 40 * scale)));
+            button4.setY((int) (scrollAmount + height - ((i + 1) * 40 * 2)));
         }
         super.update();
     }
@@ -124,15 +124,15 @@ public class UserLevelsFolder extends Gui {
 
     @Override
     public void addGuiComponents() {
-        componentList.add(new GuiButton(1280 - 250 - 75 * scale, 0, 75 * scale, 30 * scale, "Back", 0, true));
-        bar = new GuiScrollBar(width - 50, 0, 50, height, true, GuiScrollBar.Direction.VERTICAL, (int) (folder.files.size() * 40 * scale), (int) (height - 75 * scale));
+        componentList.add(new GuiButton(1280 - 250 - 75 * 2, 0, 75 * 2, 30 * 2, "Back", 0, true));
+        bar = new GuiScrollBar(width - 50, 0, 50, height, true, GuiScrollBar.Direction.VERTICAL, (int) (folder.files.size() * 40 * 2), (int) (height - 75 * 2));
         componentList.add(bar);
         int id = 2;
         for (LevelFolder.FolderFile file : folder.files) {
-            componentList.add(new GuiButton(0, 0, 300, 40 * scale, "Play: " + file.world.getName(), id++, true));
-            componentList.add(new GuiButton(0, 0, 300, 40 * scale, "Edit: " + file.world.getName(), id++, true));
-            componentList.add(new GuiButton(0, 0, 100, 40 * scale, "Publish!", id++, true));
-            componentList.add(new GuiButton(0, 0, 100, 40 * scale, "Delete!", id++, true));
+            componentList.add(new GuiButton(0, 0, 300, 40 * 2, "Play: " + file.world.getName(), id++, true));
+            componentList.add(new GuiButton(0, 0, 300, 40 * 2, "Edit: " + file.world.getName(), id++, true));
+            componentList.add(new GuiButton(0, 0, 100, 40 * 2, "Publish!", id++, true));
+            componentList.add(new GuiButton(0, 0, 100, 40 * 2, "Delete!", id++, true));
         }
     }
 

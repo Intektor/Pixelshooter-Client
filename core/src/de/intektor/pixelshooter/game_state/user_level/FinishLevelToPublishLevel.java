@@ -9,7 +9,6 @@ import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.level.editor.LevelEditor;
 import de.intektor.pixelshooter.levels.BasicPlayInformation;
-import de.intektor.pixelshooter.levels.PlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 
 import java.text.SimpleDateFormat;
@@ -66,8 +65,8 @@ public class FinishLevelToPublishLevel extends Gui {
 
     @Override
     public void addGuiComponents() {
-        componentList.add(new GuiButton(0, 0, width / 2, 60 * scale, "Don't publish!", BUTTON_DONT_PUBLISH, true));
-        componentList.add(new GuiButton(width / 2, 0, width / 2, 60 * scale, "Finish Level!", BUTTON_PUBLISH, true));
+        componentList.add(new GuiButton(0, 0, width / 2, 60 * 2, "Don't publish!", BUTTON_DONT_PUBLISH, true));
+        componentList.add(new GuiButton(width / 2, 0, width / 2, 60 * 2, "Finish Level!", BUTTON_PUBLISH, true));
     }
 
     public void setFile(LevelFolder folder, int index) {

@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.PositionHelper;
 import de.intektor.pixelshooter.ai.BasicNode;
 import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.Collisions;
@@ -30,16 +31,13 @@ import de.intektor.pixelshooter.path.PathTraveller;
 import de.intektor.pixelshooter.path.WorldIndexedGraph;
 import de.intektor.pixelshooter.score.object.IScoreObject;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point2i;
 import javax.vecmath.Point3f;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * @author Intektor
@@ -47,10 +45,6 @@ import java.util.concurrent.Future;
 public class World {
 
     public Collisions borders;
-    /**
-     * The standard borders on the edges of the map
-     */
-    public List<WorldBorder> worldBorders;
 
     public List<Entity> entityList = new ArrayList<Entity>();
     public List<Entity> nextUpdate = new ArrayList<Entity>();
@@ -75,8 +69,8 @@ public class World {
     private Environment environment;
 
     //1u = 4
-    public WorldIndexedGraph worldPathFinderGraphDistance_1u;
-    public WorldIndexedGraph worldPathFinderGraphDistance_5u;
+    public WorldIndexedGraph worldPathFinderGraphDistance_2u;
+    public WorldIndexedGraph worldPathFinderGraphDistance_4u;
 
     public World(Collisions borders, final int width, final int height, EditingWorld.BackGroundType backGroundType) {
         this.borders = borders;
@@ -144,7 +138,7 @@ public class World {
             decalBatch.flush();
         }
 
-//        for (BasicNode basicNode : worldPathFinderGraphDistance_1u.nodeTable.values()) {
+//        for (BasicNode basicNode : worldPathFinderGraphDistance_2u.nodeTable.values()) {
 //            int x = basicNode.x;
 //            int z = basicNode.y;
 //            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
@@ -264,7 +258,7 @@ public class World {
      */
     public List<Collision3D> createCollisionList() {
         List<Collision3D> list = new ArrayList<Collision3D>(borders.getBorders().size());
-        for (WorldBorder collision : borders) {
+        for (WorldBorder collision : borders.getBorders().subList(4, borders.getBorders().size())) {
             list.add(collision.getCollisionBox());
         }
         return list;
@@ -313,18 +307,12 @@ public class World {
 
     public void worldChanged() {
         updateCollisionList();
-        Future<WorldIndexedGraph> future1 = calculatePossibleNodes(2, 1);
-        Future<WorldIndexedGraph> future5 = calculatePossibleNodes(4, 4);
-        try {
-            worldPathFinderGraphDistance_1u = future1.get();
-            worldPathFinderGraphDistance_5u = future5.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        worldPathFinderGraphDistance_2u = calculatePossibleNodes(4, 1, 2, 2);
+        worldPathFinderGraphDistance_4u = calculatePossibleNodes(4, 4, 0, 0);
     }
 
     public PathFinderRequest<BasicNode> calculatePathFindingRequestForPathTraveller(PathTraveller traveller, BasicNode endNode) {
-        BasicNode startNode = getNextNodeForEntityMid((Entity) traveller, traveller.getGraphPath().nodeTable, traveller.getGraphPath().distance);
+        BasicNode startNode = getNextNodeForEntityMid((Entity) traveller, traveller.getGraphPath());
         GraphPath<BasicNode> path = new DefaultGraphPath<BasicNode>();
         return new PathFinderRequest<BasicNode>(startNode, endNode, new Heuristic<BasicNode>() {
             @Override
@@ -334,12 +322,20 @@ public class World {
         }, path);
     }
 
-    public BasicNode getNextNodeForEntityMid(Entity entity, Table<Integer, Integer, BasicNode> nodes, int distance) {
-        return getNextNodeForPosition((int) entity.getMid().x, (int) entity.getMid().z, nodes, distance);
+    public BasicNode getNextNodeForEntityMid(Entity entity, WorldIndexedGraph graphPath) {
+        return getNextNodeForPosition((int) entity.getMid().x, (int) entity.getMid().z, graphPath);
     }
 
-    public BasicNode getNextNodeForPosition(int targetX, int targetY, Table<Integer, Integer, BasicNode> nodes, int distance) {
-        return nodes.get(MathHelper.getNextDivider(targetX, distance), MathHelper.getNextDivider(targetY, distance));
+    public BasicNode getNextNodeForPosition(int targetX, int targetY, WorldIndexedGraph graphPath) {
+        int x = MathHelper.getNextDivider(targetX, graphPath.distance) + graphPath.offsetX;
+        int z = MathHelper.getNextDivider(targetY, graphPath.distance) + graphPath.offsetY;
+        List<Point2f> allPointsInRadius = PositionHelper.getAllPointsInRadius(new Point2f(x, z), graphPath.distance, graphPath.distance);
+        for (Point2f point : allPointsInRadius) {
+            if (graphPath.nodeTable.get((int) point.x, (int) point.y) != null) {
+                return graphPath.nodeTable.get((int) point.x, (int) point.y);
+            }
+        }
+        return null;
     }
 
     /**
@@ -347,56 +343,50 @@ public class World {
      *
      * @return a future graph with all nodes while those which are in borders are already removed.
      */
-    public Future<WorldIndexedGraph> calculatePossibleNodes(final int minDistance, final int collsionDistance) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        return executor.submit(new Callable<WorldIndexedGraph>() {
-            @Override
-            public WorldIndexedGraph call() {
-                long startTime = System.nanoTime();
-                Table<Integer, Integer, BasicNode> nodes = HashBasedTable.create();
-                WorldIndexedGraph graph = new WorldIndexedGraph(nodes, minDistance);
-                List<Collision3D> collisionList = createCollisionList();
-                List<Point2i> pointsInAllCollisions = new ArrayList<Point2i>();
-                for (Collision3D c : collisionList) {
-                    pointsInAllCollisions.addAll(getNodePointsInCollision(c, minDistance, collsionDistance));
-                }
-                for (int x = 0; x < World.this.width; x += minDistance) {
-                    for (int y = 0; y < World.this.height; y += minDistance) {
-                        BasicNode e = new BasicNode(x, y);
-                        nodes.put(x, y, e);
-                    }
-                }
-
-                for (Point2i ps : pointsInAllCollisions) {
-                    nodes.remove(ps.x, ps.y);
-                }
-
-                int index = 0;
-                //Give the remaining nodes their connections and their index
-
-                for (BasicNode node : nodes.values()) {
-                    node.index = index++;
-                    Array<Connection<BasicNode>> connections = new Array<Connection<BasicNode>>();
-                    for (EnumDirection direction : EnumDirection.values()) {
-                        BasicNode nodeForSide = getNodeForSide(node, direction, nodes, minDistance);
-                        if (nodeForSide != null) {
-                            connections.add(new DefaultConnection<BasicNode>(node, nodeForSide));
-                        }
-                    }
-                    node.setCurrentConnections(connections);
-                }
-
-                long timeTook = System.nanoTime() - startTime;
-                Gdx.app.log("DEBUG", "Calculating the world took " + TimeUtils.nanosToMillis(timeTook) + "milli sec");
-                return graph;
+    public WorldIndexedGraph calculatePossibleNodes(final int minDistance, final int collsionDistance, int offsetX, int offsetY) {
+        long startTime = System.nanoTime();
+        Table<Integer, Integer, BasicNode> nodes = HashBasedTable.create();
+        WorldIndexedGraph graph = new WorldIndexedGraph(nodes, minDistance, offsetX, offsetY);
+        List<Collision3D> collisionList = createCollisionList();
+        List<Point2i> pointsInAllCollisions = new ArrayList<Point2i>();
+        for (Collision3D c : collisionList) {
+            pointsInAllCollisions.addAll(getNodePointsInCollision(c, minDistance, collsionDistance, offsetX, offsetY));
+        }
+        for (int x = offsetX; x < World.this.width; x += minDistance) {
+            for (int y = offsetY; y < World.this.height; y += minDistance) {
+                BasicNode e = new BasicNode(x, y);
+                nodes.put(x, y, e);
             }
-        });
+        }
+
+        for (Point2i ps : pointsInAllCollisions) {
+            nodes.remove(ps.x, ps.y);
+        }
+
+        int index = 0;
+        //Give the remaining nodes their connections and their index
+
+        for (BasicNode node : nodes.values()) {
+            node.index = index++;
+            Array<Connection<BasicNode>> connections = new Array<Connection<BasicNode>>();
+            for (EnumDirection direction : EnumDirection.values()) {
+                BasicNode nodeForSide = getNodeForSide(node, direction, nodes, minDistance);
+                if (nodeForSide != null) {
+                    connections.add(new DefaultConnection<BasicNode>(node, nodeForSide));
+                }
+            }
+            node.setCurrentConnections(connections);
+        }
+
+        long timeTook = System.nanoTime() - startTime;
+        Gdx.app.log("DEBUG", "Calculating the world took " + TimeUtils.nanosToMillis(timeTook) + "milli sec");
+        return graph;
     }
 
-    public List<Point2i> getNodePointsInCollision(Collision3D c, int distance, int cGrowAmount) {
+    public List<Point2i> getNodePointsInCollision(Collision3D c, int distance, int cGrowAmount, int offsetX, int offsetY) {
         List<Point2i> list = new ArrayList<Point2i>();
-        for (int x = MathHelper.getNextDivider((int) c.x - cGrowAmount, distance); x < c.x + c.width + cGrowAmount * 2; x += distance) {
-            for (int z = MathHelper.getNextDivider((int) c.z - cGrowAmount, distance); z < c.z + c.depth + cGrowAmount * 2; z += distance) {
+        for (int x = MathHelper.getNextDivider((int) c.x - cGrowAmount, distance) + offsetX; x < c.x + c.width + cGrowAmount * 2; x += distance) {
+            for (int z = MathHelper.getNextDivider((int) c.z - cGrowAmount, distance) + offsetY; z < c.z + c.depth + cGrowAmount * 2; z += distance) {
                 list.add(new Point2i(x, z));
             }
         }
@@ -453,33 +443,4 @@ public class World {
         }
         throw new IllegalArgumentException("There is no such enum or we have a null pointer!");
     }
-
-
-//    public WorldIndexedGraph updatePath(WorldIndexedGraph path) {
-//        Table<Integer, Integer, BasicNode> nodes = path.nodeTable;
-//        for (BasicNode node : nodes.values()) {
-//            node.resetCurrentConnection();
-//        }
-//        for (Entity entity : pathFinderCollidableEntities) {
-//            for (WorldBorder collision : entity.getCollisionBox()) {
-//                List<BasicNode> nodesInRegion = getNodesInRegion(collision.getCollisionBox().copy(), nodes);
-//                for (BasicNode node : nodesInRegion) {
-//                    for (Connection<BasicNode> connection : node.getCurrentConnections()) {
-////                        connection.getToNode().getCurrentConnections().removeValue(connection, true);
-////                        Array<Connection<BasicNode>> removal = new Array<Connection<BasicNode>>();
-////                        for (Connection<BasicNode> cconnection : connection.getToNode().getCurrentConnections()) {
-////                            if (cconnection.getToNode() == node) {
-////                                removal.add(cconnection);
-////                            }
-////                        }
-////                        connection.getToNode().getCurrentConnections().removeAll(removal, true);
-//                        System.out.println(worldTime);
-//                        connection.getToNode().getCurrentConnections().clear();
-//                    }
-//                    node.getCurrentConnections().clear();
-//                }
-//            }
-//        }
-//        return new WorldIndexedGraph(nodes, path.distance);
-//    }
 }

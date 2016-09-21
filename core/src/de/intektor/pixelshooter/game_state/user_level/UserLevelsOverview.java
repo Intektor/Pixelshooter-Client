@@ -46,7 +46,7 @@ public class UserLevelsOverview extends Gui {
 
         for (int i = 0; i < folders.size(); i++) {
             GuiButton button = getButtonByID(i + 2);
-            button.setY((int) (scrollAmount + height - (i * 40 * scale + 40 * scale)));
+            button.setY(scrollAmount + height - (i * 40 * 2 + 40 * 2));
             button.setX(0);
         }
         super.update();
@@ -59,8 +59,8 @@ public class UserLevelsOverview extends Gui {
 
     @Override
     public void addGuiComponents() {
-        componentList.add(new GuiButton(width - 75 * scale, height - (30 * scale), 75 * scale, 30 * scale, "Back", BUTTON_BACK, true));
-        componentList.add(new GuiButton(width - 75 * scale, height - (60 * scale), 75 * scale, 30 * scale, "Refresh", BUTTON_REFRESH, true));
+        componentList.add(new GuiButton(width - 75 * 2, height - (30 * 2), 75 * 2, 30 * 2, "Back", BUTTON_BACK, true));
+        componentList.add(new GuiButton(width - 75 * 2, height - (60 * 2), 75 * 2, 30 * 2, "Refresh", BUTTON_REFRESH, true));
 
         folders.clear();
 
@@ -98,7 +98,7 @@ public class UserLevelsOverview extends Gui {
                 }
             });
             for (LevelFolder levelFolder : folders) {
-                componentList.add(new GuiButton(0, 0, 300 * scale, 40 * scale, "Folder: " + levelFolder.levelName, id++, true));
+                componentList.add(new GuiButton(0, 0, 300 * 2, 40 * 2, "Folder: " + levelFolder.levelName, id++, true));
             }
         }
     }
@@ -109,10 +109,10 @@ public class UserLevelsOverview extends Gui {
         if (scrollAmount < 0) {
             scrollAmount = 0;
         }
-        if (scrollAmount > folders.size() * 40 * scale - 40 * scale * (720 / (40 * scale))) {
-            scrollAmount = (int) (folders.size() * 40 * scale - 40 * scale * (720 / (40 * scale)));
+        if (scrollAmount > folders.size() * 40 * 2 - 40 * 2 * (720 / (40 * 2))) {
+            scrollAmount = folders.size() * 40 * 2 - 40 * 2 * (720 / (40 * 2));
         }
-        if (folders.size() < 720 / (40 * scale)) {
+        if (folders.size() < 720 / (40 * 2)) {
             scrollAmount = 0;
         }
     }

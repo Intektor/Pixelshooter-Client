@@ -36,6 +36,8 @@ public class ImageStorage {
             empty_stars,
             full_stars,
 
+            main_menu_wooden,
+
             background_desert,
             border_desert_breakable,
             border_desert_unbreakable,
@@ -75,6 +77,7 @@ public class ImageStorage {
             border_desert_breakable = new Texture(domain + "world/desert/border_desert_breakable.png");
             border_desert_unbreakable = new Texture(domain + "world/desert/border_desert_unbreakable.png");
             tiny_picture_desert = new Texture(domain + "world/desert/desert_tiny_picture.png");
+            main_menu_wooden = new Texture(domain + "menu/main_menu_picture_wooden.png");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

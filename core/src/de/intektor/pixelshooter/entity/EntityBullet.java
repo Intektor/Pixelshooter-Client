@@ -304,6 +304,8 @@ public abstract class EntityBullet extends Entity {
         @Override
         public void renderEntity(ModelBatch batch, Camera camera, Environment environment) {
             super.renderEntity(batch, camera, environment);
+//            if (chasingEntity == null) return;
+//            RenderHelper.renderPath(camera, PathHelper.findAStarPathEntityToOtherEntityOrAround(this, chasingEntity, 4), Color.ORANGE);
         }
 
         @Override
@@ -403,7 +405,7 @@ public abstract class EntityBullet extends Entity {
 
         @Override
         public WorldIndexedGraph getGraphPath() {
-            return worldObj.worldPathFinderGraphDistance_1u;
+            return worldObj.worldPathFinderGraphDistance_2u;
         }
 
         @Override

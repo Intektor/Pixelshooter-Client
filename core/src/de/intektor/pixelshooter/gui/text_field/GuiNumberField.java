@@ -22,5 +22,8 @@ public class GuiNumberField extends GuiTextField {
                 text.add(c);
             }
         }
+        if (c == '\b') {
+            removeChar();
+        }
     }
 }

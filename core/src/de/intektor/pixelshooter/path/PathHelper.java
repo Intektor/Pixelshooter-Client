@@ -26,10 +26,10 @@ public class PathHelper {
         World world = traveller.getTravellerWorld();
         Point3f prevSearchPos = toFind.getMid();
         Point2i realSearchPos = new Point2i(((int) prevSearchPos.x), ((int) prevSearchPos.z));
-        if (world.getNextNodeForPosition(realSearchPos.x, realSearchPos.y, traveller.getGraphPath().nodeTable, traveller.getGraphPath().distance) == null) {
+        if (world.getNextNodeForPosition(realSearchPos.x, realSearchPos.y, traveller.getGraphPath()) == null) {
             List<Point2f> allPointsInRadius = PositionHelper.getAllPointsInRadius(new Point2f(prevSearchPos.x, prevSearchPos.z), radAround, 1);
             for (Point2f point : allPointsInRadius) {
-                GraphPath<BasicNode> path = findAStarPathEntity(traveller, world.getNextNodeForPosition((int) point.x, (int) point.y, traveller.getGraphPath().nodeTable, traveller.getGraphPath().distance));
+                GraphPath<BasicNode> path = findAStarPathEntity(traveller, world.getNextNodeForPosition((int) point.x, (int) point.y, traveller.getGraphPath()));
                 if (path != null) {
                     return path;
                 }
@@ -41,7 +41,7 @@ public class PathHelper {
     }
 
     public static GraphPath<BasicNode> findAStarPathEntityToOtherEntity(PathTraveller traveller, Entity toFind) {
-        return findAStarPathEntity(traveller, traveller.getTravellerWorld().getNextNodeForEntityMid(toFind, traveller.getGraphPath().nodeTable, traveller.getGraphPath().distance));
+        return findAStarPathEntity(traveller, traveller.getTravellerWorld().getNextNodeForEntityMid(toFind, traveller.getGraphPath()));
     }
 
     public static GraphPath<BasicNode> findAStarPath(PathTraveller traveller, BasicNode endNode) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.render.RenderHelper;
@@ -47,16 +48,18 @@ public class MainMenu extends Gui {
 
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
-        super.render(renderer, batch);
-        PixelShooter.spriteBatch.begin();
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
+        batch.begin();
         RenderHelper.drawString(width / 2, height / 10 * 9, "Pixelshooter", PixelShooter.unScaledPerfectPixel128, PixelShooter.spriteBatch);
         if (PixelShooter.googleAccount != null) {
             RenderHelper.drawString(0, 22, "Logged in as: " + PixelShooter.googleAccount.getEmail(), PixelShooter.unScaledPerfectPixel22, PixelShooter.spriteBatch, false);
         } else {
             RenderHelper.drawString(0, 22, "Not logged in!", PixelShooter.unScaledPerfectPixel22, PixelShooter.spriteBatch, false);
         }
-        PixelShooter.spriteBatch.end();
-
+        batch.end();
+        super.render(renderer, batch);
     }
 
     @Override

@@ -59,8 +59,8 @@ public class SureDeleteLevel extends Gui {
 
     @Override
     public void addGuiComponents() {
-        componentList.add(new GuiButton(0, 0, width - 140, 60 * scale, "DON'T DELETE!", BUTTON_DONT_DELETE, true));
-        componentList.add(new GuiButton(width - 140, 0, 140, 60 * scale, "DELETE!", BUTTON_DELETE, true));
+        componentList.add(new GuiButton(0, 0, width - 140, 60 * 2, "DON'T DELETE!", BUTTON_DONT_DELETE, true));
+        componentList.add(new GuiButton(width - 140, 0, 140, 60 * 2, "DELETE!", BUTTON_DELETE, true));
     }
 
     public void setFile(LevelFolder folder, int index) {

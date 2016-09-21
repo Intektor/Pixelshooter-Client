@@ -72,7 +72,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
                     List<Point3f> placeToHideFromPlayer = findPlaceToHideFromPlayer(entity, trackedPlayer, 75);
                     posDebugCache = placeToHideFromPlayer;
                     for (Point3f point : placeToHideFromPlayer) {
-                        BasicNode endNode = entity.worldObj.getNextNodeForPosition((int) point.x, (int) point.z, entity.getGraphPath().nodeTable, entity.getGraphPath().distance);
+                        BasicNode endNode = entity.worldObj.getNextNodeForPosition((int) point.x, (int) point.z, entity.getGraphPath());
                         path = PathHelper.findAStarPathEntity(entity, endNode);
                         if (path != null) {
                             currentStep = 1;
@@ -124,7 +124,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
     }
 
     public static List<Point3f> findPlaceToHideFromPlayer(final EntityLiving hunted, final Entity hunter, float distance) {
-        BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath().nodeTable, hunted.getGraphPath().distance);
+        BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath());
         List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * LevelEditor.COLLISION_SIZE, node.y * LevelEditor.COLLISION_SIZE), distance, LevelEditor.COLLISION_SIZE);
         Collections.sort(positions, new Comparator<Point2f>() {
             @Override

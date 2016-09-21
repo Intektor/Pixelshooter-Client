@@ -5,6 +5,8 @@ import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.text_field.GuiNumberField;
 import de.intektor.pixelshooter.gui.text_field.GuiTextField;
+import de.intektor.pixelshooter.helper.MathHelper;
+import de.intektor.pixelshooter.level.editor.LevelEditor;
 import de.intektor.pixelshooter.world.EditingWorld;
 
 import java.util.List;
@@ -21,8 +23,8 @@ public class EnterLevelEditor extends Gui {
                 List<GuiTextField> textFields = getTextFields();
                 try {
                     String name = textFields.get(0).convertText();
-                    int width = Integer.parseInt(textFields.get(1).convertText());
-                    int height = Integer.parseInt(textFields.get(2).convertText());
+                    int width = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(1).convertText()), LevelEditor.COLLISION_SIZE);
+                    int height = MathHelper.getNextDividerDown(Integer.parseInt(textFields.get(2).convertText()), LevelEditor.COLLISION_SIZE);
                     if (width > 0 && height > 0 && !name.equals("")) {
                         PixelShooter.LEVEL_EDITOR_STATE.setEdit(new EditingWorld(name, width, height));
                         PixelShooter.enterGui(PixelShooter.LEVEL_EDITOR);
@@ -45,8 +47,8 @@ public class EnterLevelEditor extends Gui {
     @Override
     public void addGuiComponents() {
         componentList.add(new GuiTextField(0, height / 5 * 4, width, height / 5, 0, true, 20, true, true, false, this, "My Level", "Level Name"));
-        componentList.add(new GuiNumberField(0, height / 5 * 3, width, height / 5, 1, true, 6, "Level Width", this, "200", false));
-        componentList.add(new GuiNumberField(0, height / 5 * 2, width, height / 5, 2, true, 6, "Level Height", this, "200", false));
+        componentList.add(new GuiNumberField(0, height / 5 * 3, width, height / 5, 1, true, 3, "Level Width", this, "200", false));
+        componentList.add(new GuiNumberField(0, height / 5 * 2, width, height / 5, 2, true, 3, "Level Height", this, "200", false));
 
         componentList.add(new GuiButton(0, height / 5, width, height / 5, "Ok", 0, true));
         componentList.add(new GuiButton(0, 0, width, height / 5, "Back", 1, true));

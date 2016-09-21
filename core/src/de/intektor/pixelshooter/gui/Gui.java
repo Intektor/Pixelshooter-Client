@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.gui.text_field.GuiTextField;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
 
     protected int width;
     protected int height;
-    protected float scale;
     protected long timeAtLastTap;
 
     public Gui() {
@@ -36,7 +34,6 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
         input = Gdx.input;
         width = 1280;
         height = 720;
-        scale = PixelShooter.guiScaleAmt;
         InputMultiplexer multiplexer = new InputMultiplexer();
         GestureDetector detecto = new GestureDetector(this);
         multiplexer.addProcessor(this);
@@ -264,6 +261,7 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         timeAtLastTap = System.currentTimeMillis();
+        prevZoomDistance = -1;
         return true;
     }
 
@@ -292,10 +290,21 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
         return true;
     }
 
+    float prevZoomDistance;
+
     @Override
-    public boolean zoom(float initialDistance, float distance) {
+    public final boolean zoom(float initialDistance, float distance) {
+        if (prevZoomDistance != -1) {
+            zoomed(initialDistance, distance, prevZoomDistance);
+        }
+        prevZoomDistance = distance;
         return true;
     }
+
+    public void zoomed(float initialDistance, float distance, float prevDistance) {
+
+    }
+
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {

@@ -47,7 +47,7 @@ public abstract class EntityLiving extends Entity implements PathTraveller {
 
     @Override
     public WorldIndexedGraph getGraphPath() {
-        return worldObj.worldPathFinderGraphDistance_5u;
+        return worldObj.worldPathFinderGraphDistance_4u;
     }
 
     @Override

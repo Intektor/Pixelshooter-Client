@@ -81,27 +81,55 @@ public class LevelEditor extends Gui {
 
         renderWorld(rawWorldCamera);
 
+        int mouseX = calcScaledCoordX(input.getX());
+        int mouseY = calcScaledCoordX(input.getY());
+
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         //render white background behind tool buttons
         renderer.identity();
         renderer.setColor(Color.WHITE);
-        renderer.rect(0, 0, 120 * scale, 30 * scale);
+        renderer.rect(0, 0, 120 * 2, 30 * 2);
         renderer.end();
 
         super.render(renderer, batch);
+
+        renderer.begin();
+
+        for (int y = mouseY + 2; y < mouseY + 120 * 2; y += 2) {
+            int y1 = y - 2 + mouseX;
+            int x1 = (int) Math.sqrt(120 * 120 - y1 * y1);
+            int y2 = y + mouseX;
+            int x2 = (int) Math.sqrt(120 * 120 - y2 * y2);
+
+            renderer.line(x1, y1, x2, y2);
+        }
+
+        renderer.end();
+
         if ((tool == LevelEditorTool.TOOL_SELECT || tool == LevelEditorTool.TOOL_TRASH_CAN || tool == LevelEditorTool.TOOL_SQUARE_COLLISION) && AbstractHelper.isTouchDevice()) {
-            if (input.isTouched() && input.getY() > 30 * scale) {
-                TextureRegion texture = ScreenUtils.getFrameBufferTexture((int) (input.getX() - 60 * scale), (int) (Gdx.graphics.getHeight() - input.getY() - 60 * scale), (int) (120 * scale), (int) (120 * scale));
-                int zoomRenderX = calcScaledCoordX(input.getX() + 30 * scale);
-                int zoomRenderY = (int) (height - calcScaledCoordY(input.getY()) + 30 * scale);
+            if (input.isTouched() && height - mouseY > 30 * 2) {
+                TextureRegion texture = ScreenUtils.getFrameBufferTexture(input.getX() - 60 * 2, Gdx.graphics.getHeight() - input.getY() - 60 * 2, 120 * 2, 120 * 2);
+                int zoomRenderX = mouseX + 60;
+                int zoomRenderY = height - calcScaledCoordY(input.getY()) + 60;
+
+                if (zoomRenderY + 120 > height) {
+                    zoomRenderX += 60;
+                    zoomRenderY = height - 120;
+                }
+
+                if (zoomRenderX + 120 > width) {
+                    zoomRenderX = mouseX - 180;
+                }
+
+                AbstractHelper.print(zoomRenderX, zoomRenderY);
 
                 batch.begin();
-                batch.draw(texture, zoomRenderX, zoomRenderY, 60 * scale, 60 * scale);
+                batch.draw(texture, zoomRenderX, zoomRenderY, 60 * 2, 60 * 2);
                 batch.end();
                 renderer.begin();
 
                 renderer.setColor(Color.BLACK);
-                renderer.rect(zoomRenderX, zoomRenderY, 60 * scale, 60 * scale);
+                renderer.rect(zoomRenderX, zoomRenderY, 60 * 2, 60 * 2);
                 renderer.end();
 
                 texture.getTexture().dispose();
@@ -110,18 +138,18 @@ public class LevelEditor extends Gui {
 
         renderer.begin();
 
-        RenderHelper.renderTank2D(renderer, 90 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_PLAYER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 120 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_STANDARD_ATTACKER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 150 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_QUICK_SHOOTER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 180 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_ARTILLERY.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 210 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_TRIPLE_ATTACKER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 240 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_CHASE_SHOOTER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 270 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_LASER_SHOOTER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 300 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_MINE_SHOOTER.getTank(), 0);
-        RenderHelper.renderTank2D(renderer, 330 * scale, 0, 30 * scale, 30 * scale, (float) Math.toRadians(90), TankType.TANK_HEAVY_SHOOTER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 90 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_PLAYER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 120 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_STANDARD_ATTACKER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 150 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_QUICK_SHOOTER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 180 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_ARTILLERY.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 210 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_TRIPLE_ATTACKER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 240 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_CHASE_SHOOTER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 270 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_LASER_SHOOTER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 300 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_MINE_SHOOTER.getTank(), 0);
+        RenderHelper.renderTank2D(renderer, 330 * 2, 0, 30 * 2, 30 * 2, (float) Math.toRadians(90), TankType.TANK_HEAVY_SHOOTER.getTank(), 0);
 
         if (tool != null) {
-            tool.render(renderer, 0, (int) (720 - 32 * scale - 25 * scale), (int) (25 * scale), (int) (25 * scale));
+            tool.render(renderer, 0, 720 - 32 * 2 - 25 * 2, 25 * 2, 25 * 2);
         }
 
         renderer.end();
@@ -320,15 +348,21 @@ public class LevelEditor extends Gui {
         if (pointer == 0) {
             MouseInfo fInfo = getMInfo(x, y);
             MouseInfo sInfo = getMInfo(prevX, prevY);
-            MouseInfo rInfo = getMInfo(input.getX(), input.getY());
+            int rPX = (int) (prevX * (Gdx.graphics.getWidth() / 1280f));
+            int rPY = (int) (prevY * (Gdx.graphics.getHeight() / 720f));
+            int rX = (int) (x * (Gdx.graphics.getWidth() / 1280f));
+            int rY = (int) (y * (Gdx.graphics.getHeight() / 720f));
+            MouseInfo rpInfo = getMInfo(rPX, rPY);
+            MouseInfo rnInfo = getMInfo(rX, rY);
+            MouseInfo rrInfo = getMInfo(input.getX(), input.getY());
             float dX = fInfo.getMouseX() - sInfo.getMouseX();
             float dY = fInfo.getMouseY() - sInfo.getMouseY();
 
             if (input.isTouched() && !isGamePaused() && getNumberOfTouches() == 1) {
-                CURRENT_X = rInfo.getMouseX();
-                CURRENT_Y = rInfo.getMouseY();
+                CURRENT_X = rrInfo.getMouseX();
+                CURRENT_Y = rrInfo.getMouseY();
                 if (input.isKeyPressed(Input.Keys.SPACE) || (tool == LevelEditorTool.TOOL_GRAB)) {
-                    rawWorldCamera.translate(-dX, -dY);
+                    rawWorldCamera.translate(-(rnInfo.getMouseX() - rpInfo.getMouseX()), -(rnInfo.getMouseY() - rpInfo.getMouseY()));
                     translationChanged();
                 }
                 if (input.isKeyPressed(Input.Keys.SPACE)) return;
@@ -681,12 +715,13 @@ public class LevelEditor extends Gui {
     MovableObject copiedObject;
 
     @Override
-    public boolean zoom(float originalDistance, float currentDistance) {
+    public void zoomed(float originalDistance, float currentDistance, float prevDistance) {
         if (tool == LevelEditorTool.TOOL_GRAB) {
-            float ratio = originalDistance / currentDistance;
-            rawWorldCamera.zoom = ratio;
+            rawWorldCamera.zoom += (prevDistance - currentDistance) / 200;
+            if (rawWorldCamera.zoom < 0.1f) {
+                rawWorldCamera.zoom = 0.1f;
+            }
         }
-        return super.zoom(originalDistance, currentDistance);
     }
 
     public void resetCamera() {
@@ -730,39 +765,39 @@ public class LevelEditor extends Gui {
 
     @Override
     public void addGuiComponents() {
-        //Used to scale up for bigger screens
+        //Used to 2 up for bigger screens
         int i = 0;
-        componentList.add(new GuiButton(i * scale, 0 * scale, 30 * scale, 30 * scale, BUTTON_POINTER, true, ImageStorage.pointer));
-        componentList.add(new GuiButton(i += 30 * scale, 0 * scale, 30 * scale, 30 * scale, BUTTON_SQUARE_COLLISION, true, ImageStorage.collisionImage));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_TRASH_CAN, true, ImageStorage.trashCan));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_PLAYER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_STANDARD_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_QUICK_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_ARTILLERY, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_TRIPLE_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_CHASE_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_LASER_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_MINE_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * scale, 0, 30 * scale, 30 * scale, BUTTON_SET_HEAVY_SHOOTER, true, null));
+        componentList.add(new GuiButton(i * 2, 0 * 2, 30 * 2, 30 * 2, BUTTON_POINTER, true, ImageStorage.pointer));
+        componentList.add(new GuiButton(i += 30 * 2, 0 * 2, 30 * 2, 30 * 2, BUTTON_SQUARE_COLLISION, true, ImageStorage.collisionImage));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_TRASH_CAN, true, ImageStorage.trashCan));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_PLAYER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_STANDARD_ATTACKER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_QUICK_ATTACKER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_ARTILLERY, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_TRIPLE_ATTACKER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_CHASE_SHOOTER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_LASER_SHOOTER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_MINE_SHOOTER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_HEAVY_SHOOTER, true, null));
 
 
-        componentList.add(new GuiButton(width - 150 * scale, 0, 30 * scale, 30 * scale, "World", BUTTON_CALL_WORLD_ATTRIBUTES, true));
-        componentList.add(new GuiButton(width - 120 * scale, 0, 30 * scale, 30 * scale, BUTTON_SELECT_AMMO, true, edit.getBulletType().getTexture()));
-        componentList.add(new GuiButton(width - 90 * scale, 0, 30 * scale, 30 * scale, BUTTON_MAG_GLASS, true, ImageStorage.mag_glass));
-        componentList.add(new GuiButton(width - 60 * scale, 0, 30 * scale, 30 * scale, "Save", BUTTON_SAVE, true));
-        componentList.add(new GuiButton(width - 30 * scale, 0, 30 * scale, 30 * scale, "Test", BUTTON_TEST, true));
+        componentList.add(new GuiButton(width - 150 * 2, 0, 30 * 2, 30 * 2, "World", BUTTON_CALL_WORLD_ATTRIBUTES, true));
+        componentList.add(new GuiButton(width - 120 * 2, 0, 30 * 2, 30 * 2, BUTTON_SELECT_AMMO, true, edit.getBulletType().getTexture()));
+        componentList.add(new GuiButton(width - 90 * 2, 0, 30 * 2, 30 * 2, BUTTON_MAG_GLASS, true, ImageStorage.mag_glass));
+        componentList.add(new GuiButton(width - 60 * 2, 0, 30 * 2, 30 * 2, "Save", BUTTON_SAVE, true));
+        componentList.add(new GuiButton(width - 30 * 2, 0, 30 * 2, 30 * 2, "Test", BUTTON_TEST, true));
 
-        componentList.add(new GuiButton(width / 2 - 100 * scale, height / 2 - 70 * scale, 200 * scale, 70 * scale, "Resume!", BUTTON_RESUME, false));
-        componentList.add(new GuiButton(width / 2 - 100 * scale, height / 2, 200 * scale, 70 * scale, "Exit!", BUTTON_EXIT, false));
-        componentList.add(new GuiButton(width / 2 - 100 * scale, height / 2 - 50 * scale, 100 * scale, 50 * scale, "No Save!", BUTTON_CONFIRM_NO_SAVE, false));
-        componentList.add(new GuiButton(width / 2, height / 2 - 50 * scale, 100 * scale, 50 * scale, "Save!", BUTTON_CONFIRM_WITH_SAVE, false));
+        componentList.add(new GuiButton(width / 2 - 100 * 2, height / 2 - 70 * 2, 200 * 2, 70 * 2, "Resume!", BUTTON_RESUME, false));
+        componentList.add(new GuiButton(width / 2 - 100 * 2, height / 2, 200 * 2, 70 * 2, "Exit!", BUTTON_EXIT, false));
+        componentList.add(new GuiButton(width / 2 - 100 * 2, height / 2 - 50 * 2, 100 * 2, 50 * 2, "No Save!", BUTTON_CONFIRM_NO_SAVE, false));
+        componentList.add(new GuiButton(width / 2, height / 2 - 50 * 2, 100 * 2, 50 * 2, "Save!", BUTTON_CONFIRM_WITH_SAVE, false));
 
-        componentList.add(new GuiButton(0 * scale, height - 30 * scale, 72 * scale, 30 * scale, "Menu", BUTTON_MENU, true));
+        componentList.add(new GuiButton(0 * 2, height - 30 * 2, 72 * 2, 30 * 2, "Menu", BUTTON_MENU, true));
 
         //CONTEXT MENU SELECT - COLLISION
-        componentList.add(new GuiButton.GuiButtonSwitchONOFF(width - 100 * scale, height - 40 * scale, 100 * scale, 40 * scale, "Dragg-Trans:", BUTTON_TOGGLE_TRANSLATION_DRAGGING, false, false));
-        componentList.add(new GuiButton.GuiButtonSwitch(width - 100 * scale, height - 40 * 2 * scale, 100 * scale, 40 * scale, BUTTON_TOGGLE_COLLISION_TYPE, false, Arrays.asList("Unbreakable", "Breakable"), 0));
-        componentList.add(new GuiButton(width - 100 * scale, height - 40 * 3 * scale, 100 * scale, 40 * scale, "Copy", BUTTON_COPY, false));
+        componentList.add(new GuiButton.GuiButtonSwitchONOFF(width - 100 * 2, height - 40 * 2, 100 * 2, 40 * 2, "Dragg-Trans:", BUTTON_TOGGLE_TRANSLATION_DRAGGING, false, false));
+        componentList.add(new GuiButton.GuiButtonSwitch(width - 100 * 2, height - 40 * 2 * 2, 100 * 2, 40 * 2, BUTTON_TOGGLE_COLLISION_TYPE, false, Arrays.asList("Unbreakable", "Breakable"), 0));
+        componentList.add(new GuiButton(width - 100 * 2, height - 40 * 3 * 2, 100 * 2, 40 * 2, "Copy", BUTTON_COPY, false));
 
 
         int arrowWidth = 10, arrowHeight = 30;
@@ -1039,7 +1074,6 @@ public class LevelEditor extends Gui {
                 try {
                     if (field == getTextFieldByID(TEXT_FIELD_TANK_HEALTH)) {
                         tank.health = Float.parseFloat(field.convertText());
-                        System.out.println(tank.health);
                     }
                     if (field == getTextFieldByID(TEXT_FIELD_TANK_TRACKING_RANGE)) {
                         tank.trackingRange = Integer.parseInt(field.convertText());
