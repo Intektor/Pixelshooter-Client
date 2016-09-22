@@ -20,7 +20,7 @@ import de.intektor.pixelshooter.entity.EntityPlayer;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
 import de.intektor.pixelshooter.game_state.community_levels.GuiPublishLevelToMainServer;
 import de.intektor.pixelshooter.game_state.user_level.GuiFinishLevelToPublishLevel;
-import de.intektor.pixelshooter.game_state.worlds.GuiWorld1;
+import de.intektor.pixelshooter.game_state.worlds.GuiViewCampaignWorld;
 import de.intektor.pixelshooter.gui.*;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.levels.CommunityPlayInformation;
@@ -77,19 +77,23 @@ public class PlayState extends Gui implements DPadHandler {
                 componentList.add(new GuiButton(x + scoreBoardWidth / 2, y - 80, scoreBoardWidth / 2, 80, "Restart Level", 5, false));
                 break;
             case USER_LEVEL:
+                componentList.add(new GuiButton(0, height - 100, 100, 100, "Exit", 3, true));
                 componentList.add(new GuiButton(x, y - 80, scoreBoardWidth / 2, 80, "Back to Main Menu", 4, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 2, y - 80, scoreBoardWidth / 2, 80, "Restart Level", 5, false));
                 break;
             case WORLD_LEVEL:
+                componentList.add(new GuiButton(0, height - 100, 100, 100, "Exit", 3, true));
                 componentList.add(new GuiButton(x, y - 80, scoreBoardWidth / 3, 80, "Back to World 1", 4, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 3, y - 80, scoreBoardWidth / 3, 80, "Restart Level", 5, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 3 * 2, y - 80, scoreBoardWidth / 3, 80, "Next Level", 6, false));
                 break;
             case PUBLISH_LEVEL:
+                componentList.add(new GuiButton(0, height - 100, 100, 100, "Exit", 3, true));
                 componentList.add(new GuiButton(x, y - 80, scoreBoardWidth / 2, 80, "", 4, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 2, y - 80, scoreBoardWidth / 2, 80, "Retry!", 5, false));
                 break;
             case COMMUNITY_LEVEL:
+                componentList.add(new GuiButton(0, height - 100, 100, 100, "Exit", 3, true));
                 componentList.add(new GuiButton(x, y - 80 - 75, scoreBoardWidth / 2, 80, "Back to Level Overview", 4, false));
                 componentList.add(new GuiButton(x + scoreBoardWidth / 2, y - 80 - 75, scoreBoardWidth / 2, 80, "Restart Level", 5, false));
                 break;
@@ -283,8 +287,24 @@ public class PlayState extends Gui implements DPadHandler {
                 paused = false;
                 break;
             case 3:
+                switch (info.getStatus()) {
+                    case LEVEL_EDITOR:
+                        PixelShooter.enterGui(PixelShooter.LEVEL_EDITOR);
+                        break;
+                    case USER_LEVEL:
+                        PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
+                        break;
+                    case WORLD_LEVEL:
+                        PixelShooter.enterGui(PixelShooter.VIEW_CAMPAIGN_WORLD);
+                        break;
+                    case PUBLISH_LEVEL:
+                        PixelShooter.enterGui(PixelShooter.FINISH_LEVEL_TO_PUBLISH_LEVEL);
+                        break;
+                    case COMMUNITY_LEVEL:
+                        PixelShooter.enterGui(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL);
+                        break;
+                }
                 start = false;
-                PixelShooter.enterGui(PixelShooter.LEVEL_EDITOR);
                 break;
             case 4:
                 switch (info.getStatus()) {
@@ -295,7 +315,7 @@ public class PlayState extends Gui implements DPadHandler {
                         PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
                         break;
                     case WORLD_LEVEL:
-                        PixelShooter.enterGui(PixelShooter.WORLD_1);
+                        PixelShooter.enterGui(PixelShooter.VIEW_CAMPAIGN_WORLD);
                         break;
                     case PUBLISH_LEVEL:
                         if (missionSuccess) {
@@ -322,8 +342,8 @@ public class PlayState extends Gui implements DPadHandler {
             case 6:
                 WorldPlayInformation worldInfo = (WorldPlayInformation) info;
                 if (worldInfo.worldID == 1) {
-                    if (worldInfo.levelID < 40) {
-                        GuiWorld1.loadLevel(worldInfo.levelID + 1);
+                    if (worldInfo.levelID < 30) {
+                        ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).startLevel(worldInfo.levelID + 1);
                     }
                 }
                 break;
@@ -571,7 +591,7 @@ public class PlayState extends Gui implements DPadHandler {
     }
 
     public void rate(int x, int y) {
-        if (info.getStatus() == PlayStateStatus.COMMUNITY_LEVEL) {
+        if (info.getStatus() == PlayStateStatus.COMMUNITY_LEVEL && !isGameRunning()) {
             CommunityPlayInformation communityPlayInformation = (CommunityPlayInformation) info;
             if (Collision2D.isPointInRegion(new Point2f(x, height - y), new Collision2D(width / 2 - 280, height - 160, 480, 80)) && !communityPlayInformation.alreadyRated) {
                 rated = true;

@@ -31,7 +31,7 @@ import de.intektor.pixelshooter.game_state.user_level.GuiFinishLevelToPublishLev
 import de.intektor.pixelshooter.game_state.user_level.GuiSureDeleteLevel;
 import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsFolder;
 import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsOverview;
-import de.intektor.pixelshooter.game_state.worlds.GuiWorld1;
+import de.intektor.pixelshooter.game_state.worlds.GuiViewCampaignWorld;
 import de.intektor.pixelshooter.game_state.worlds.GuiWorldSelection;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
@@ -80,7 +80,7 @@ public class PixelShooter extends ApplicationAdapter {
 
     public static final int MAIN_MENU = 0;
     public static final int BASIC_LEVEL_OVERVIEW = 1;
-    public static final int WORLD_1 = 2;
+    public static final int VIEW_CAMPAIGN_WORLD = 2;
     public static final int PLAY_STATE = 3;
     public static final int LEVEL_EDITOR = 4;
     public static final int USER_LEVEL_OVERVIEW = 5;
@@ -143,7 +143,7 @@ public class PixelShooter extends ApplicationAdapter {
         System.out.println("Registering Guis");
         registerGui(new GuiMainMenu());
         registerGui(new GuiBasicLevelOverview());
-        registerGui(new GuiWorld1());
+        registerGui(new GuiViewCampaignWorld());
         registerGui(new GuiLevelEditor());
         registerGui(new GuiUserLevelsOverview());
         registerGui(new GuiUserLevelsFolder());

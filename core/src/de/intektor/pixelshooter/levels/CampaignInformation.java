@@ -15,7 +15,7 @@ public class CampaignInformation {
     public List<WorldInformation> worlds = new ArrayList<WorldInformation>();
 
     public CampaignInformation() {
-        worlds.add(new WorldInformation(40));
+        worlds.add(new WorldInformation(30));
     }
 
     public void levelFinished(int worldID, int levelID) {
@@ -43,6 +43,10 @@ public class CampaignInformation {
             info.worlds.add(WorldInformation.readFromTag(tag.getTag("world" + i)));
         }
         return info;
+    }
+
+    public WorldInformation getInformation(int worldID) {
+        return worlds.get(worldID);
     }
 
     public static class WorldInformation {

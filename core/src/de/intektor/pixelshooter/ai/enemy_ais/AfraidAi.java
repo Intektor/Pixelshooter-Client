@@ -32,7 +32,6 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
     public AfraidAi(float movementSpeed, int trackingRange, int shootingCooldown) {
         super(movementSpeed, trackingRange, shootingCooldown);
         this.movementSpeed = movementSpeed;
-
     }
 
     @Override
@@ -76,10 +75,10 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
                         path = PathHelper.findAStarPathEntity(entity, endNode);
                         if (path != null) {
                             currentStep = 1;
-                            TickTimerHandler.resetTickTimer(TICK_TIMER_REFRESH_PATH_FINDING);
                             break;
                         }
                     }
+                    TickTimerHandler.resetTickTimer(TICK_TIMER_REFRESH_PATH_FINDING);
                 }
             }
             if (path != null && path.getCount() > currentStep) {
@@ -124,6 +123,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
     }
 
     public static List<Point3f> findPlaceToHideFromPlayer(final EntityLiving hunted, final Entity hunter, float distance) {
+        System.out.println("find");
         BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath());
         List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x * GuiLevelEditor.COLLISION_SIZE, node.y * GuiLevelEditor.COLLISION_SIZE), distance, GuiLevelEditor.COLLISION_SIZE);
         Collections.sort(positions, new Comparator<Point2f>() {
