@@ -5,16 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.util.FontHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Intektor
@@ -132,7 +129,7 @@ public class GuiTextBox extends GuiComponent {
 
     public void addCharacter(char c) {
         if (text.size() < maxChars) {
-            if (Character.isLetter(c) || c == '.' || c == ',' || c == '!' || c == '?') {
+            if (Character.isLetter(c) || c == '.' || c == ',' || c == '!' || c == '?' || c == ' ') {
                 text.add(cursorIndex, c);
                 cursorIndex++;
                 lastCursorTickTime = System.currentTimeMillis();

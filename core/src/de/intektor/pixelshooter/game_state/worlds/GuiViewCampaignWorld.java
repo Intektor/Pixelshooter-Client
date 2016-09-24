@@ -59,14 +59,38 @@ public class GuiViewCampaignWorld extends Gui {
             renderer.set(ShapeRenderer.ShapeType.Line);
             renderer.rect(x, height / 2 + 140, 408, 40);
             renderer.end();
+
             batch.begin();
             RenderHelper.drawString(x + 408 / 2, height / 2 + 140 + 20, String.format("Level-%s", i), PixelShooter.unScaledPerfectPixel32, batch);
             TextureRegion region = new TextureRegion(textureMap.get(file));
             region.flip(false, true);
             batch.draw(region, x, height / 2 - 140, 408, 280);
             batch.end();
+
             getButtonByID(i).setX(x);
             getButtonByID(i).setY(height / 2 - 140 - 50);
+
+            batch.begin();
+            Texture texture = null;
+            switch (worldInfo.info.getLevel(i - 1).medal) {
+                case NONE:
+
+                    break;
+                case BRONZE:
+                    texture = ImageStorage.bronze_medal;
+                    break;
+                case SILVER:
+                    texture = ImageStorage.silver_medal;
+                    break;
+                case GOLD:
+                    texture = ImageStorage.gold_medal;
+                    break;
+            }
+            if (texture != null) {
+                batch.draw(texture, x, height / 2 - 140, 400 / 2.5f, 300 / 2.5f);
+            }
+            batch.end();
+
             x += 458;
             i++;
         }

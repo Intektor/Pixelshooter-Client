@@ -27,7 +27,7 @@ public class MainServerClient {
     }
 
     public Socket run() throws IOException {
-        connection = (SSLSocket) getSSLContext().getSocketFactory().createSocket("mc.momland.tk", 22198);
+        connection = (SSLSocket) getSSLContext().getSocketFactory().createSocket("84.200.24.127", 22198);
         connection.setSoTimeout(0);
         PacketHelper.sendPacket(new ClientVersionPacketToServer(PixelShooter.VERSION), connection);
         new Thread() {
