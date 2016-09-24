@@ -14,10 +14,13 @@ import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.game_state.worlds.GuiWorldSelection.CompactWorldInformation;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
+import de.intektor.pixelshooter.gui.GuiScrollBar;
+import de.intektor.pixelshooter.gui.GuiScrollBar.Direction;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.world.World;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +31,8 @@ public class GuiViewCampaignWorld extends Gui {
     final int BUTTON_BACK = 0;
 
     int scrollAmount;
+
+    GuiScrollBar scrollBar;
 
     CompactWorldInformation worldInfo;
     Map<LevelFolder.FolderFile, Texture> textureMap = new HashMap<LevelFolder.FolderFile, Texture>();
@@ -46,7 +51,7 @@ public class GuiViewCampaignWorld extends Gui {
         batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
         batch.end();
         if (componentList.size() == 0) return;
-        int x = -scrollAmount;
+        int x = -scrollAmount + width / 2 - 408 / 2;
         int i = 1;
         for (LevelFolder.FolderFile file : worldInfo.folder.files) {
             renderer.begin();
@@ -55,7 +60,7 @@ public class GuiViewCampaignWorld extends Gui {
             renderer.rect(x, height / 2 + 140, 408, 40);
             renderer.end();
             batch.begin();
-            RenderHelper.drawString(x + 408 / 2, height / 2+ 140 + 20, String.format("Level-%s", i), PixelShooter.unScaledPerfectPixel32, batch);
+            RenderHelper.drawString(x + 408 / 2, height / 2 + 140 + 20, String.format("Level-%s", i), PixelShooter.unScaledPerfectPixel32, batch);
             TextureRegion region = new TextureRegion(textureMap.get(file));
             region.flip(false, true);
             batch.draw(region, x, height / 2 - 140, 408, 280);
@@ -70,7 +75,9 @@ public class GuiViewCampaignWorld extends Gui {
 
     @Override
     public void update() {
-
+        if (scrollBar.justScrolled) {
+            scrollAmount = (int) ((worldInfo.folder.files.size() * 458 - width / 2 + 204 - 20) * (1 - scrollBar.getScrollPercent()));
+        }
         super.update();
     }
 
@@ -82,9 +89,12 @@ public class GuiViewCampaignWorld extends Gui {
     @Override
     public void addGuiComponents() {
         if (worldInfo == null) return;
-        componentList.add(new GuiButton(width / 2 - 100, 0, 200, 50, "Back", BUTTON_BACK, true));
+        componentList.add(new GuiButton(width / 2 - 200, 0, 400, 100, "Back", BUTTON_BACK, true));
+        scrollBar = new GuiScrollBar(0, height - 50, width, 50, true, Direction.HORIZONTAL, worldInfo.folder.files.size() * 458 - width / 2 + 204 - 20, width);
+        componentList.add(scrollBar);
         int id = BUTTON_BACK + 1;
-        for (LevelFolder.FolderFile file : worldInfo.folder.files) {
+        List<LevelFolder.FolderFile> files = worldInfo.folder.files;
+        for (int i = 0; i < files.size(); i++) {
             componentList.add(new GuiButton(0, 0, 408, 50, "Play!", id, true));
             id++;
         }
@@ -92,13 +102,17 @@ public class GuiViewCampaignWorld extends Gui {
 
     @Override
     public void pointerDragged(int x, int y, int prevX, int prevY, int pointer) {
+        super.pointerDragged(x, y, prevX, prevY, pointer);
+        if (hoveredOverComponent(x, y) || scrollBar.currentlyClicked) return;
         scrollAmount -= input.getDeltaX(pointer);
         if (scrollAmount < 0) {
             scrollAmount = 0;
         }
-        if (scrollAmount > height / 6 * height / 6 - height) {
-            scrollAmount = height / 6 * height / 6 - height;
+        int i = worldInfo.folder.files.size() * 458 - width / 2 + 204 - 20;
+        if (scrollAmount > i) {
+            scrollAmount = i;
         }
+        scrollBar.setScrollPercent(scrollAmount / (float) (worldInfo.folder.files.size() * 458 - width / 2 + 204 - 20));
     }
 
     public void setWorld(CompactWorldInformation info) {

@@ -101,8 +101,15 @@ public abstract class GuiComponent {
 
     }
 
-    public void onDragged(int prevX, int prevY, int cX, int cY) {
+    public void onDraggedOn(int prevX, int prevY, int cX, int cY) {
         isDragged = true;
+    }
+
+    public void onDragged(int prevX, int prevY, int cX, int cY) {
+    }
+
+    public void pointerUp(int x, int y, boolean onComponent) {
+
     }
 
     public void keyTyped(char character) {

@@ -3,8 +3,6 @@ package de.intektor.pixelshooter.gui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
-import de.intektor.pixelshooter.PixelShooter;
-import de.intektor.pixelshooter.abstrct.AbstractHelper;
 
 import javax.vecmath.Vector2f;
 
@@ -74,8 +72,8 @@ public class GuiSlideArrow extends GuiComponent {
     }
 
     @Override
-    public void onDragged(int prevX, int prevY, int cX, int cY) {
-        super.onDragged(prevX, prevY, cX, cY);
+    public void onDraggedOn(int prevX, int prevY, int cX, int cY) {
+        super.onDraggedOn(prevX, prevY, cX, cY);
         int dX = cX - prevX;
         int dY = cY - prevY;
         int pX = x;

@@ -175,6 +175,9 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
      * Uses already scaled mouse amounts
      */
     public void pointerUp(int x, int y, int pointer, int button) {
+        for (GuiComponent guiComponent : componentList) {
+            guiComponent.pointerUp(x, y, guiComponent.isHoveredOver(x, y));
+        }
     }
 
     public void deactivateAllTextFields() {
@@ -249,8 +252,9 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
      */
     public void pointerDragged(int x, int y, int prevX, int prevY, int pointer) {
         for (GuiComponent component : componentList) {
+            component.onDragged(prevX, prevY, x, y);
             if (component.isHoveredOver(x, y)) {
-                component.onDragged(prevX, prevY, x, y);
+                component.onDraggedOn(prevX, prevY, x, y);
             }
         }
         this.prevX = x;
