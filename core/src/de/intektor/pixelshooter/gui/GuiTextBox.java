@@ -36,11 +36,15 @@ public class GuiTextBox extends GuiComponent {
     @Override
     protected void renderComponent(ShapeRenderer renderer) {
         renderer.begin();
+        renderer.set(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.WHITE);
+        renderer.rect(x, y, width, height);
         renderer.set(ShapeRenderer.ShapeType.Line);
         renderer.setColor(Color.BLUE);
         renderer.rect(x, y, width, height);
         renderer.end();
 
+        font.setColor(Color.BLACK);
         SpriteBatch b = PixelShooter.spriteBatch;
         b.begin();
         String text = convertText();
@@ -49,6 +53,7 @@ public class GuiTextBox extends GuiComponent {
             RenderHelper.drawString(x + FontHelper.getStringIndexPosX(text, width - 15, font, cursorIndex) + 4, y + height - Math.max((FontHelper.splitString(text.substring(0, cursorIndex), width - 15, font).size() - 1), 0) * 32 - 12, "|", font, b);
         }
         b.end();
+        font.setColor(Color.WHITE);
     }
 
     @Override

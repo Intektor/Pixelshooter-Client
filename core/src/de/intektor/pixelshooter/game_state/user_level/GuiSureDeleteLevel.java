@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.render.RenderHelper;
+import de.intektor.pixelshooter.world.WorldUtils;
+import de.intektor.pixelshooter.world.WorldUtils.FrameBufferTextureRegion;
 
 import java.text.SimpleDateFormat;
 
@@ -21,20 +23,26 @@ public class GuiSureDeleteLevel extends Gui {
     LevelFolder folder;
     int idToRemove;
 
+    FrameBufferTextureRegion texture;
+
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
         super.render(renderer, batch);
-        SpriteBatch b = PixelShooter.spriteBatch;
-        b.begin();
+        batch.begin();
         BitmapFont font = PixelShooter.unScaledPerfectPixel32;
-        RenderHelper.drawString(width / 2, height - 100, "Are you sure you want to delete", font, b, true);
+        RenderHelper.drawString(width / 2, height - 100, "Are you sure you want to delete", font, batch, true);
         LevelFolder.FolderFile file = folder.files.get(idToRemove);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        RenderHelper.drawString(width / 2, height - 100 - font.getLineHeight(), file.world.getName(), font, b, true);
-        RenderHelper.drawString(width / 2, height - 100 - font.getLineHeight() * 2, "from " + format.format(file.world.timeSaved) + "?", font, b, true);
-        b.end();
+        RenderHelper.drawString(width / 2, height - 100 - font.getLineHeight(), file.world.getName(), font, batch, true);
+        RenderHelper.drawString(width / 2, height - 100 - font.getLineHeight() * 2, "from " + format.format(file.world.timeSaved) + "?", font, batch, true);
+        batch.end();
 
-        GuiLevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
+        batch.begin();
+        batch.draw(texture.texture, width / 2 - 125, height / 2 - 125, 250, 250);
+        batch.end();
     }
 
     @Override
@@ -66,5 +74,11 @@ public class GuiSureDeleteLevel extends Gui {
     public void setFile(LevelFolder folder, int index) {
         this.folder = folder;
         this.idToRemove = index;
+        texture = WorldUtils.getLevelEditorTexture(folder.files.get(index).world);
+    }
+
+    @Override
+    public void exitGui() {
+        texture.buffer.dispose();
     }
 }

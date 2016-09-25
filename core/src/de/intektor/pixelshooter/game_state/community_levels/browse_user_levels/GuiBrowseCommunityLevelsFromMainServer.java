@@ -89,6 +89,9 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
         super.render(renderer, batch);
         renderer.begin();
 

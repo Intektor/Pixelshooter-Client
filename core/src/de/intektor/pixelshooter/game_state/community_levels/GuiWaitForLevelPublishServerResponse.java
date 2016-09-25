@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.util.StringUtils;
@@ -45,6 +46,9 @@ public class GuiWaitForLevelPublishServerResponse extends Gui {
 
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
         super.render(renderer, batch);
         SpriteBatch b = PixelShooter.spriteBatch;
         b.begin();

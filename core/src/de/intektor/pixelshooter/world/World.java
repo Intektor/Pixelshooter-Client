@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.intektor.pixelshooter.PixelShooter;
@@ -137,13 +136,6 @@ public class World {
         if (isUpdating) {
             decalBatch.flush();
         }
-
-//        for (BasicNode basicNode : worldPathFinderGraphDistance_2u.nodeTable.values()) {
-//            int x = basicNode.x;
-//            int z = basicNode.y;
-//            RenderHelper.renderLine3D(camera, new Point3f(x - 0.5f, 1, z - 0.5f), new Point3f(x + 0.5f, 1, z + 0.5f), Color.RED);
-//        }
-
     }
 
     public void addEntity(Entity entity) {
@@ -265,7 +257,7 @@ public class World {
      */
     public List<Collision3D> createCollisionList() {
         List<Collision3D> list = new ArrayList<Collision3D>(borders.getBorders().size());
-        for (WorldBorder collision : borders.getBorders().subList(4, borders.getBorders().size())) {
+        for (WorldBorder collision : borders.getBorders()) {
             list.add(collision.getCollisionBox());
         }
         return list;
@@ -336,7 +328,7 @@ public class World {
     public BasicNode getNextNodeForPosition(int targetX, int targetY, WorldIndexedGraph graphPath) {
         int x = MathHelper.getNextDivider(targetX, graphPath.distance) + graphPath.offsetX;
         int z = MathHelper.getNextDivider(targetY, graphPath.distance) + graphPath.offsetY;
-        List<Point2f> allPointsInRadius = PositionHelper.getAllPointsInRadius(new Point2f(x, z), graphPath.distance, graphPath.distance);
+        List<Point2f> allPointsInRadius = PositionHelper.getAllPointsInRadius(new Point2f(x, z), graphPath.distance * 2, graphPath.distance);
         for (Point2f point : allPointsInRadius) {
             if (graphPath.nodeTable.get((int) point.x, (int) point.y) != null) {
                 return graphPath.nodeTable.get((int) point.x, (int) point.y);
@@ -386,7 +378,6 @@ public class World {
         }
 
         long timeTook = System.nanoTime() - startTime;
-        Gdx.app.log("DEBUG", "Calculating the world took " + TimeUtils.nanosToMillis(timeTook) + "milli sec");
         return graph;
     }
 

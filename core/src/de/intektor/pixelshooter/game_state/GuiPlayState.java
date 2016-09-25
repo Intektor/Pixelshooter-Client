@@ -1,5 +1,6 @@
 package de.intektor.pixelshooter.game_state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -34,11 +35,15 @@ import de.intektor.pixelshooter.score.object.BulletShotScore;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.world.EditingWorld;
 import de.intektor.pixelshooter.world.World;
+import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 import de.intektor.pixelshooter_common.net.packet.RatingPacketToServer;
 import de.intektor.pixelshooter_common.packet.PacketHelper;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -268,10 +273,13 @@ public class GuiPlayState extends Gui implements DPadHandler {
         theWorld = backup.convertToWorld();
         prevPlayerDeathState = false;
         prevAllEnemiesDeadState = false;
+        paused = false;
+        starsRated = 0;
     }
 
     @Override
     public void onButtonTouched(int id) {
+        System.out.println(id);
         switch (id) {
             case 0:
                 paused = !paused;
@@ -333,7 +341,6 @@ public class GuiPlayState extends Gui implements DPadHandler {
                         CommunityPlayInformation communityPlayInformation = (CommunityPlayInformation) info;
                         PixelShooter.enterGui(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL);
                         if (rated && !communityPlayInformation.alreadyRated && PixelShooter.googleAccount != null) {
-                            System.out.println("rating");
                             RatingPacketToServer packet = new RatingPacketToServer(starsRated, communityPlayInformation.info.officialID, PixelShooter.googleAccount.idToken);
                             PacketHelper.sendPacket(packet, PixelShooter.mainServerClient.connection);
                         }
@@ -346,8 +353,8 @@ public class GuiPlayState extends Gui implements DPadHandler {
             case 6:
                 WorldPlayInformation worldInfo = (WorldPlayInformation) info;
                 if (worldInfo.levelID < 30) {
-                    ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).startLevel(worldInfo.levelID + 1);
                     saveCampaignProgress();
+                    ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).startLevel(worldInfo.levelID + 1);
                 }
                 break;
         }
@@ -607,10 +614,17 @@ public class GuiPlayState extends Gui implements DPadHandler {
     public void saveCampaignProgress() {
         WorldPlayInformation info = (WorldPlayInformation) this.info;
         WorldInformation worldInfo = PixelShooter.campaign.getInformation(info.worldID);
-        worldInfo.levelState = info.levelID;
+        worldInfo.levelState = info.levelID + 1;
         Medals futureMedal = counter.getMedal();
         if (futureMedal.ordinal() > worldInfo.getLevel(info.levelID).medal.ordinal()) {
             worldInfo.getLevel(info.levelID).medal = futureMedal;
+        }
+        try {
+            PSTagCompound campaignTag = new PSTagCompound();
+            PixelShooter.campaign.writeToTag(campaignTag);
+            campaignTag.writeToStream(new DataOutputStream(new FileOutputStream(Gdx.files.local("campaign.info").file())));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

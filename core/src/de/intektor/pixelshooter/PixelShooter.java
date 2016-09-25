@@ -326,6 +326,7 @@ public class PixelShooter extends ApplicationAdapter {
     }
 
     public static void enterGui(int guiID) {
+        getGuiByID(currentGUI).exitGui();
         currentGUI = guiID;
         //noinspection ConstantConditions
         getGuiByID(guiID).init();
@@ -339,13 +340,6 @@ public class PixelShooter extends ApplicationAdapter {
     public void dispose() {
         gameRunning = false;
         ImageStorage.dispose();
-        try {
-            PSTagCompound campaignTag = new PSTagCompound();
-            campaign.writeToTag(campaignTag);
-            campaignTag.writeToStream(new DataOutputStream(new FileOutputStream(Gdx.files.local("campaign.info").file())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void registerGui(Gui gui) {

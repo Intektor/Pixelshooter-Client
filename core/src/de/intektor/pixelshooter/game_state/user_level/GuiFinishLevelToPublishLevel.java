@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.levels.BasicPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
+import de.intektor.pixelshooter.world.WorldUtils;
+import de.intektor.pixelshooter.world.WorldUtils.FrameBufferTextureRegion;
 
 import java.text.SimpleDateFormat;
 
@@ -23,8 +25,13 @@ public class GuiFinishLevelToPublishLevel extends Gui {
     LevelFolder folder;
     int idToPublish;
 
+    FrameBufferTextureRegion texture;
+
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        batch.end();
         super.render(renderer, batch);
         SpriteBatch b = PixelShooter.spriteBatch;
         b.begin();
@@ -38,7 +45,9 @@ public class GuiFinishLevelToPublishLevel extends Gui {
         RenderHelper.drawString(width / 2, height - i - font.getLineHeight() * 3, "You have to finish the level first, before you can publish it!", font, b, true);
         b.end();
 
-        GuiLevelEditor.renderRawWorld(file.world, width / 2 - 125, height / 2 - 125, 250, 250);
+        batch.begin();
+        batch.draw(texture.texture, width / 2 - 125, height / 2 - 125, 250, 250);
+        batch.end();
     }
 
     @Override
@@ -72,6 +81,12 @@ public class GuiFinishLevelToPublishLevel extends Gui {
     public void setFile(LevelFolder folder, int index) {
         this.folder = folder;
         this.idToPublish = index;
+        texture = WorldUtils.getLevelEditorTexture(folder.files.get(index).world);
+    }
+
+    @Override
+    public void exitGui() {
+        texture.buffer.dispose();
     }
 
     public LevelFolder getFolder() {

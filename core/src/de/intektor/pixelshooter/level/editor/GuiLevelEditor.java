@@ -2,12 +2,13 @@ package de.intektor.pixelshooter.level.editor;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -92,19 +93,6 @@ public class GuiLevelEditor extends Gui {
         renderer.end();
 
         super.render(renderer, batch);
-
-        renderer.begin();
-
-        for (int y = mouseY + 2; y < mouseY + 120 * 2; y += 2) {
-            int y1 = y - 2 + mouseX;
-            int x1 = (int) Math.sqrt(120 * 120 - y1 * y1);
-            int y2 = y + mouseX;
-            int x2 = (int) Math.sqrt(120 * 120 - y2 * y2);
-
-            renderer.line(x1, y1, x2, y2);
-        }
-
-        renderer.end();
 
         if ((tool == LevelEditorTool.TOOL_SELECT || tool == LevelEditorTool.TOOL_TRASH_CAN || tool == LevelEditorTool.TOOL_SQUARE_COLLISION || tool == LevelEditorTool.TOOL_COPY) && AbstractHelper.isTouchDevice()) {
             if (input.isTouched() && height - mouseY > 30 * 2) {
@@ -221,50 +209,6 @@ public class GuiLevelEditor extends Gui {
         rawWorldShapeRenderer = new ShapeRenderer();
         rawWorldShapeRenderer.setAutoShapeType(true);
     }
-
-    public static void renderRawWorld(EditingWorld world, int x, int y, int width, int height) {
-        Graphics g = Gdx.graphics;
-        FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB565, g.getWidth(), g.getHeight(), false, true);
-
-        buffer.begin();
-
-        rawWorldCamera.zoom = Math.min(world.getWidth() + 100, world.getHeight() + 100) / Math.min(rawWorldCamera.viewportHeight, rawWorldCamera.viewportHeight);
-
-        rawWorldCamera.position.set(world.getWidth() / 2, world.getHeight() / 2, 0);
-
-        rawWorldCamera.update();
-
-        rawWorldSpriteBatch.setProjectionMatrix(rawWorldCamera.combined);
-
-        rawWorldSpriteBatch.begin();
-        rawWorldSpriteBatch.draw(world.background.getBackgroundTexture(), -50, -50, world.getWidth() + 100, world.getHeight() + 100);
-        rawWorldSpriteBatch.end();
-
-        rawWorldShapeRenderer.setProjectionMatrix(rawWorldCamera.combined);
-
-        rawWorldShapeRenderer.begin();
-
-        for (MovableObject mObject : world.getMovableObjects()) {
-            mObject.render(rawWorldShapeRenderer, rawWorldCamera, world);
-        }
-
-        rawWorldShapeRenderer.end();
-
-        buffer.end();
-
-        int rX = (g.getWidth() - g.getHeight()) / 2;
-
-        TextureRegion region = new TextureRegion(buffer.getColorBufferTexture(), rX, 0, g.getHeight(), g.getHeight());
-
-        region.flip(false, true);
-
-        PixelShooter.spriteBatch.begin();
-        PixelShooter.spriteBatch.draw(region, x, y, width, height);
-        PixelShooter.spriteBatch.end();
-
-        buffer.dispose();
-    }
-
 
     @Override
     public void update() {

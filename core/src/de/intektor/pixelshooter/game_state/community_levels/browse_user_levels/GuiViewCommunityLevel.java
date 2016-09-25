@@ -4,18 +4,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.game_state.GuiPlayState;
-import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsFolder;
+import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
-import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.levels.CommunityPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.world.EditingWorld;
+import de.intektor.pixelshooter.world.WorldUtils;
+import de.intektor.pixelshooter.world.WorldUtils.FrameBufferTextureRegion;
 import de.intektor.pixelshooter_common.levels.BasicLevelInformation;
 import de.intektor.pixelshooter_common.net.packet.LevelActionPacketToServer;
 import de.intektor.pixelshooter_common.net.packet.LevelActionPacketToServer.Action;
@@ -32,7 +34,10 @@ public class GuiViewCommunityLevel extends Gui {
     BasicLevelInformation info;
     String writtenInfo;
 
-    boolean showWorld;
+    boolean levelEditorView;
+
+    FrameBufferTextureRegion levelEditorTexture;
+    FrameBuffer playStateTexture;
 
     final int BUTTON_SHOW_WORLD = 0, BUTTON_PLAY_LEVEL = 1, BUTTON_DOWNLOAD_LEVEL = 2, BUTTON_BACK = 3;
 
@@ -40,10 +45,16 @@ public class GuiViewCommunityLevel extends Gui {
     int ratedStars;
 
     @Override
+    public void init() {
+        super.init();
+        loadTextures();
+    }
+
+    @Override
     public void onButtonTouched(int id) {
         switch (id) {
             case BUTTON_SHOW_WORLD:
-                showWorld = !showWorld;
+                levelEditorView = !levelEditorView;
                 break;
             case BUTTON_PLAY_LEVEL:
                 LevelActionPacketToServer packet = new LevelActionPacketToServer(info.officialID, PixelShooter.playerUUID, Action.PLAY);
@@ -126,16 +137,16 @@ public class GuiViewCommunityLevel extends Gui {
         font.setColor(Color.WHITE);
 
         batch.end();
+        batch.begin();
 
-        if (showWorld) {
-            GuiLevelEditor.renderRawWorld(world, width - 100 - squareWidth / 2, height - 100 - squareWidth / 2, squareWidth / 2, squareWidth / 2);
+        if (levelEditorView) {
+            batch.draw(levelEditorTexture.texture, width - 100 - squareWidth / 2, height - 100 - squareWidth / 2, squareWidth / 2, squareWidth / 2);
         } else {
-            batch.begin();
-            PixelShooter.unScaledPerfectPixel128.setColor(Color.RED);
-            RenderHelper.drawString(width - 100 - squareWidth / 4, height - 100 - squareWidth / 4, "?", PixelShooter.unScaledPerfectPixel128, batch, true);
-            PixelShooter.unScaledPerfectPixel128.setColor(Color.WHITE);
-            batch.end();
+            TextureRegion region = new TextureRegion(playStateTexture.getColorBufferTexture(), 0.21875f, 0, 1 - 0.21875f, 1);
+            region.flip(false, true);
+            batch.draw(region, width - 100 - squareWidth / 2, height - 100 - squareWidth / 2, squareWidth / 2, squareWidth / 2);
         }
+        batch.end();
 
         batch.begin();
 
@@ -146,7 +157,7 @@ public class GuiViewCommunityLevel extends Gui {
         batch.draw(ImageStorage.empty_stars, width / 2 + 10, y - 80, 150 * 1.5f, 30 * 1.5f);
 
         float ratio = info.rating / 5;
-        batch.draw(new TextureRegion(ImageStorage.full_stars, 0, 0, ratio, 1), width / 2 + 10,  y - 80, 150 * 1.5f * ratio, 30 * 1.5f);
+        batch.draw(new TextureRegion(ImageStorage.full_stars, 0, 0, ratio, 1), width / 2 + 10, y - 80, 150 * 1.5f * ratio, 30 * 1.5f);
 
         font22.setColor(new Color(0x898989ff));
 
@@ -188,8 +199,19 @@ public class GuiViewCommunityLevel extends Gui {
         this.world = world;
         this.info = info;
         this.writtenInfo = written_info;
-        showWorld = false;
+        levelEditorView = false;
         this.prevRated = prevRated;
         this.ratedStars = ratedStars;
+    }
+
+    public void loadTextures() {
+        levelEditorTexture = WorldUtils.getLevelEditorTexture(world);
+        playStateTexture = WorldUtils.getPlayStateWorldTexture(world);
+    }
+
+    @Override
+    public void exitGui() {
+        levelEditorTexture.buffer.dispose();
+        playStateTexture.dispose();
     }
 }

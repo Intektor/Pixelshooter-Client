@@ -1,11 +1,9 @@
 package de.intektor.pixelshooter.game_state.worlds;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
@@ -19,7 +17,7 @@ import de.intektor.pixelshooter.gui.GuiScrollBar;
 import de.intektor.pixelshooter.gui.GuiScrollBar.Direction;
 import de.intektor.pixelshooter.levels.WorldPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
-import de.intektor.pixelshooter.world.World;
+import de.intektor.pixelshooter.world.WorldUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +35,7 @@ public class GuiViewCampaignWorld extends Gui {
     GuiScrollBar scrollBar;
 
     CompactWorldInformation worldInfo;
-    Map<LevelFolder.FolderFile, Texture> textureMap = new HashMap<LevelFolder.FolderFile, Texture>();
+    Map<LevelFolder.FolderFile, FrameBuffer> textureMap = new HashMap<LevelFolder.FolderFile, FrameBuffer>();
 
     @Override
     public void onButtonTouched(int id) {
@@ -67,7 +65,7 @@ public class GuiViewCampaignWorld extends Gui {
             RenderHelper.drawString(x + 408 / 2, height / 2 + 140 + 20, String.format("Level-%s", i), PixelShooter.unScaledPerfectPixel32, batch);
             Texture texture1;
             if (worldInfo.info.levelState >= i - 1) {
-                texture1 = textureMap.get(file);
+                texture1 = textureMap.get(file).getColorBufferTexture();
             } else {
                 texture1 = ImageStorage.main_menu_wooden;
             }
@@ -76,7 +74,7 @@ public class GuiViewCampaignWorld extends Gui {
             batch.draw(region, x, height / 2 - 140, 408, 280);
             batch.end();
 
-            if (worldInfo.info.levelState <= i - 1) {
+            if (worldInfo.info.levelState < i - 1) {
                 batch.begin();
                 RenderHelper.drawString(x + 408 / 2, height / 2, "?", PixelShooter.unScaledPerfectPixel128, batch);
                 batch.end();
@@ -85,6 +83,13 @@ public class GuiViewCampaignWorld extends Gui {
             getButtonByID(i).setX(x);
             getButtonByID(i).setY(height / 2 - 140 - 50);
 
+            x += 458;
+            i++;
+        }
+        x = -scrollAmount + width / 2 - 408 / 2;
+        i = 1;
+        super.render(renderer, batch);
+        for (LevelFolder.FolderFile file : worldInfo.folder.files) {
             batch.begin();
             Texture texture = null;
             switch (worldInfo.info.getLevel(i - 1).medal) {
@@ -102,14 +107,14 @@ public class GuiViewCampaignWorld extends Gui {
                     break;
             }
             if (texture != null) {
-                batch.draw(texture, x, height / 2 - 140, 400 / 2.5f, 300 / 2.5f);
+                float width = 400 / 2.5f;
+                float height = 300 / 2.5f;
+                batch.draw(texture, x + 408 - width / 2, this.height / 2 - 140 - height / 2, width, height);
             }
             batch.end();
-
             x += 458;
             i++;
         }
-        super.render(renderer, batch);
     }
 
     @Override
@@ -157,15 +162,7 @@ public class GuiViewCampaignWorld extends Gui {
     public void setWorld(CompactWorldInformation info) {
         this.worldInfo = info;
         for (LevelFolder.FolderFile file : info.folder.files) {
-            World world = file.world.convertToWorld();
-            world.updateWorld();
-            ModelBatch batch = new ModelBatch();
-            FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB565, width, height, false, true);
-            buffer.begin();
-            world.renderWorld(batch, false);
-            buffer.end();
-            textureMap.put(file, buffer.getColorBufferTexture());
-            batch.dispose();
+            textureMap.put(file, WorldUtils.getPlayStateWorldTexture(file.world));
         }
         reInitButtons();
     }
@@ -176,5 +173,12 @@ public class GuiViewCampaignWorld extends Gui {
         playState.setTheWorld(worldInfo.folder.files.get(levelID).world);
         playState.setStart(true);
         PixelShooter.enterGui(PixelShooter.PLAY_STATE);
+    }
+
+    @Override
+    public void exitGui() {
+        for (FrameBuffer frameBuffer : textureMap.values()) {
+            frameBuffer.dispose();
+        }
     }
 }

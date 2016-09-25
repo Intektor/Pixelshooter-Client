@@ -42,6 +42,9 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
         reInitButtons();
     }
 
+    public void exitGui() {
+    }
+
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
         for (GuiComponent component : this.componentList) {
             if (component != null) {

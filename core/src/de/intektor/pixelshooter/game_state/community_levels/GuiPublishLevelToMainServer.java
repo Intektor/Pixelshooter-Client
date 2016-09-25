@@ -3,12 +3,14 @@ package de.intektor.pixelshooter.game_state.community_levels;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.GuiTextBox;
-import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
 import de.intektor.pixelshooter.render.RenderHelper;
+import de.intektor.pixelshooter.world.WorldUtils;
+import de.intektor.pixelshooter.world.WorldUtils.FrameBufferTextureRegion;
 import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 import de.intektor.pixelshooter_common.net.packet.PublishLevelPacketToServer;
 import de.intektor.pixelshooter_common.packet.PacketHelper;
@@ -29,13 +31,20 @@ public class GuiPublishLevelToMainServer extends Gui {
     int idToPublish;
     LevelFolder.FolderFile file;
 
+    FrameBufferTextureRegion texture;
+
     GuiTextBox infoBox;
 
     @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
+        batch.begin();
+        batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
+        RenderHelper.drawString(width / 2, height / 2 + 250 + (height - (height / 2 + 250)) / 2, file.world.getName(), PixelShooter.unScaledPerfectPixel64, batch);
+        batch.end();
         super.render(renderer, batch);
-//        GuiLevelEditor.renderRawWorld(file.world, camera, ownRenderer, this.batch, width - 250, height / 2 - 125, 250, 250);
-        GuiLevelEditor.renderRawWorld(file.world,  width - 250, height / 2 - 125, 250, 250);
+        batch.begin();
+        batch.draw(texture.texture, width - 250, height / 2 - 125, 250, 250);
+        batch.end();
         SpriteBatch b = PixelShooter.spriteBatch;
         b.begin();
         RenderHelper.drawString(0, height - 100, "Privacy:", PixelShooter.unScaledPerfectPixel22, b, false);
@@ -95,5 +104,11 @@ public class GuiPublishLevelToMainServer extends Gui {
         this.folder = folder;
         this.idToPublish = index;
         file = folder.files.get(index);
+        texture = WorldUtils.getLevelEditorTexture(file.world);
+    }
+
+    @Override
+    public void exitGui() {
+        texture.buffer.dispose();
     }
 }
