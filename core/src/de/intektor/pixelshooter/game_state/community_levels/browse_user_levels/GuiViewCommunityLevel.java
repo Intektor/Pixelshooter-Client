@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
-import de.intektor.pixelshooter.game_state.PlayState;
+import de.intektor.pixelshooter.game_state.GuiPlayState;
 import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.game_state.user_level.GuiUserLevelsFolder;
 import de.intektor.pixelshooter.gui.Gui;
@@ -48,10 +48,10 @@ public class GuiViewCommunityLevel extends Gui {
             case BUTTON_PLAY_LEVEL:
                 LevelActionPacketToServer packet = new LevelActionPacketToServer(info.officialID, PixelShooter.playerUUID, Action.PLAY);
                 PacketHelper.sendPacket(packet, PixelShooter.mainServerClient.connection);
-                PlayState playState = (PlayState) PixelShooter.getGuiByID(PixelShooter.PLAY_STATE);
-                playState.setTheWorld(world);
-                playState.setPlayInformation(new CommunityPlayInformation(prevRated, ratedStars, info));
-                playState.setStart(true);
+                GuiPlayState guiPlayState = (GuiPlayState) PixelShooter.getGuiByID(PixelShooter.PLAY_STATE);
+                guiPlayState.setTheWorld(world);
+                guiPlayState.setPlayInformation(new CommunityPlayInformation(prevRated, ratedStars, info));
+                guiPlayState.setStart(true);
                 PixelShooter.enterGui(PixelShooter.PLAY_STATE);
                 break;
             case BUTTON_DOWNLOAD_LEVEL:

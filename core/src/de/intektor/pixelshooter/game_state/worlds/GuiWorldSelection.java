@@ -26,7 +26,7 @@ public class GuiWorldSelection extends Gui {
                 break;
             case BUTTON_WORLD_1:
                 PixelShooter.enterGui(PixelShooter.VIEW_CAMPAIGN_WORLD);
-                ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).setWorld(loadWorld(1));
+                ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).setWorld(loadWorld(0));
                 break;
         }
     }

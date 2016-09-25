@@ -4,6 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.net.URL;
+
 /**
  * @author Intektor
  */
@@ -37,15 +39,17 @@ public class ImageStorage {
             full_stars,
             green_check_mark,
 
-            main_menu_wooden,
+    main_menu_wooden,
 
-            background_desert,
+    background_desert,
             border_desert_breakable,
             border_desert_unbreakable,
             tiny_picture_desert;
 
     public static void init() {
-        String domain = Gdx.app.getType() == Application.ApplicationType.Desktop ? "assets/" : "";
+        URL resource = ImageStorage.class.getResource("ImageStorage.class");
+        boolean inJar = resource != null && resource.toString().startsWith("jar");
+        String domain = Gdx.app.getType() == Application.ApplicationType.Desktop && !inJar ? "assets/" : "";
         try {
             tankExplosion = new Texture(domain + "level_editor/bullet_type/TankExplosion.png");
             pointer = new Texture(domain + "level_editor/tools/Select.png");

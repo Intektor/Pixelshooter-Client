@@ -4,21 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
-import de.intektor.pixelshooter.gui.Gui;
+import de.intektor.pixelshooter.enums.Medals;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.IScoreObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.intektor.pixelshooter.render.RenderHelper.drawString;
 
 /**
  * @author Intektor
@@ -142,5 +138,19 @@ public class ScoreCounter {
             scrollAmount -= Gdx.input.getDeltaY();
         }
         checkScroll();
+    }
+
+    public int calcFinalScore() {
+        int score = 0;
+        for (IScoreObject publishedObject : publishedObjects) {
+            score += publishedObject.getScore();
+        }
+        return score;
+    }
+
+    public Medals getMedal() {
+        MedalInfo medalInfo = PixelShooter.PIXEL_SHOOTER_STATE.getWorldBackup().medalInfo;
+        int score = calcFinalScore();
+        return score >= medalInfo.minGold ? Medals.GOLD : score >= medalInfo.minSilver ? Medals.SILVER : score >= medalInfo.minBronze ? Medals.BRONZE : Medals.NONE;
     }
 }

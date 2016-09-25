@@ -188,7 +188,7 @@ public class EditingWorld {
         Collisions c = new Collisions(cList);
         world.addCollisions(c);
         for (Entity e : eList) {
-            world.addEntity(e);
+            world.addEntityInstantly(e);
         }
         world.worldChanged();
         return world;

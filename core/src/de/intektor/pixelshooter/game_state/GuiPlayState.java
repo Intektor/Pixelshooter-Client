@@ -17,12 +17,14 @@ import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.EntityBullet;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
 import de.intektor.pixelshooter.entity.EntityPlayer;
+import de.intektor.pixelshooter.enums.Medals;
 import de.intektor.pixelshooter.enums.PlayStateStatus;
 import de.intektor.pixelshooter.game_state.community_levels.GuiPublishLevelToMainServer;
 import de.intektor.pixelshooter.game_state.user_level.GuiFinishLevelToPublishLevel;
 import de.intektor.pixelshooter.game_state.worlds.GuiViewCampaignWorld;
 import de.intektor.pixelshooter.gui.*;
 import de.intektor.pixelshooter.helper.MathHelper;
+import de.intektor.pixelshooter.levels.CampaignInformation.WorldInformation;
 import de.intektor.pixelshooter.levels.CommunityPlayInformation;
 import de.intektor.pixelshooter.levels.PlayInformation;
 import de.intektor.pixelshooter.levels.WorldPlayInformation;
@@ -45,7 +47,7 @@ import static de.intektor.pixelshooter.render.RenderHelper.drawString;
 /**
  * @author Intektor
  */
-public class PlayState extends Gui implements DPadHandler {
+public class GuiPlayState extends Gui implements DPadHandler {
 
     private World theWorld;
     private EditingWorld backup;
@@ -315,6 +317,7 @@ public class PlayState extends Gui implements DPadHandler {
                         PixelShooter.enterGui(PixelShooter.USER_LEVELS_FOLDER);
                         break;
                     case WORLD_LEVEL:
+                        saveCampaignProgress();
                         PixelShooter.enterGui(PixelShooter.VIEW_CAMPAIGN_WORLD);
                         break;
                     case PUBLISH_LEVEL:
@@ -330,6 +333,7 @@ public class PlayState extends Gui implements DPadHandler {
                         CommunityPlayInformation communityPlayInformation = (CommunityPlayInformation) info;
                         PixelShooter.enterGui(PixelShooter.BROWSE_COMMUNITY_LEVELS_VIEW_LEVEL);
                         if (rated && !communityPlayInformation.alreadyRated && PixelShooter.googleAccount != null) {
+                            System.out.println("rating");
                             RatingPacketToServer packet = new RatingPacketToServer(starsRated, communityPlayInformation.info.officialID, PixelShooter.googleAccount.idToken);
                             PacketHelper.sendPacket(packet, PixelShooter.mainServerClient.connection);
                         }
@@ -341,10 +345,9 @@ public class PlayState extends Gui implements DPadHandler {
                 break;
             case 6:
                 WorldPlayInformation worldInfo = (WorldPlayInformation) info;
-                if (worldInfo.worldID == 1) {
-                    if (worldInfo.levelID < 30) {
-                        ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).startLevel(worldInfo.levelID + 1);
-                    }
+                if (worldInfo.levelID < 30) {
+                    ((GuiViewCampaignWorld) PixelShooter.getGuiByID(PixelShooter.VIEW_CAMPAIGN_WORLD)).startLevel(worldInfo.levelID + 1);
+                    saveCampaignProgress();
                 }
                 break;
         }
@@ -598,6 +601,16 @@ public class PlayState extends Gui implements DPadHandler {
                 int localX = x - (width / 2 - 280);
                 starsRated = Math.max(0, localX / 80);
             }
+        }
+    }
+
+    public void saveCampaignProgress() {
+        WorldPlayInformation info = (WorldPlayInformation) this.info;
+        WorldInformation worldInfo = PixelShooter.campaign.getInformation(info.worldID);
+        worldInfo.levelState = info.levelID;
+        Medals futureMedal = counter.getMedal();
+        if (futureMedal.ordinal() > worldInfo.getLevel(info.levelID).medal.ordinal()) {
+            worldInfo.getLevel(info.levelID).medal = futureMedal;
         }
     }
 }

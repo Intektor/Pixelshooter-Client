@@ -49,6 +49,7 @@ import de.intektor.pixelshooter_common.net.packet.*;
 import de.intektor.pixelshooter_common.packet.PacketRegistry;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Queue;
@@ -101,7 +102,7 @@ public class PixelShooter extends ApplicationAdapter {
     public static final int LOOKUP_OFFICIAL_ID = 20;
     public static final int SERVER_CONNECTION_SHUTDOWN_MESSAGE = 21;
 
-    public static final PlayState PIXEL_SHOOTER_STATE = new PlayState();
+    public static final GuiPlayState PIXEL_SHOOTER_STATE = new GuiPlayState();
     public static GuiLevelEditor LEVEL_EDITOR_STATE;
 
     public static GoogleAccount googleAccount;
@@ -175,7 +176,10 @@ public class PixelShooter extends ApplicationAdapter {
 
         System.out.println(Arrays.toString(Gdx.files.internal("assets/").list()));
 
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local("assets/font/PerfectPixel.ttf"));
+        URL resource = ImageStorage.class.getResource("ImageStorage.class");
+        boolean inJar = resource != null && resource.toString().startsWith("jar");
+        String domain = inJar ? "" : "assets/";
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.local(domain + "font/PerfectPixel.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 10;
         unScaledPerfectPixel10 = fontGenerator.generateFont(parameter);

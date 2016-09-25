@@ -2,6 +2,7 @@ package de.intektor.pixelshooter.net.client;
 
 import com.badlogic.gdx.Gdx;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter_common.common.Side;
 import de.intektor.pixelshooter_common.net.packet.ClientVersionPacketToServer;
 import de.intektor.pixelshooter_common.packet.Packet;
@@ -12,6 +13,7 @@ import javax.net.ssl.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.security.KeyStore;
 
 /**
@@ -69,12 +71,15 @@ public class MainServerClient {
             sslContext = SSLContext.getInstance("TLS");
             String defaultType = KeyStore.getDefaultType();
             KeyStore ks = null;
+            URL resource = ImageStorage.class.getResource("ImageStorage.class");
+            boolean inJar = resource != null && resource.toString().startsWith("jar");
+            String domain = inJar ? "" : "assets/";
             if (defaultType.equalsIgnoreCase("bks")) {
                 ks = KeyStore.getInstance("bks");
-                ks.load(Gdx.files.local("assets/keystore/serversidekeystore.bks").read(), "HartesPasswort123$$".toCharArray());
+                ks.load(Gdx.files.local(domain + "keystore/serversidekeystore.bks").read(), "HartesPasswort123$$".toCharArray());
             } else if (defaultType.equalsIgnoreCase("jks")) {
                 ks = KeyStore.getInstance("jks");
-                ks.load(Gdx.files.local("assets/keystore/serversidestore.jks").read(), "HartesPasswort123$$".toCharArray());
+                ks.load(Gdx.files.local(domain + "keystore/serversidestore.jks").read(), "HartesPasswort123$$".toCharArray());
             }
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(ks, "HartesPasswort123$$".toCharArray());

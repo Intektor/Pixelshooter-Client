@@ -10,12 +10,14 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
+import de.intektor.pixelshooter.game_state.GuiPlayState;
 import de.intektor.pixelshooter.game_state.user_level.LevelFolder;
 import de.intektor.pixelshooter.game_state.worlds.GuiWorldSelection.CompactWorldInformation;
 import de.intektor.pixelshooter.gui.Gui;
 import de.intektor.pixelshooter.gui.GuiButton;
 import de.intektor.pixelshooter.gui.GuiScrollBar;
 import de.intektor.pixelshooter.gui.GuiScrollBar.Direction;
+import de.intektor.pixelshooter.levels.WorldPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.world.World;
 
@@ -43,6 +45,7 @@ public class GuiViewCampaignWorld extends Gui {
             PixelShooter.enterGui(PixelShooter.WORLD_SELECTION);
             return;
         }
+        startLevel(id - 1);
     }
 
     @Override
@@ -62,10 +65,22 @@ public class GuiViewCampaignWorld extends Gui {
 
             batch.begin();
             RenderHelper.drawString(x + 408 / 2, height / 2 + 140 + 20, String.format("Level-%s", i), PixelShooter.unScaledPerfectPixel32, batch);
-            TextureRegion region = new TextureRegion(textureMap.get(file));
-            region.flip(false, true);
+            Texture texture1;
+            if (worldInfo.info.levelState >= i - 1) {
+                texture1 = textureMap.get(file);
+            } else {
+                texture1 = ImageStorage.main_menu_wooden;
+            }
+            TextureRegion region = new TextureRegion(texture1);
+            region.flip(false, worldInfo.info.levelState >= i - 1);
             batch.draw(region, x, height / 2 - 140, 408, 280);
             batch.end();
+
+            if (worldInfo.info.levelState <= i - 1) {
+                batch.begin();
+                RenderHelper.drawString(x + 408 / 2, height / 2, "?", PixelShooter.unScaledPerfectPixel128, batch);
+                batch.end();
+            }
 
             getButtonByID(i).setX(x);
             getButtonByID(i).setY(height / 2 - 140 - 50);
@@ -74,7 +89,7 @@ public class GuiViewCampaignWorld extends Gui {
             Texture texture = null;
             switch (worldInfo.info.getLevel(i - 1).medal) {
                 case NONE:
-
+                    texture = null;
                     break;
                 case BRONZE:
                     texture = ImageStorage.bronze_medal;
@@ -156,6 +171,10 @@ public class GuiViewCampaignWorld extends Gui {
     }
 
     public void startLevel(int levelID) {
-
+        GuiPlayState playState = (GuiPlayState) PixelShooter.getGuiByID(PixelShooter.PLAY_STATE);
+        playState.setPlayInformation(new WorldPlayInformation(worldInfo.info.worldID, levelID));
+        playState.setTheWorld(worldInfo.folder.files.get(levelID).world);
+        playState.setStart(true);
+        PixelShooter.enterGui(PixelShooter.PLAY_STATE);
     }
 }

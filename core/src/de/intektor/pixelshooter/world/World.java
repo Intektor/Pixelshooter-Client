@@ -153,6 +153,13 @@ public class World {
         }
     }
 
+    public void addEntityInstantly(Entity entity) {
+        entityList.add(entity);
+        if (entity.collidesWithPathFinder()) {
+            pathFinderCollidableEntities.add(entity);
+        }
+    }
+
     public void addCollision(WorldBorder collision) {
         borders.getBorders().add(collision);
     }

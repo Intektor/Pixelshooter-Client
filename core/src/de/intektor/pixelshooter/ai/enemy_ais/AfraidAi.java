@@ -123,7 +123,6 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
     }
 
     public static List<Point3f> findPlaceToHideFromPlayer(final EntityLiving hunted, final Entity hunter, float distance) {
-        System.out.println("find");
         BasicNode node = hunted.worldObj.getNextNodeForEntityMid(hunted, hunted.getGraphPath());
         List<Point2f> positions = PositionHelper.getAllPointsInRadius(new Point2f(node.x, node.y), distance, GuiLevelEditor.COLLISION_SIZE);
         Collections.sort(positions, new Comparator<Point2f>() {

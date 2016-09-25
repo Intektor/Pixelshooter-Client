@@ -15,7 +15,7 @@ public class CampaignInformation {
     public List<WorldInformation> worlds = new ArrayList<WorldInformation>();
 
     public CampaignInformation() {
-        worlds.add(new WorldInformation(30));
+        worlds.add(new WorldInformation(0, 30));
     }
 
     public void levelFinished(int worldID, int levelID) {
@@ -54,8 +54,10 @@ public class CampaignInformation {
         public List<LevelInformation> levels = new ArrayList<LevelInformation>();
 
         public int levelState;
+        public int worldID;
 
-        public WorldInformation(int levels) {
+        public WorldInformation(int worldID, int levels) {
+            this.worldID = worldID;
             this.levels = new ArrayList<LevelInformation>(levels);
             for (int i = 0; i < levels; i++) {
                 this.levels.add(new LevelInformation(i));
@@ -74,6 +76,7 @@ public class CampaignInformation {
         }
 
         public void writeToTag(PSTagCompound tag) throws IOException {
+            tag.setInteger("worldID", worldID);
             tag.setInteger("level_state", levelState);
             tag.setInteger("amt_of_lvls", levels.size());
             for (int i = 0; i < levels.size(); i++) {
@@ -86,6 +89,7 @@ public class CampaignInformation {
 
         public static WorldInformation readFromTag(PSTagCompound tag) throws IOException {
             WorldInformation info = new WorldInformation();
+            info.worldID = tag.getInteger("worldID");
             info.levelState = tag.getInteger("level_state");
             int levels = tag.getInteger("amt_of_lvls");
             for (int i = 0; i < levels; i++) {
