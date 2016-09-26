@@ -27,8 +27,8 @@ public class GuiWaitForServerToSendLevelInfo extends Gui {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         reset();
     }
 

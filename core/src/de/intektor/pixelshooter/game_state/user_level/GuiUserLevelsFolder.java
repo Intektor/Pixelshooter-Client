@@ -27,8 +27,8 @@ public class GuiUserLevelsFolder extends Gui {
     private LevelFolder folder;
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         if (folder.files.isEmpty()) {
             PixelShooter.enterGui(PixelShooter.USER_LEVEL_OVERVIEW);
         }

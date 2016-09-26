@@ -1,3 +1,4 @@
+
 package de.intektor.pixelshooter.game_state.community_levels.browse_user_levels;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.abstrct.AbstractHelper;
 import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.auth.GoogleAccount;
 import de.intektor.pixelshooter.gui.Gui;
@@ -73,13 +75,16 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
     boolean userLevels;
 
+    int buttonHeight;
+
     public GuiBrowseCommunityLevelsFromMainServer() {
         TickTimerHandler.registerTickTimer(30, TICK_TIMER_BROWSE_COMMUNITY_LEVELS_REQUEST_MORE_STRING);
+        buttonHeight = AbstractHelper.isTouchDevice() ? 75 : 50;
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         refresh();
         if (!wasHereBefore) {
             wasHereBefore = true;
@@ -97,34 +102,34 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
         renderer.set(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.BLACK);
-        renderer.rect(0, height - 150, width, 50);
+        renderer.rect(0, height - buttonHeight * 2 - 50, width, 50);
 
         renderer.set(ShapeRenderer.ShapeType.Line);
 
         renderer.setColor(Color.DARK_GRAY);
 
-        renderer.line(0, height - 150, width, height - 150);
+        renderer.line(0, height - buttonHeight * 2 - 50, width, height - buttonHeight * 2 - 50);
 
         renderer.identity();
 
         float percent = -scrollBar.getScrollPercent();
-        int scrollAmount = (int) ((levels.size() * 50 - height + 150 + 100) * percent);
+        int scrollAmount = (int) ((levels.size() * buttonHeight - height + buttonHeight * 3 + buttonHeight * 2) * percent);
 
-        int y2 = height - 150 - levels.size() * 50 - scrollAmount;
+        int y2 = height - buttonHeight * 2 - 50 - levels.size() * buttonHeight - scrollAmount;
 
-        renderer.line(0, height - 100, width, height - 100);
+        renderer.line(0, height - buttonHeight * 2, width, height - buttonHeight * 2);
         renderer.identity();
-        renderer.line(width / 4, height - 100, width / 4, y2);
+        renderer.line(width / 4, height - buttonHeight * 2, width / 4, y2);
         renderer.identity();
-        renderer.line(width / 2, height - 100, width / 2, y2);
+        renderer.line(width / 2, height - buttonHeight * 2, width / 2, y2);
         renderer.identity();
-        renderer.line(width / 2 + width / 2 / 4, height - 100, width / 2 + width / 2 / 4, y2);
+        renderer.line(width / 2 + width / 2 / 4, height - buttonHeight * 2, width / 2 + width / 2 / 4, y2);
         renderer.identity();
-        renderer.line(width / 2 + width / 2 / 4 * 2, height - 100, width / 2 + width / 2 / 4 * 2, y2);
+        renderer.line(width / 2 + width / 2 / 4 * 2, height - buttonHeight * 2, width / 2 + width / 2 / 4 * 2, y2);
         renderer.identity();
-        renderer.line(width / 2 + width / 2 / 4 * 3, height - 100, width / 2 + width / 2 / 4 * 3, y2);
+        renderer.line(width / 2 + width / 2 / 4 * 3, height - buttonHeight * 2, width / 2 + width / 2 / 4 * 3, y2);
         renderer.identity();
-        renderer.line(width - 75, height - 100, width - 75, y2);
+        renderer.line(width - 75, height - buttonHeight * 2, width - 75, y2);
         renderer.end();
 
         BitmapFont font = PixelShooter.unScaledPerfectPixel22;
@@ -132,12 +137,13 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
         font.setColor(new Color(0xFFFF66FF));
 
-        RenderHelper.drawString(width / 8, height - 125, "Level Name", font, batch);
-        RenderHelper.drawString(width / 4 + width / 8, height - 125, "Author", font, batch);
-        RenderHelper.drawString(width / 2 + width / 8 / 2, height - 125, "Rating", font, batch);
-        RenderHelper.drawString(width / 2 + width / 8 + width / 16, height - 125, "Play Count", font, batch);
-        RenderHelper.drawString(width / 2 + width / 4 + width / 16, height - 125, "Downloads", font, batch);
-        RenderHelper.drawString(width / 2 + width / 4 + width / 8 + width / 16 / 2, height - 125, "Date", font, batch);
+        int i1 = buttonHeight * 2 + 25;
+        RenderHelper.drawString(width / 8, height - i1, "Level Name", font, batch);
+        RenderHelper.drawString(width / 4 + width / 8, height - i1, "Author", font, batch);
+        RenderHelper.drawString(width / 2 + width / 8 / 2, height - i1, "Rating", font, batch);
+        RenderHelper.drawString(width / 2 + width / 8 + width / 16, height - i1, "Play Count", font, batch);
+        RenderHelper.drawString(width / 2 + width / 4 + width / 16, height - i1, "Downloads", font, batch);
+        RenderHelper.drawString(width / 2 + width / 4 + width / 8 + width / 16 / 2, height - i1, "Date", font, batch);
 
         font.setColor(Color.WHITE);
 
@@ -151,8 +157,8 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yy");
         for (int i = 0; i < levels.size(); i++) {
             BasicLevelInformation level = levels.get(i);
-            int y = height - 200 - (scrollAmount + i * 50) + 25;
-            boolean bool = y < height - 100 && y > -50;
+            int y = height - buttonHeight * 3 - (scrollAmount + i * buttonHeight) + buttonHeight / 2 - 50;
+            boolean bool = y < height - buttonHeight * 2 && y > -buttonHeight;
             if (bool) {
                 RenderHelper.drawString(10, y, level.levelName, font, batch, false, true);
                 RenderHelper.drawString(width / 4 + 10, y, level.authorName, font, batch, false, true);
@@ -168,7 +174,7 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
         }
         font.setColor(Color.WHITE);
         batch.end();
-        Gdx.gl.glScissor(0, 0, (int) (width * (Gdx.graphics.getWidth() / 1280f)), (int) ((height - 150) * (Gdx.graphics.getHeight() / 720f)));
+        Gdx.gl.glScissor(0, 0, (int) (width * (Gdx.graphics.getWidth() / 1280f)), (int) ((height - buttonHeight * 3) * (Gdx.graphics.getHeight() / 720f) + 50));
         Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
         batch.begin();
@@ -181,7 +187,7 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
             shown_string = "No more levels available!";
         }
 
-        RenderHelper.drawString((width - 75) / 2, y2 - 50, shown_string, font, batch, true);
+        RenderHelper.drawString((width - 75) / 2, y2 - buttonHeight, shown_string, font, batch, true);
         batch.end();
     }
 
@@ -191,13 +197,13 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
         float percent = -scrollBar.getScrollPercent();
 
-        int scrollAmount = (int) ((levels.size() * 50 - height + 150 + 100) * percent);
+        int scrollAmount = (int) ((levels.size() * buttonHeight - height + buttonHeight * 3 + buttonHeight * 2) * percent);
 
         if (componentList.size() > 6) {
             for (int i = 0; i < levels.size(); i++) {
                 GuiButton button = (GuiButton) componentList.get(i + basicAmtOfComponents + 1);
-                button.setY(height - 200 - (scrollAmount + i * 50));
-                boolean b = button.getY() < height - 150 && button.getY() > -50;
+                button.setY(height - buttonHeight * 3 - (scrollAmount + i * buttonHeight) - 50);
+                boolean b = button.getY() < height - buttonHeight * 3 && button.getY() > -buttonHeight;
                 button.enabled = b;
                 button.setShown(b);
             }
@@ -211,7 +217,7 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
             }
         }
         if (supply == SupplyType.MORE && !sendMoreRequestPacket) {
-            if (scrollAmount < -(levels.size() * 50 - height + 150)) {
+            if (scrollAmount < -(levels.size() * buttonHeight - height + buttonHeight * 3)) {
                 Function function = textFieldSearch.isShown() ? Function.SEARCH : Function.NORMAL;
                 BrowseCommunityLevelsLevelRequestToServer packet = new BrowseCommunityLevelsLevelRequestToServer(getTime(), getType(), function, new Order(OrderType.MORE, levels.get(levels.size() - 1).officialID, textFieldSearch.convertText(), textFieldUserFilter.convertText()), getUserData());
                 PacketHelper.sendPacket(packet, PixelShooter.mainServerClient.connection);
@@ -374,25 +380,25 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
 
     @Override
     public void addGuiComponents() {
-        componentList.add(new GuiButton(0, height - 50, width / 4, 50, "Back", BUTTON_BACK, true));
-        componentList.add(new GuiButton.GuiButtonSwitch(width / 4, height - 50, width / 4, 50, BUTTON_FILTER_TIME, true, Arrays.asList("Filter: Today", "Filter: Last Week", "Filter: Last Month", "Filter: Last Year", "Filter: Anytime"), 4));
-        componentList.add(new GuiButton(width / 4 * 3, height - 50, width / 4, 50, "Refresh", BUTTON_REFRESH, true));
-        componentList.add(new GuiButton(width / 4 * 3, height - 100, width / 4, 50, "Search", BUTTON_SEARCH, true));
-        componentList.add(new GuiButton(0, height - 50, width / 4, 50, "Cancel Search", BUTTON_CANCEL_SEARCH, false));
+        componentList.add(new GuiButton(0, height - buttonHeight, width / 4, buttonHeight, "Back", BUTTON_BACK, true));
+        componentList.add(new GuiButton.GuiButtonSwitch(width / 4, height - buttonHeight, width / 4, buttonHeight, BUTTON_FILTER_TIME, true, Arrays.asList("Filter: Today", "Filter: Last Week", "Filter: Last Month", "Filter: Last Year", "Filter: Anytime"), 4));
+        componentList.add(new GuiButton(width / 4 * 3, height - buttonHeight, width / 4, buttonHeight, "Refresh", BUTTON_REFRESH, true));
+        componentList.add(new GuiButton(width / 4 * 3, height - buttonHeight * 2, width / 4, buttonHeight, "Search", BUTTON_SEARCH, true));
+        componentList.add(new GuiButton(0, height - buttonHeight, width / 4, buttonHeight, "Cancel Search", BUTTON_CANCEL_SEARCH, false));
 
-        componentList.add(new GuiButton.GuiButtonSwitch(width / 2, height - 50, width / 4, 50, BUTTON_FILTER_TYPE, true, Arrays.asList("Type: Best rating", "Type: Most played", "Type: Most downloads", "Type: Newest", "Type: Oldest"), 3));
+        componentList.add(new GuiButton.GuiButtonSwitch(width / 2, height - buttonHeight, width / 4, buttonHeight, BUTTON_FILTER_TYPE, true, Arrays.asList("Type: Best rating", "Type: Most played", "Type: Most downloads", "Type: Newest", "Type: Oldest"), 3));
 
-        textFieldSearch = new GuiTextField(width / 4, height - 100, width / 2, 50, TEXT_FIELD_SEARCH, false, 20, true, true, false, this, "", "");
+        textFieldSearch = new GuiTextField(width / 4, height - buttonHeight * 2, width / 2, buttonHeight, TEXT_FIELD_SEARCH, false, 20, true, true, false, this, "", "");
         componentList.add(textFieldSearch);
-        textFieldUserFilter = new GuiTextField(0, height - 100, width / 4, 50, TEXT_FIELD_USER_FILTER, false, 20, true, true, true, this, "", "Author Filter:");
+        textFieldUserFilter = new GuiTextField(0, height - buttonHeight * 2, width / 4, buttonHeight, TEXT_FIELD_USER_FILTER, false, 20, true, true, true, this, "", "Author Filter:");
         componentList.add(textFieldUserFilter);
-        scrollBar = new GuiScrollBar(width - 75, 0, 75, height - 150, true, Direction.VERTICAL, 10, height - 150);
+        scrollBar = new GuiScrollBar(width - 75, 0, 75, height - buttonHeight * 3, true, Direction.VERTICAL, 10, height - buttonHeight * 3);
 
         componentList.add(scrollBar);
-        componentList.add(new GuiButton(0, height - 100, width / 4, 50, "Your Levels", BUTTON_USER_LEVELS, true));
-        componentList.add(new GuiButton(0, height - 100, width / 4, 50, "Back to normal levels", BUTTON_NORMAL_LEVELS, false));
+        componentList.add(new GuiButton(0, height - buttonHeight * 2, width / 4, buttonHeight, "Your Levels", BUTTON_USER_LEVELS, true));
+        componentList.add(new GuiButton(0, height - buttonHeight * 2, width / 4, buttonHeight, "Back to normal levels", BUTTON_NORMAL_LEVELS, false));
 
-        componentList.add(new GuiButton(width / 4, height - 100, width / 2, 50, "Enter Level Code", BUTTON_OFFICIAL_ID, true));
+        componentList.add(new GuiButton(width / 4, height - buttonHeight * 2, width / 2, buttonHeight, "Enter Level Code", BUTTON_OFFICIAL_ID, true));
 
         amtOfButtons = 9;
         basicAmtOfComponents = amtOfButtons + 3;
@@ -419,13 +425,13 @@ public class GuiBrowseCommunityLevelsFromMainServer extends Gui {
         componentList = componentList.subList(0, basicAmtOfComponents);
         componentList.add(scrollBar);
         for (BasicLevelInformation level : levels) {
-            componentList.add(new GuiButton(0, 0, width - 75, 50, "", id++, new Color(0xEFEFEFff), new Color(0xEFEFEFff), new Color(0xffffffff), new Color(0xffffffff), Color.RED, Color.RED, true));
+            componentList.add(new GuiButton(0, 0, width - 75, buttonHeight, "", id++, new Color(0xEFEFEFff), new Color(0xEFEFEFff), new Color(0xffffffff), new Color(0xffffffff), Color.RED, Color.RED, true));
         }
         if (hadLevelsBefore) {
-            scrollBar.addAllWindowSize((levels.size() * 50 + 50) - scrollBar.getAllWindowSize());
+            scrollBar.addAllWindowSize((levels.size() * buttonHeight + buttonHeight) - scrollBar.getAllWindowSize());
             scrollBar.currentlyClicked = false;
         } else {
-            scrollBar.setAllWindowSize((levels.size() * 50 + 50));
+            scrollBar.setAllWindowSize((levels.size() * buttonHeight + buttonHeight));
         }
     }
 

@@ -2,7 +2,7 @@ package de.intektor.pixelshooter.level.editor;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -49,6 +49,7 @@ public class GuiLevelEditor extends Gui {
     public static volatile EditingWorld edit;
 
     protected LevelEditorTool tool = LevelEditorTool.TOOL_SELECT;
+    protected LevelEditorTool prevTool;
     boolean selecting;
 
     List<MovableObject> removeNextLoop = new ArrayList<MovableObject>();
@@ -62,8 +63,8 @@ public class GuiLevelEditor extends Gui {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         resetCamera();
         renderer2 = new ShapeRenderer();
         renderer2.setAutoShapeType(true);
@@ -162,7 +163,7 @@ public class GuiLevelEditor extends Gui {
         MouseInfo info = getMInfo(input.getX(), input.getY());
         if (!isGamePaused()) {
             if (tool == LevelEditorTool.TOOL_SELECT || tool == LevelEditorTool.TOOL_TRASH_CAN) {
-                if (input.isTouched(0) && !input.isKeyPressed(Input.Keys.SPACE) && edit.getSelectedObjects().size() == 0 && getNumberOfTouches() == 1) {
+                if (input.isTouched(0) && !input.isKeyPressed(Keys.SPACE) && edit.getSelectedObjects().size() == 0 && getNumberOfTouches() == 1) {
                     RenderHelper.renderSquare(renderer2, tool == LevelEditorTool.TOOL_SELECT ? Color.WHITE : Color.RED, CLICK_X, CLICK_Y, CURRENT_X - CLICK_X, CURRENT_Y - CLICK_Y);
                     for (MovableObject movableObject : edit.getObjectsInRange(CLICK_X, CLICK_Y, CURRENT_X, CURRENT_Y)) {
                         if (movableObject.canBeRemoved()) {
@@ -173,7 +174,7 @@ public class GuiLevelEditor extends Gui {
                     }
                 }
             } else if (tool == LevelEditorTool.TOOL_SQUARE_COLLISION) {
-                if (input.isTouched(0) && !input.isKeyPressed(Input.Keys.SPACE) && getNumberOfTouches() == 1) {
+                if (input.isTouched(0) && !input.isKeyPressed(Keys.SPACE) && getNumberOfTouches() == 1) {
                     Collision2D rect = MovableObject.calculateValidSize(CLICK_X, CLICK_Y, CURRENT_X, CURRENT_Y);
                     if (rect != null) {
                         RenderHelper.renderSquare(renderer2, edit.spaceClear(rect, null) ? Color.GREEN : Color.RED, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
@@ -302,15 +303,15 @@ public class GuiLevelEditor extends Gui {
             if (input.isTouched() && !isGamePaused() && getNumberOfTouches() == 1) {
                 CURRENT_X = rrInfo.getMouseX();
                 CURRENT_Y = rrInfo.getMouseY();
-                if (input.isKeyPressed(Input.Keys.SPACE) || (tool == LevelEditorTool.TOOL_GRAB)) {
+                if (input.isKeyPressed(Keys.SPACE) || (tool == LevelEditorTool.TOOL_GRAB)) {
                     rawWorldCamera.translate(-(rnInfo.getMouseX() - rpInfo.getMouseX()), -(rnInfo.getMouseY() - rpInfo.getMouseY()));
                     translationChanged();
                 }
-                if (input.isKeyPressed(Input.Keys.SPACE)) return;
+                if (input.isKeyPressed(Keys.SPACE)) return;
                 switch (tool) {
                     case TOOL_SELECT:
                         List<MovableObject> l = edit.getSelectedObjects();
-                        if (!input.isKeyPressed(Input.Keys.SPACE) && getNumberOfTouches() != 3) {
+                        if (!input.isKeyPressed(Keys.SPACE) && getNumberOfTouches() != 3) {
                             Collision2D modCollision2D;
                             //Check for collisions
                             for (MovableObject o : l) {
@@ -338,6 +339,27 @@ public class GuiLevelEditor extends Gui {
             }
         }
         super.pointerDragged(x, y, prevX, prevY, pointer);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Keys.D:
+                prevTool = tool;
+                changeTool(LevelEditorTool.TOOL_TRASH_CAN);
+                break;
+        }
+        return super.keyDown(keycode);
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        switch (keycode) {
+            case Keys.D:
+                changeTool(prevTool);
+                break;
+        }
+        return super.keyUp(keycode);
     }
 
     @Override
@@ -404,7 +426,7 @@ public class GuiLevelEditor extends Gui {
             MouseInfo info = getMInfo(input.getX(), input.getY());
             CLICK_X = CURRENT_X = info.getMouseX();
             CLICK_Y = CURRENT_Y = info.getMouseY();
-            if (getNumberOfTouches() == 1 && !input.isKeyPressed(Input.Keys.SPACE)) {
+            if (getNumberOfTouches() == 1 && !input.isKeyPressed(Keys.SPACE)) {
                 if (tool == LevelEditorTool.TOOL_SELECT) {
                     if (edit.getSelectedObjects().size() == 0 || ((edit.getSelectedObjects().size() == 1 ? edit.getObjectAtPosition(info.getMouseX(), info.getMouseY()) != edit.getSelectedObjects().get(0) : edit.getSelectedObjects() != null)) && !hoveredOverComponent(input.getX(), input.getY())) {
                         selecting = true;
@@ -676,7 +698,7 @@ public class GuiLevelEditor extends Gui {
     //PLAYER
     final int TEXT_FIELD_PLAYER_ALLOWED_BULLETS = 5, TEXT_FIELD_PLAYER_COOL_DOWN = 6;
     //TRIPLE_SHOOTER
-    final int TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS = 3, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS = 4;
+    final int TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS = 3, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_FIELD = 4;
     //LASER SHOOTER
     final int TEXT_FIELD_TANK_LASER_SHOOTER_CHARGE_TIME = 10, TEXT_FIELD_TANK_LASER_SHOOTER_LASER_TIME = 11;
 
@@ -737,7 +759,7 @@ public class GuiLevelEditor extends Gui {
         componentList.add(new GuiNumberField(width - 300, height - 60 * 2, 300, 60, TEXT_FIELD_TANK_TRACKING_RANGE, false, 5, "Tracking Range", this, "", false));
         componentList.add(new GuiNumberField(width - 300, height - 60 * 3, 300, 60, TEXT_FIELD_SHOOTING_COOLDOWN, false, 5, "Shooting Cooldown in ticks", this, "", false));
         componentList.add(new GuiNumberField(width - 300, height - 60 * 4, 300, 60, TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS, false, 5, "Amount of bullets", this, "", false));
-        componentList.add(new GuiNumberField(width - 300, height - 60 * 5, 300, 60, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS, false, 3, "Radius", this, "", false));
+        componentList.add(new GuiNumberField(width - 300, height - 60 * 5, 300, 60, TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_FIELD, false, 3, "Radius", this, "", false));
 
         componentList.add(new GuiNumberField(width - 300, height - 60 * 6, 300, 60, TEXT_FIELD_PLAYER_ALLOWED_BULLETS, false, 3, "Shots before Cooldown", this, "", false));
         componentList.add(new GuiNumberField(width - 300, height - 60 * 7, 300, 60, TEXT_FIELD_PLAYER_COOL_DOWN, false, 5, "Cooldown in ticks", this, "", false));
@@ -907,7 +929,7 @@ public class GuiLevelEditor extends Gui {
                     GuiTextField trackingRangeField = getTextFieldByID(TEXT_FIELD_TANK_TRACKING_RANGE);
                     GuiTextField shootingCooldown = getTextFieldByID(TEXT_FIELD_SHOOTING_COOLDOWN);
                     GuiTextField triple_attacker_amtOfBullets = getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS);
-                    GuiTextField triple_attacker_shootingRadius = getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS);
+                    GuiTextField triple_attacker_shootingField = getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_FIELD);
                     GuiTextField player_allowedShotsBeforeCooldown = getTextFieldByID(TEXT_FIELD_PLAYER_ALLOWED_BULLETS);
                     GuiTextField player_cooldownTicks = getTextFieldByID(TEXT_FIELD_PLAYER_COOL_DOWN);
                     GuiTextField damageField = getTextFieldByID(TEXT_FIELD_DAMAGE);
@@ -955,14 +977,14 @@ public class GuiLevelEditor extends Gui {
                             triple_attacker_amtOfBullets.setY(y -= 60);
                             triple_attacker_amtOfBullets.setText(tank.triple_attacker_player_amtOfBullets + "");
 
-                            triple_attacker_shootingRadius.setShown(activated);
-                            triple_attacker_shootingRadius.setY(y -= 60);
-                            triple_attacker_shootingRadius.setText(tank.triple_attacker_player_radiusOfShooting + "");
+                            triple_attacker_shootingField.setShown(activated);
+                            triple_attacker_shootingField.setY(y -= 60);
+                            triple_attacker_shootingField.setText(tank.triple_attacker_player_field_of_shooting + "");
                         }
                         if (tank.getTankType().getTank().isStandardBulletShooter()) {
-                            bulletBounces.setText(tank.bulletBounces + "");
                             bulletBounces.setShown(activated);
                             bulletBounces.setY(y -= 60);
+                            bulletBounces.setText(tank.bulletBounces + "");
                         }
                         if (tank.getTankType() == TankType.TANK_LASER_SHOOTER) {
                             laser_chargeTime.setShown(activated);
@@ -1015,8 +1037,8 @@ public class GuiLevelEditor extends Gui {
                     if (field == getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_AMT_OF_BULLETS)) {
                         tank.triple_attacker_player_amtOfBullets = Integer.parseInt(field.convertText());
                     }
-                    if (field == getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_RADIUS)) {
-                        tank.triple_attacker_player_radiusOfShooting = Integer.parseInt(field.convertText());
+                    if (field == getTextFieldByID(TEXT_FIELD_TANK_TRIPLE_SHOOTER_SHOOTING_FIELD)) {
+                        tank.triple_attacker_player_field_of_shooting = Integer.parseInt(field.convertText());
                     }
                     if (field == getTextFieldByID(TEXT_FIELD_PLAYER_ALLOWED_BULLETS)) {
                         tank.player_shotsBeforeCooldown = Integer.parseInt(field.convertText());

@@ -9,6 +9,7 @@ import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.Collisions;
 import de.intektor.pixelshooter.collision.WorldBorder;
 import de.intektor.pixelshooter.enums.EnumSide;
+import de.intektor.pixelshooter.sound.SoundHelper;
 import de.intektor.pixelshooter.world.World;
 
 import javax.vecmath.Point2f;
@@ -288,6 +289,7 @@ public abstract class Entity {
         if (health <= 0) {
             kill(new KillReason.Health_Zero(source.damage, prevHealth, source.damager));
         }
+        SoundHelper.playHitSound(worldObj.thePlayer, this);
     }
 
     /**

@@ -22,14 +22,10 @@ public class ImageStorage {
             heavy_ammo,
             grab_cursor,
             background_wooden,
-            background_grass,
             border_texture_wooden,
-            border_texture_grass,
             border_breakable_wooden,
-            border_breakable_grass,
             mine_bullet,
             world_type_wooden,
-            world_type_grass,
             bronze_medal,
             silver_medal,
             gold_medal,
@@ -38,13 +34,7 @@ public class ImageStorage {
             empty_stars,
             full_stars,
             green_check_mark,
-
-    main_menu_wooden,
-
-    background_desert,
-            border_desert_breakable,
-            border_desert_unbreakable,
-            tiny_picture_desert;
+            main_menu_wooden;
 
     public static void init() {
         URL resource = ImageStorage.class.getResource("ImageStorage.class");
@@ -62,15 +52,11 @@ public class ImageStorage {
             chasing_ammo = new Texture(domain + "level_editor/bullet_type/Chasing_Ammo.png");
             grab_cursor = new Texture(domain + "level_editor/tools/Grab.png");
             background_wooden = new Texture(domain + "world/wooden/Background_wooden.png");
-            background_grass = new Texture(domain + "world/grass/Background_grass.png");
             border_texture_wooden = new Texture(domain + "world/wooden/Border_Wooden.png");
-            border_texture_grass = new Texture(domain + "world/grass/Border_Grass.png");
             border_breakable_wooden = new Texture(domain + "world/wooden/Border_Breakable_Wooden.png");
-            border_breakable_grass = new Texture(domain + "world/grass/Border_Breakable_Grass.png");
             mine_bullet = new Texture(domain + "level_editor/bullet_type/Mine_Bullet.png");
             heavy_ammo = new Texture(domain + "level_editor/bullet_type/Heavy_Ammo.png");
             world_type_wooden = new Texture(domain + "world/wooden/world_type_wooden.png");
-            world_type_grass = new Texture(domain + "world/grass/world_type_grass.png");
             dark_heart = new Texture(domain + "play_state/dark_heart.png");
             bronze_medal = new Texture(domain + "play_state/bronze_medal.png");
             silver_medal = new Texture(domain + "play_state/silver_medal.png");
@@ -78,10 +64,6 @@ public class ImageStorage {
             copy_image = new Texture(domain + "level_editor/tools/copy_tool.png");
             empty_stars = new Texture(domain + "play_state/empty_stars.png");
             full_stars = new Texture(domain + "play_state/full_stars.png");
-            background_desert = new Texture(domain + "world/desert/background_desert.png");
-            border_desert_breakable = new Texture(domain + "world/desert/border_desert_breakable.png");
-            border_desert_unbreakable = new Texture(domain + "world/desert/border_desert_unbreakable.png");
-            tiny_picture_desert = new Texture(domain + "world/desert/desert_tiny_picture.png");
             main_menu_wooden = new Texture(domain + "menu/main_menu_picture_wooden.png");
             green_check_mark = new Texture(domain + "level_editor/tools/green_check_mark.png");
         } catch (Exception ex) {

@@ -21,8 +21,8 @@ public class GuiServerError extends Gui {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         TickTimerHandler.resetTickTimer(TICK_TIMER_WAIT_TILL_EXIT_GUI);
     }
 

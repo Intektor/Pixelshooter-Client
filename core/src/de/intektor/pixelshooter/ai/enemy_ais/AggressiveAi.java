@@ -9,6 +9,7 @@ import de.intektor.pixelshooter.collision.WorldBorder;
 import de.intektor.pixelshooter.entity.EntityBullet;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
 import de.intektor.pixelshooter.path.PathHelper;
+import de.intektor.pixelshooter.sound.SoundHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 
 import javax.vecmath.Point3f;
@@ -36,6 +37,7 @@ public abstract class AggressiveAi<T extends EntityEnemyTank> extends AIEnemyTan
             rotateBarrel();
             if (TickTimerHandler.hasTickTimerFinished(TICK_TIMER_SHOOTING) && TickTimerHandler.hasTickTimerFinished(TICK_TIMER_NO_ATTACK_IDLE)) {
                 if (attack()) {
+                    SoundHelper.playShootingSound(trackedPlayer, entity, 1);
                     TickTimerHandler.resetTickTimer(TICK_TIMER_SHOOTING);
                 } else {
                     TickTimerHandler.resetTickTimer(TICK_TIMER_NO_ATTACK_IDLE);

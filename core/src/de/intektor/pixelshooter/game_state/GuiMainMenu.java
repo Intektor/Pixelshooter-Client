@@ -17,8 +17,8 @@ public class GuiMainMenu extends Gui {
     final int START_GAME = 0, OPTIONS = 1, EXIT_GAME = 2, LOGIN_WITH_GOOGLE = 3;
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         getButtonByID(LOGIN_WITH_GOOGLE).setDescription(PixelShooter.googleAccount == null ? "Login with Google!" : "Logout!");
     }
 

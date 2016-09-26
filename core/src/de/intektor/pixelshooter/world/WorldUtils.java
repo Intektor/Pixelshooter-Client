@@ -33,7 +33,7 @@ public class WorldUtils {
     }
 
     public static FrameBuffer getPlayStateWorldTexture(World world) {
-        FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB565, 1280, 720, false, true);
+        FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, true);
         buffer.begin();
         ModelBatch batch = new ModelBatch();
         world.renderWorld(batch, true);

@@ -26,8 +26,8 @@ public class GuiWaitForLevelPublishServerResponse extends Gui {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         reset();
     }
 

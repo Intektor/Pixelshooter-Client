@@ -47,8 +47,8 @@ public class GuiConnectToGoogle extends Gui {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         reset();
         Net.HttpRequest r = new Net.HttpRequest(Net.HttpMethods.POST);
         r.setHeader(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");

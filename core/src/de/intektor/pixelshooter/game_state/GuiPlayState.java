@@ -16,6 +16,7 @@ import de.intektor.pixelshooter.abstrct.ImageStorage;
 import de.intektor.pixelshooter.collision.*;
 import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.EntityBullet;
+import de.intektor.pixelshooter.entity.EntityBullet.*;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
 import de.intektor.pixelshooter.entity.EntityPlayer;
 import de.intektor.pixelshooter.enums.Medals;
@@ -32,6 +33,7 @@ import de.intektor.pixelshooter.levels.WorldPlayInformation;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.ScoreCounter;
 import de.intektor.pixelshooter.score.object.BulletShotScore;
+import de.intektor.pixelshooter.sound.SoundStorage;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.world.EditingWorld;
 import de.intektor.pixelshooter.world.World;
@@ -46,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static de.intektor.pixelshooter.render.RenderHelper.drawString;
 
@@ -108,8 +111,8 @@ public class GuiPlayState extends Gui implements DPadHandler {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         TickTimerHandler.registerTickTimer(90, TICK_TIMER_SPAWN_BUTTONS);
         restartGame();
     }
@@ -455,24 +458,24 @@ public class GuiPlayState extends Gui implements DPadHandler {
 
                 switch (player.bulletType) {
                     case STANDARD_BULLET:
-                        bullet = new EntityBullet.StandardBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, theWorld, player, Color.GREEN, player.damage, player.bulletBounces);
+                        bullet = new StandardBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, theWorld, player, Color.GREEN, player.damage, player.bulletBounces);
                         bullet.motionX += cos * 1;
                         bullet.motionZ += sin * 1;
                         shot = true;
                         break;
                     case ARTILLERY_BULLET:
-                        bullet = new EntityBullet.ArtilleryBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getHeight() / 2, theWorld, player, Color.GREEN, ray.hitX, ray.hitY, ray.hitZ, player.damage);
+                        bullet = new ArtilleryBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getHeight() / 2, theWorld, player, Color.GREEN, ray.hitX, ray.hitY, ray.hitZ, player.damage);
                         bullet.motionX += cos * 1;
                         bullet.motionZ += sin * 1;
                         shot = true;
                         break;
                     case TRIPLE_BULLET:
-                        double radius = player.radiusOfShooting;
-                        for (int i = 0; i < player.amtOfBullets; i++) {
-                            bullet = new EntityBullet.StandardBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, player.worldObj, player, Color.RED, player.damage, player.bulletBounces);
+                        double radius = player.fieldOfShooting;
+                        for (double r = 0; r <= radius; r += radius / (player.amtOfBullets - 1)) {
+                            bullet = new StandardBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, player.worldObj, player, Color.RED, player.damage, player.bulletBounces);
 
-                            sin = Math.sin(player.getLookRotation() + Math.toRadians(-radius / player.amtOfBullets + radius / player.amtOfBullets * i));
-                            cos = Math.cos(player.getLookRotation() + Math.toRadians(-radius / player.amtOfBullets + radius / player.amtOfBullets * i));
+                            sin = Math.sin(player.getLookRotation() + Math.toRadians(r - radius / 2));
+                            cos = Math.cos(player.getLookRotation() + Math.toRadians(r - radius / 2));
 
                             bullet.motionZ = (float) (sin * 1);
                             bullet.motionX = (float) (cos * 1);
@@ -484,19 +487,19 @@ public class GuiPlayState extends Gui implements DPadHandler {
                         ticksSinceLastShoot = 0;
                         break;
                     case CHASING_BULLET:
-                        bullet = new EntityBullet.ChasingBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, player.worldObj, player, Color.ORANGE, player.damage, player.bulletBounces);
+                        bullet = new ChasingBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, player.worldObj, player, Color.ORANGE, player.damage, player.bulletBounces);
                         bullet.motionX = (float) cos;
                         bullet.motionZ = (float) sin;
                         shot = true;
                         break;
                     case MINE_BULLET:
-                        bullet = new EntityBullet.MineBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getHeight() / 2, theWorld, player, Color.GREEN, ray.hitX, ray.hitY, ray.hitZ, player, player.damage);
+                        bullet = new MineBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getHeight() / 2, theWorld, player, Color.GREEN, ray.hitX, ray.hitY, ray.hitZ, player, player.damage);
                         bullet.motionX += cos * 1;
                         bullet.motionZ += sin * 1;
                         shot = true;
                         break;
                     case HEAVY_BULLET:
-                        bullet = new EntityBullet.HeavyBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, theWorld, player, Color.GREEN, player.damage, player.bulletBounces);
+                        bullet = new HeavyBullet(player.posX + player.getWidth() / 2, 0, player.posZ + player.getDepth() / 2, theWorld, player, Color.GREEN, player.damage, player.bulletBounces);
                         bullet.motionX += cos * 1;
                         bullet.motionZ += sin * 1;
                         shot = true;
@@ -504,6 +507,8 @@ public class GuiPlayState extends Gui implements DPadHandler {
                 }
                 ticksSinceLastShoot = 0;
                 if (shot) {
+                    Random r = new Random();
+                    SoundStorage.shootPlop.play(1, 1 + r.nextFloat() % 0.1f - 0.05f, 0);
                     theWorld.scoreObjects.add(new BulletShotScore(-200));
                 }
                 if (bullet != null) {

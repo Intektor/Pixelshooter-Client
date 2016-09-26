@@ -19,6 +19,7 @@ import de.intektor.pixelshooter.helper.ColorHelper;
 import de.intektor.pixelshooter.helper.MathHelper;
 import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.KillTankScore;
+import de.intektor.pixelshooter.sound.SoundHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.world.World;
 
@@ -171,6 +172,7 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
                         bullet.motionX = (float) (cos * 1);
 
                         entity.worldObj.addEntity(bullet);
+                        SoundHelper.playShootingSound(trackedPlayer, entity, 1);
                         return true;
                     }
                     return false;
@@ -320,9 +322,9 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
 
     public static class TankTripleAttacker extends EntityEnemyTank {
 
-        public int amtOfBullets, radiusOfShooting;
+        public int amtOfBullets, fieldOfShooting;
 
-        public TankTripleAttacker(float posX, float posY, World world, float health, int trackingRange, int shootingCooldown, int amtOfBullets, int radiusOfShooting, float damage, int bulletBounces, float speed) {
+        public TankTripleAttacker(float posX, float posY, World world, float health, int trackingRange, int shootingCooldown, int amtOfBullets, int fieldOfShooting, float damage, int bulletBounces, float speed) {
             super(posX, posY, world, new AggressiveAi<TankTripleAttacker>(2, trackingRange, shootingCooldown) {
 
                 double attackX, attackY, attackZ;
@@ -350,6 +352,7 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
                         }
                         if (allowGoForAttack) {
                             if (attack()) {
+                                SoundHelper.playShootingSound(trackedPlayer, entity, 1);
                                 rotateBarrel();
                                 allowGoForAttack = false;
                             }
@@ -373,12 +376,12 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
 
                 @Override
                 public boolean attack() {
-                    double radius = entity.radiusOfShooting;
-                    for (int i = 0; i < entity.amtOfBullets; i++) {
+                    double radius = entity.fieldOfShooting;
+                    for (double r = 0; r <= radius; r += radius / (entity.amtOfBullets - 1)) {
                         EntityBullet bullet = new EntityBullet.StandardBullet(entity.posX + entity.getWidth() / 2, 0, entity.posZ + entity.getDepth() / 2, entity.worldObj, entity, Color.RED, entity.damage, entity.bulletBounces);
 
-                        double sin = Math.sin(entity.getLookRotation() + Math.toRadians(-radius / entity.amtOfBullets + radius / entity.amtOfBullets * i));
-                        double cos = Math.cos(entity.getLookRotation() + Math.toRadians(-radius / entity.amtOfBullets + radius / entity.amtOfBullets * i));
+                        double sin = Math.sin(entity.getLookRotation() + Math.toRadians(r - radius / 2));
+                        double cos = Math.cos(entity.getLookRotation() + Math.toRadians(r - radius / 2));
 
                         bullet.motionZ = (float) (sin * 1);
                         bullet.motionX = (float) (cos * 1);
@@ -395,7 +398,7 @@ public abstract class EntityEnemyTank extends EntityLiving implements Tank {
                 }
             }, health, damage, bulletBounces, speed);
             this.amtOfBullets = amtOfBullets;
-            this.radiusOfShooting = radiusOfShooting;
+            this.fieldOfShooting = fieldOfShooting;
         }
 
         @Override

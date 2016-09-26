@@ -1,16 +1,17 @@
 package de.intektor.pixelshooter.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import de.intektor.pixelshooter.PixelShooter;
+import de.intektor.pixelshooter.enums.BulletType;
 import de.intektor.pixelshooter.helper.ColorHelper;
+import de.intektor.pixelshooter.render.RenderHelper;
 import de.intektor.pixelshooter.score.object.HealthLostScore;
 import de.intektor.pixelshooter.world.World;
-import de.intektor.pixelshooter.enums.BulletType;
-import de.intektor.pixelshooter.render.RenderHelper;
 
 
 /**
@@ -24,20 +25,20 @@ public class EntityPlayer extends Entity implements Tank {
 
     public int shotsBeforeCooldown, cooldownInTicks;
 
-    public int amtOfBullets, radiusOfShooting, bulletBounces;
+    public int amtOfBullets, fieldOfShooting, bulletBounces;
 
     public float damage;
 
     private Model modelTank, modelUpperTank, modelBarrel;
 
-    public EntityPlayer(float posX, float posY, World world, BulletType bulletType, float damage, float health, int shotsBeforeCooldown, int cooldownInTicks, int amtOfBullets, int radiusOfShooting, int bulletBounces, float speed) {
+    public EntityPlayer(float posX, float posY, World world, BulletType bulletType, float damage, float health, int shotsBeforeCooldown, int cooldownInTicks, int amtOfBullets, int fieldOfShooting, int bulletBounces, float speed) {
         super(posX, posY, world);
         this.bulletType = bulletType;
         this.motionMultiplier = speed;
         this.shotsBeforeCooldown = shotsBeforeCooldown;
         this.cooldownInTicks = cooldownInTicks;
         this.amtOfBullets = amtOfBullets;
-        this.radiusOfShooting = radiusOfShooting;
+        this.fieldOfShooting = fieldOfShooting;
         this.bulletBounces = bulletBounces;
         this.health = health;
         this.damage = damage;
@@ -82,6 +83,7 @@ public class EntityPlayer extends Entity implements Tank {
     public void damage(DamageSource source) {
         super.damage(source);
         worldObj.scoreObjects.add(new HealthLostScore(source.damage));
+        Gdx.input.vibrate(200);
     }
 
     @Override

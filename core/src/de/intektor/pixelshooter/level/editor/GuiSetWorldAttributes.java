@@ -18,8 +18,8 @@ public class GuiSetWorldAttributes extends Gui {
     final int TEXT_FIELD_BRONZE_MEDAL = 0, TEXT_FIELD_SILVER_MEDAL = 1, TEXT_FIELD_GOLD_MEDAL = 2;
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         MedalInfo medalInfo = GuiLevelEditor.edit.medalInfo;
         if (medalInfo != null) {
             getTextFieldByID(TEXT_FIELD_BRONZE_MEDAL).setText(medalInfo.minBronze + "");

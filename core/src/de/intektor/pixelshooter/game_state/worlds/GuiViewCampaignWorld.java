@@ -47,6 +47,14 @@ public class GuiViewCampaignWorld extends Gui {
     }
 
     @Override
+    public void enterGui() {
+        super.enterGui();
+        if (worldInfo != null) {
+            loadTextures();
+        }
+    }
+
+    @Override
     public void render(ShapeRenderer renderer, SpriteBatch batch) {
         batch.begin();
         batch.draw(ImageStorage.main_menu_wooden, 0, 0, width, height);
@@ -161,9 +169,7 @@ public class GuiViewCampaignWorld extends Gui {
 
     public void setWorld(CompactWorldInformation info) {
         this.worldInfo = info;
-        for (LevelFolder.FolderFile file : info.folder.files) {
-            textureMap.put(file, WorldUtils.getPlayStateWorldTexture(file.world));
-        }
+        loadTextures();
         reInitButtons();
     }
 
@@ -173,6 +179,12 @@ public class GuiViewCampaignWorld extends Gui {
         playState.setTheWorld(worldInfo.folder.files.get(levelID).world);
         playState.setStart(true);
         PixelShooter.enterGui(PixelShooter.PLAY_STATE);
+    }
+
+    public void loadTextures() {
+        for (LevelFolder.FolderFile file : worldInfo.folder.files) {
+            textureMap.put(file, WorldUtils.getPlayStateWorldTexture(file.world));
+        }
     }
 
     @Override

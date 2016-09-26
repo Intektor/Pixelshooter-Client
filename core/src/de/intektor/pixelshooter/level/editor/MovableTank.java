@@ -23,7 +23,7 @@ public class MovableTank extends MovableObject {
     public float health = -1, damage = -1, speed = -1;
     public int trackingRange = -1, shootingCooldown = -1, bulletBounces = -1;
 
-    public int triple_attacker_player_amtOfBullets = -1, triple_attacker_player_radiusOfShooting = -1;
+    public int triple_attacker_player_amtOfBullets = -1, triple_attacker_player_field_of_shooting = -1;
 
     public int player_shotsBeforeCooldown = -1, player_cooldownInTicks = -1;
 
@@ -54,7 +54,7 @@ public class MovableTank extends MovableObject {
                 this.shootingCooldown = ((EntityEnemyTank) tanktype.getTank()).getShootingCooldown();
                 if (tanktype == TankType.TANK_TRIPLE_ATTACKER) {
                     triple_attacker_player_amtOfBullets = ((EntityEnemyTank.TankTripleAttacker) tanktype.getTank()).amtOfBullets;
-                    triple_attacker_player_radiusOfShooting = ((EntityEnemyTank.TankTripleAttacker) tanktype.getTank()).radiusOfShooting;
+                    triple_attacker_player_field_of_shooting = ((EntityEnemyTank.TankTripleAttacker) tanktype.getTank()).fieldOfShooting;
                 }
                 if (tanktype == TankType.TANK_LASER_SHOOTER) {
                     laser_shooter_laserTime = ((EntityEnemyTank.TankLaserShooter) tanktype.getTank()).maxAttackTime;
@@ -65,7 +65,7 @@ public class MovableTank extends MovableObject {
                 player_shotsBeforeCooldown = ((EntityPlayer) tanktype.getTank()).shotsBeforeCooldown;
                 player_cooldownInTicks = ((EntityPlayer) tanktype.getTank()).cooldownInTicks;
                 triple_attacker_player_amtOfBullets = ((EntityPlayer) tanktype.getTank()).amtOfBullets;
-                triple_attacker_player_radiusOfShooting = ((EntityPlayer) tanktype.getTank()).radiusOfShooting;
+                triple_attacker_player_field_of_shooting = ((EntityPlayer) tanktype.getTank()).fieldOfShooting;
             }
         }
     }
@@ -109,7 +109,7 @@ public class MovableTank extends MovableObject {
         tag.setInteger("bullet_bounces", bulletBounces);
 
         tag.setInteger("triple_attacker_player_amt_of_bullets", triple_attacker_player_amtOfBullets);
-        tag.setInteger("triple_attacker_player_radius_of_shooting", triple_attacker_player_radiusOfShooting);
+        tag.setInteger("triple_attacker_player_radius_of_shooting", triple_attacker_player_field_of_shooting);
 
         tag.setInteger("player_shots_before_cooldown", player_shotsBeforeCooldown);
         tag.setInteger("player_cooldown_in_ticks", player_cooldownInTicks);
@@ -132,7 +132,7 @@ public class MovableTank extends MovableObject {
         bulletBounces = tag.getInteger("bullet_bounces");
 
         triple_attacker_player_amtOfBullets = tag.getInteger("triple_attacker_player_amt_of_bullets");
-        triple_attacker_player_radiusOfShooting = tag.getInteger("triple_attacker_player_radius_of_shooting");
+        triple_attacker_player_field_of_shooting = tag.getInteger("triple_attacker_player_radius_of_shooting");
 
         player_shotsBeforeCooldown = tag.getInteger("player_shots_before_cooldown");
         player_cooldownInTicks = tag.getInteger("player_cooldown_in_ticks");

@@ -17,10 +17,12 @@ import java.util.List;
 
 
 public class GuiButton extends GuiComponent {
+
     public String description;
     public int id;
     public Color[] colors = new Color[6];
     public boolean drawImage, enabled = true;
+    protected boolean clicked;
 
     public GuiButton(float x, float y, float width, float height, String des, int id, boolean show) {
         this((int) x, (int) y, (int) width, (int) height, des, id, show);

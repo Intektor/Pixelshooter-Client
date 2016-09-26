@@ -45,8 +45,8 @@ public class GuiViewCommunityLevel extends Gui {
     int ratedStars;
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         loadTextures();
     }
 

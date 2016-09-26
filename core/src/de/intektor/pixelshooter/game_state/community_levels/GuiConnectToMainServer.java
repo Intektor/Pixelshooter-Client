@@ -31,8 +31,8 @@ public class GuiConnectToMainServer extends Gui {
     volatile Exception thrownException;
 
     @Override
-    public void init() {
-        super.init();
+    public void enterGui() {
+        super.enterGui();
         reset();
         final MainServerClient client = PixelShooter.mainServerClient;
         new Thread() {

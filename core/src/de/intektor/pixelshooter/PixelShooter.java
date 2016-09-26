@@ -40,6 +40,7 @@ import de.intektor.pixelshooter.levels.CampaignInformation;
 import de.intektor.pixelshooter.net.client.MainServerClient;
 import de.intektor.pixelshooter.net.packet.handler.*;
 import de.intektor.pixelshooter.render.RenderHelper;
+import de.intektor.pixelshooter.sound.SoundStorage;
 import de.intektor.pixelshooter.util.FontHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter_common.PixelShooterCommon;
@@ -62,7 +63,6 @@ public class PixelShooter extends ApplicationAdapter {
 
     public static ShapeRenderer shapeRenderer;
     public static int width, height;
-    public static float guiScaleAmt = 2;
     public static SpriteBatch spriteBatch;
     public static ModelBatch modelBatch;
     public static GlyphLayout layout;
@@ -139,7 +139,10 @@ public class PixelShooter extends ApplicationAdapter {
 
         System.out.println("Initializing scaled fonts");
 
+        System.out.println("Initialising Textures");
         ImageStorage.init();
+        System.out.println("Initialising Sounds");
+        SoundStorage.init();
 
         System.out.println("Registering Guis");
         registerGui(new GuiMainMenu());
@@ -172,7 +175,7 @@ public class PixelShooter extends ApplicationAdapter {
 
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
-        System.out.println("Initializing unscaled fonts");
+        System.out.println("Initializing unscaled fonts!");
 
         System.out.println(Arrays.toString(Gdx.files.internal("assets/").list()));
 
@@ -329,7 +332,7 @@ public class PixelShooter extends ApplicationAdapter {
         getGuiByID(currentGUI).exitGui();
         currentGUI = guiID;
         //noinspection ConstantConditions
-        getGuiByID(guiID).init();
+        getGuiByID(guiID).enterGui();
     }
 
     public static Gui getGuiByID(int id) {

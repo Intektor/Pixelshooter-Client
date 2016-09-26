@@ -9,6 +9,7 @@ import de.intektor.pixelshooter.collision.Collision3D;
 import de.intektor.pixelshooter.collision.RayTraceHelper;
 import de.intektor.pixelshooter.collision.WorldBorder;
 import de.intektor.pixelshooter.level.editor.GuiLevelEditor;
+import de.intektor.pixelshooter.sound.SoundHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter.entity.Entity;
 import de.intektor.pixelshooter.entity.EntityEnemyTank;
@@ -43,6 +44,7 @@ public abstract class AfraidAi<T extends EntityEnemyTank> extends AIEnemyTank<T>
             rotateBarrel();
             if (TickTimerHandler.hasTickTimerFinished(TICK_TIMER_SHOOTING) && TickTimerHandler.hasTickTimerFinished(TICK_TIMER_NO_ATTACK_IDLE)) {
                 if (attack()) {
+                    SoundHelper.playShootingSound(trackedPlayer, entity, 0.6f);
                     TickTimerHandler.resetTickTimer(TICK_TIMER_SHOOTING);
                 } else {
                     TickTimerHandler.resetTickTimer(TICK_TIMER_NO_ATTACK_IDLE);

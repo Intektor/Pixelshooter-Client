@@ -163,7 +163,7 @@ public class EditingWorld {
                 MovableTank tank = (MovableTank) object;
                 TankType typeOfTank = ((MovableTank) object).getTankType();
                 if (typeOfTank == TankType.TANK_PLAYER) {
-                    EntityPlayer player = new EntityPlayer(object.getX(), object.getY() + object.getHeight(), world, bulletType, tank.damage, tank.health, tank.player_shotsBeforeCooldown, tank.player_cooldownInTicks, tank.triple_attacker_player_amtOfBullets, tank.triple_attacker_player_radiusOfShooting, tank.bulletBounces, tank.speed);
+                    EntityPlayer player = new EntityPlayer(object.getX(), object.getY() + object.getHeight(), world, bulletType, tank.damage, tank.health, tank.player_shotsBeforeCooldown, tank.player_cooldownInTicks, tank.triple_attacker_player_amtOfBullets, tank.triple_attacker_player_field_of_shooting, tank.bulletBounces, tank.speed);
                     eList.add(player);
                     world.thePlayer = player;
                 } else if (typeOfTank == TankType.TANK_STANDARD_ATTACKER) {
@@ -173,7 +173,7 @@ public class EditingWorld {
                 } else if (typeOfTank == TankType.TANK_ARTILLERY) {
                     eList.add(new EntityEnemyTank.TankArtillery(object.getX(), object.getY() + object.getHeight(), world, tank.health, tank.trackingRange, tank.shootingCooldown, tank.damage, tank.speed / (1 / 0.24f)));
                 } else if (typeOfTank == TankType.TANK_TRIPLE_ATTACKER) {
-                    eList.add(new EntityEnemyTank.TankTripleAttacker(object.getX(), object.getY() + object.getHeight(), world, tank.health, tank.trackingRange, tank.shootingCooldown, tank.triple_attacker_player_amtOfBullets, tank.triple_attacker_player_radiusOfShooting, tank.damage, tank.bulletBounces, tank.speed / (1 / 0.24f)));
+                    eList.add(new EntityEnemyTank.TankTripleAttacker(object.getX(), object.getY() + object.getHeight(), world, tank.health, tank.trackingRange, tank.shootingCooldown, tank.triple_attacker_player_amtOfBullets, tank.triple_attacker_player_field_of_shooting, tank.damage, tank.bulletBounces, tank.speed / (1 / 0.24f)));
                 } else if (typeOfTank == TankType.TANK_CHASE_SHOOTER) {
                     eList.add(new EntityEnemyTank.TankChaseShooter(object.getX(), object.getY() + object.getHeight(), world, tank.health, tank.trackingRange, tank.shootingCooldown, tank.damage, tank.bulletBounces, tank.speed / (1 / 0.24f)));
                 } else if (typeOfTank == TankType.TANK_LASER_SHOOTER) {
@@ -338,9 +338,7 @@ public class EditingWorld {
     }
 
     public enum BackGroundType {
-        WOODEN(ImageStorage.world_type_wooden, ImageStorage.background_wooden, ImageStorage.border_texture_wooden, ImageStorage.border_breakable_wooden),
-        GRASS(ImageStorage.world_type_grass, ImageStorage.background_grass, ImageStorage.border_texture_grass, ImageStorage.border_breakable_grass),
-        DESERT(ImageStorage.tiny_picture_desert, ImageStorage.background_desert, ImageStorage.border_desert_unbreakable, ImageStorage.border_desert_breakable);
+        WOODEN(ImageStorage.world_type_wooden, ImageStorage.background_wooden, ImageStorage.border_texture_wooden, ImageStorage.border_breakable_wooden);
         final Texture tinyTexture, backgroundTexture, unbreakableCollision, breakableCollision;
 
         BackGroundType(Texture tinyTexture, Texture backgroundTexture, Texture unbreakableCollision, Texture breakableCollision) {

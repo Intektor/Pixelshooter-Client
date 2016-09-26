@@ -30,7 +30,7 @@ public abstract class Gui extends InputAdapter implements GestureDetector.Gestur
     public Gui() {
     }
 
-    public void init() {
+    public void enterGui() {
         input = Gdx.input;
         width = 1280;
         height = 720;
