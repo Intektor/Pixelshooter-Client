@@ -44,7 +44,7 @@ import de.intektor.pixelshooter.sound.SoundStorage;
 import de.intektor.pixelshooter.util.FontHelper;
 import de.intektor.pixelshooter.util.TickTimerHandler;
 import de.intektor.pixelshooter_common.PixelShooterCommon;
-import de.intektor.pixelshooter_common.common.ClientVersion;
+import de.intektor.pixelshooter_common.common.Version;
 import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 import de.intektor.pixelshooter_common.net.packet.*;
 import de.intektor.pixelshooter_common.packet.PacketRegistry;
@@ -59,7 +59,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class PixelShooter extends ApplicationAdapter {
 
-    public static final ClientVersion VERSION = new ClientVersion(1, 0, 0);
+    public static final Version VERSION = new Version(1, 0, 0);
 
     public static ShapeRenderer shapeRenderer;
     public static int width, height;
@@ -101,6 +101,7 @@ public class PixelShooter extends ApplicationAdapter {
     public static final int WAIT_FOR_SERVER_TO_SEND_LEVEL_DATA = 19;
     public static final int LOOKUP_OFFICIAL_ID = 20;
     public static final int SERVER_CONNECTION_SHUTDOWN_MESSAGE = 21;
+    public static final int WAIT_FOR_CAMPAIGN_WORLDS_RESPONSE = 22;
 
     public static final GuiPlayState PIXEL_SHOOTER_STATE = new GuiPlayState();
     public static GuiLevelEditor LEVEL_EDITOR_STATE;
@@ -166,6 +167,7 @@ public class PixelShooter extends ApplicationAdapter {
         registerGui(new GuiViewCommunityLevel());
         registerGui(new GuiLookupOfficialID());
         registerGui(new GuiServerError());
+        registerGui(new GuiWaitForMainServerCampaignWorldResponse());
 
         System.out.println("Initializing Camera");
         camera = new OrthographicCamera();
@@ -250,6 +252,7 @@ public class PixelShooter extends ApplicationAdapter {
         PacketRegistry.INSTANCE.registerHandlerForPacket(InternalServerErrorWhileGettingLevelDataPacketToClient.class, InternalServerErrorWhileGettingLevelDataPacketToClientHandler.class);
         PacketRegistry.INSTANCE.registerHandlerForPacket(ServerShutdownPacketToClient.class, ServerShutdownPacketToClientHandler.class);
         PacketRegistry.INSTANCE.registerHandlerForPacket(UnsupportedClientVersionPacketToClient.class, UnsupportedClientVersionPacketToClientHandler.class);
+        PacketRegistry.INSTANCE.registerHandlerForPacket(CampaignWorldsUpdateRequestResponseToClient.class, CampaignWorldsUpdateRequestResponseToClientHandler.class);
 
         try {
             FileInputStream file = new FileInputStream(Gdx.files.local("login").file());
@@ -331,7 +334,6 @@ public class PixelShooter extends ApplicationAdapter {
     public static void enterGui(int guiID) {
         getGuiByID(currentGUI).exitGui();
         currentGUI = guiID;
-        //noinspection ConstantConditions
         getGuiByID(guiID).enterGui();
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import de.intektor.pixelshooter.PixelShooter;
 
@@ -44,16 +45,20 @@ public class GuiButton extends GuiComponent {
         this.colors[5] = c6;
     }
 
-    protected Texture image;
+    protected TextureRegion image;
 
-    public GuiButton(float x, float y, float width, float height, int id, boolean show, Texture image) {
-        this((int) x, (int) y, (int) width, (int) height, id, show, image);
+    public GuiButton(int x, int y, int width, int height, int id, boolean show) {
+        this(x, y, width, height, id, show, (TextureRegion) null);
     }
 
     public GuiButton(int x, int y, int width, int height, int id, boolean show, Texture image) {
+        this(x, y, width, height, id, show, image != null ? new TextureRegion(image) : null);
+    }
+
+    public GuiButton(int x, int y, int width, int height, int id, boolean show, TextureRegion region) {
         super(x, y, width, height, show);
         this.id = id;
-        this.image = image;
+        this.image = region;
         drawImage = true;
     }
 
@@ -99,7 +104,7 @@ public class GuiButton extends GuiComponent {
     }
 
     public void setImage(Texture image) {
-        this.image = image;
+        this.image = new TextureRegion(image);
     }
 
     public static class GuiButtonSwitchONOFF extends GuiButton {

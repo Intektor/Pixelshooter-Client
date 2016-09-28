@@ -18,6 +18,8 @@ public class GuiConnectToMainServer extends Gui {
 
     public int nextState, prevState;
 
+    public volatile long timeAtTryConnection;
+
     final String TICK_TIMER_TICK_CONNECTION = "CONNECT_TO_MAIN_SERVER_GUI_TICK_CONNECTION_GUI";
     final String TICK_TIMER_JOIN_FOLLOWING_GUI = "JOIN_FOLLOWING_GUI_TICK_MAIN_SERVER_CONNECTION_GUI";
 
@@ -34,6 +36,7 @@ public class GuiConnectToMainServer extends Gui {
     public void enterGui() {
         super.enterGui();
         reset();
+        timeAtTryConnection = System.currentTimeMillis();
         final MainServerClient client = PixelShooter.mainServerClient;
         new Thread() {
             @Override
@@ -60,6 +63,10 @@ public class GuiConnectToMainServer extends Gui {
     @Override
     public void update() {
         super.update();
+        if (System.currentTimeMillis() - timeAtTryConnection >= 5000) {
+            connectionCrashed = true;
+            thrownException = new Exception("Timeout!");
+        }
         if (TickTimerHandler.hasTickTimerFinished(TICK_TIMER_TICK_CONNECTION)) {
             TickTimerHandler.resetTickTimer(TICK_TIMER_TICK_CONNECTION);
             connectToMainServerString = "Connecting to main server" + StringUtils.repeat(".", connectMainServerTick);

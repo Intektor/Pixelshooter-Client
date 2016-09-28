@@ -19,7 +19,9 @@ public class GuiBasicLevelOverview extends Gui {
     public void onButtonTouched(int buttonID) {
         switch (buttonID) {
             case BUTTON_WORLDS:
-                PixelShooter.enterGui(PixelShooter.WORLD_SELECTION);
+                GuiConnectToMainServer connectMainServer = (GuiConnectToMainServer) PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER);
+                connectMainServer.setInfo(PixelShooter.WAIT_FOR_CAMPAIGN_WORLDS_RESPONSE, PixelShooter.WORLD_SELECTION);
+                PixelShooter.enterGui(PixelShooter.CONNECT_TO_MAIN_SERVER);
                 break;
             case BUTTON_USER_LEVELS:
                 PixelShooter.enterGui(PixelShooter.USER_LEVEL_OVERVIEW);
@@ -31,7 +33,7 @@ public class GuiBasicLevelOverview extends Gui {
                 PixelShooter.enterGui(PixelShooter.MAIN_MENU);
                 break;
             case BUTTON_COMMUNITY_LEVELS:
-                ((GuiConnectToMainServer)PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.BROWSE_COMMUNITY_LEVELS_FROM_MAIN_SERVER, getID());
+                ((GuiConnectToMainServer) PixelShooter.getGuiByID(PixelShooter.CONNECT_TO_MAIN_SERVER)).setInfo(PixelShooter.BROWSE_COMMUNITY_LEVELS_FROM_MAIN_SERVER, getID());
                 PixelShooter.enterGui(PixelShooter.CONNECT_TO_MAIN_SERVER);
                 break;
         }

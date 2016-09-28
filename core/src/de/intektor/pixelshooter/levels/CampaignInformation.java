@@ -5,17 +5,18 @@ import de.intektor.pixelshooter_common.files.pstf.PSTagCompound;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Intektor
  */
 public class CampaignInformation {
 
-    public List<WorldInformation> worlds = new ArrayList<WorldInformation>();
+    public Map<Integer, WorldInformation> worlds = new HashMap<Integer, WorldInformation>();
 
     public CampaignInformation() {
-        worlds.add(new WorldInformation(0, 30));
     }
 
     public void levelFinished(int worldID, int levelID) {
@@ -40,7 +41,8 @@ public class CampaignInformation {
         CampaignInformation info = new CampaignInformation();
         int worlds = tag.getInteger("amt_worlds");
         for (int i = 0; i < worlds; i++) {
-            info.worlds.add(WorldInformation.readFromTag(tag.getTag("world" + i)));
+            WorldInformation world = WorldInformation.readFromTag(tag.getTag("world" + i));
+            info.worlds.put(world.worldID, world);
         }
         return info;
     }

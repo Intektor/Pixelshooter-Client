@@ -3,10 +3,7 @@ package de.intektor.pixelshooter.level.editor;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -717,15 +714,15 @@ public class GuiLevelEditor extends Gui {
         componentList.add(new GuiButton(i * 2, 0 * 2, 30 * 2, 30 * 2, BUTTON_POINTER, true, ImageStorage.pointer));
         componentList.add(new GuiButton(i += 30 * 2, 0 * 2, 30 * 2, 30 * 2, BUTTON_SQUARE_COLLISION, true, ImageStorage.collisionImage));
         componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_TRASH_CAN, true, ImageStorage.trashCan));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_PLAYER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_STANDARD_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_QUICK_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_ARTILLERY, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_TRIPLE_ATTACKER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_CHASE_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_LASER_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_MINE_SHOOTER, true, null));
-        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_HEAVY_SHOOTER, true, null));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_PLAYER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_STANDARD_ATTACKER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_QUICK_ATTACKER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_ARTILLERY, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_TRIPLE_ATTACKER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_CHASE_SHOOTER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_LASER_SHOOTER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_MINE_SHOOTER, true));
+        componentList.add(new GuiButton(i += 30 * 2, 0, 30 * 2, 30 * 2, BUTTON_SET_HEAVY_SHOOTER, true));
 
 
         componentList.add(new GuiButton(width - 150 * 2, 0, 30 * 2, 30 * 2, "World", BUTTON_CALL_WORLD_ATTRIBUTES, true));

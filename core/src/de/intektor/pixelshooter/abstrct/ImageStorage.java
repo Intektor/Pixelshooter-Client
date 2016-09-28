@@ -34,6 +34,7 @@ public class ImageStorage {
             empty_stars,
             full_stars,
             green_check_mark,
+            grayTriangle,
             main_menu_wooden;
 
     public static void init() {
@@ -66,6 +67,7 @@ public class ImageStorage {
             full_stars = new Texture(domain + "play_state/full_stars.png");
             main_menu_wooden = new Texture(domain + "menu/main_menu_picture_wooden.png");
             green_check_mark = new Texture(domain + "level_editor/tools/green_check_mark.png");
+            grayTriangle = new Texture(domain + "misc/grayTriangle.png");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
